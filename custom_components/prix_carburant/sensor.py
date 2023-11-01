@@ -124,10 +124,18 @@ class PrixCarburant(SensorEntity):
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
             case "Carrefour":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/5/5b/Carrefour_logo.svg"
+            case "Carrefour Contact":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/3/3a/Logo_Carrefour_Contact_-_2016.svg"
             case "Carrefour Market":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
             case "Auchan":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Auchan_A.svg"
+            case "Esso":
+                self._attr_entity_picture = "ttps://upload.wikimedia.org/wikipedia/commons/2/22/Esso_textlogo.svg"
+            case "Esso Express":
+                self._attr_entity_picture = "ttps://upload.wikimedia.org/wikipedia/commons/2/22/Esso_textlogo.svg"
+            case "Avia":
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.station_id)},
