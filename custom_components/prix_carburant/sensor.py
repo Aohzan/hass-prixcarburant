@@ -127,9 +127,7 @@ class PrixCarburant(SensorEntity):
             case "Carrefour Market":
                 self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4f/Carrefour_market_logo.svg"
             case "Auchan":
-                self._attr_entity_picture = (
-                    "https://upload.wikimedia.org/wikipedia/commons/4/4f/Auchan_A.svg"
-                )
+                self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/a/aa/Auchan-A.svg"
 
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.station_id)},
