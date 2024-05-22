@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 3.5.7
+
+- Modifications de stations sur la rive droite de Bordeaux
+- Modifications de noms
+- Ajout de stations manquantes
+
 ## 3.5.6
 
 - Update stations
