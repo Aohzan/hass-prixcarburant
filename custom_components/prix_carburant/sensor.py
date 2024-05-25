@@ -118,7 +118,7 @@ class PrixCarburant(CoordinatorEntity, SensorEntity):
                 case "Atac":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/c/c3/Logo_Atac_2015.svg"
                 case "Auchan":
-                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Logo_Auchan_A.png"
+                    self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/fr/c/cd/Logo_Auchan_%282015%29.svg"
                 case "Avia":
                     self._attr_entity_picture = "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
                 case "BP" | "BP Express":
