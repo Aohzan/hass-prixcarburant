@@ -2755,6 +2755,10 @@
     "Nom": "SUPER U SAINT GERMAIN",
     "Marque": "Système U"
   },
+  "10120005": {
+    "Nom": "Avia",
+    "Marque": "Avia"
+  },
   "10123001": {
     "Nom": "Carrefour ST ANDRE LES VERGERS",
     "Marque": "Carrefour"
@@ -2859,6 +2863,10 @@
     "Nom": "RELAIS DE TROYES PLESSIS",
     "Marque": "Total"
   },
+  "10270009": {
+    "Nom": "E.LECLERC TROYDIS LSB",
+    "Marque": "Leclerc"
+  },
   "10300002": {
     "Nom": "ESSO STE SAVINE",
     "Marque": "Esso Express"
@@ -2895,12 +2903,20 @@
     "Nom": "TROYDIS SAS",
     "Marque": "Leclerc"
   },
+  "10410003": {
+    "Nom": "E.LECLERC TROYDIS SPT",
+    "Marque": "Leclerc"
+  },
   "10430001": {
     "Nom": "Intermarché ROSIERES",
     "Marque": "Intermarché"
   },
   "10430002": {
     "Nom": "TROYDIS SAS",
+    "Marque": "Leclerc"
+  },
+  "10430003": {
+    "Nom": "E.LECLERC TROYDIS RPT",
     "Marque": "Leclerc"
   },
   "10500001": {
@@ -2914,6 +2930,10 @@
   "10500004": {
     "Nom": "SUPERMARCHE CASINO BRIENNE LE CHATEAU",
     "Marque": "Casino"
+  },
+  "10500005": {
+    "Nom": "LECLERC EXPRESS",
+    "Marque": "Leclerc"
   },
   "10600001": {
     "Nom": "GEANT CASINO",
@@ -2930,6 +2950,10 @@
   "10600009": {
     "Nom": "RELAIS DE BARBEREY",
     "Marque": "Total Access"
+  },
+  "10600012": {
+    "Nom": "AUCHAN BARBEREY-SAINT-SULPICE (TROYES)",
+    "Marque": "Auchan"
   },
   "10700001": {
     "Nom": "SARL NOEL",
@@ -2958,6 +2982,10 @@
   "10800006": {
     "Nom": "Carrefour Contact BUCHERES",
     "Marque": "Carrefour Contact"
+  },
+  "10800007": {
+    "Nom": "SAS Les Philippats 2 Station Services",
+    "Marque": "Intermarché"
   },
   "11000001": {
     "Nom": "GEANT CASINO CITE 2",
