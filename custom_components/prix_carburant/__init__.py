@@ -4,7 +4,7 @@ from datetime import timedelta
 import logging
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL
+from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL, ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.core import (
     HomeAssistant,
     ServiceCall,
@@ -115,6 +115,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     "name": station_data[ATTR_NAME],
                     "price": station_data.get(ATTR_PRICE),
                     "address": f"{station_data[ATTR_ADDRESS]}, {station_data[ATTR_POSTAL_CODE]} {station_data[ATTR_CITY]}",
+                    "latitude": f"{station_data[ATTR_LATITUDE]}",
+                    "longitude": f"{station_data[ATTR_LONGITUDE]}",
                 }
                 for station_data in stations.values()
             ],
