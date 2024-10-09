@@ -9107,10 +9107,6 @@
     "Nom": "Intermarché",
     "Marque": "Intermarché"
   },
-  "26200008": {
-    "Nom": "Auchan Montélimar",
-    "Marque": "Auchan"
-  },
   "26208001": {
     "Nom": "Carrefour MONTELIMAR",
     "Marque": "Carrefour"
@@ -12731,12 +12727,16 @@
     "Nom": "Intermarché",
     "Marque": "Intermarché"
   },
+  "33470001": {
+    "Nom": "Hyper U GUJAN-MESTRAS",
+    "Marque": "Système U"
+  },
   "33470002": {
-    "Nom": "Carrefour Market",
+    "Nom": "Carrefour Market GUJAN-MESTRAS",
     "Marque": "Carrefour Market"
   },
   "33470003": {
-    "Nom": "Super U",
+    "Nom": "Super U LE TEICH",
     "Marque": "Système U"
   },
   "33480002": {
@@ -12840,11 +12840,11 @@
     "Marque": "Géant"
   },
   "33600006": {
-    "Nom": "ESSO ALOUETTE",
+    "Nom": "ESSO ALOUETTE PESSAC",
     "Marque": "Esso Express"
   },
   "33600009": {
-    "Nom": "RELAIS HAUT LEVEQUE",
+    "Nom": "RELAIS HAUT LEVEQUE PESSAC",
     "Marque": "Total"
   },
   "33600010": {
@@ -12852,8 +12852,12 @@
     "Marque": "Total"
   },
   "33600011": {
-    "Nom": "RELAIS CAP DE BOS",
+    "Nom": "RELAIS CAP DE BOS PESSAC",
     "Marque": "Total Access"
+  },
+  "33600013": {
+    "Nom": "Auchan Bois Bersol PESSAC",
+    "Marque": "Auchan"
   },
   "33610001": {
     "Nom": "SAS BRUGAR",
@@ -12968,7 +12972,7 @@
     "Marque": "Total Access"
   },
   "33700024": {
-    "Nom": "RELAIS MERIGNAC SOMME",
+    "Nom": "RELAIS Mérignac Somme MÉRIGNAC",
     "Marque": "Total Access"
   },
   "33710002": {
