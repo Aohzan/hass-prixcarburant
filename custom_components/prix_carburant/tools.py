@@ -362,7 +362,7 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
                 "https://upload.wikimedia.org/wikipedia/fr/9/98/Logo_8_%C3%80_Huit.svg"
             )
         case "Intermarché" | "Intermarché Contact":
-            return "https://upload.wikimedia.org/wikipedia/commons/3/34/Les_Mousquetaires_logo_2009.svg"
+            return "https://upload.wikimedia.org/wikipedia/commons/9/96/Intermarch%C3%A9_logo_2009_classic.svg"
         case "Leclerc":
             return "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
         case "Leader Price" | "LEADER-PRICE":
