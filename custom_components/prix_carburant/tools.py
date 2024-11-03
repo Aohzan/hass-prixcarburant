@@ -324,6 +324,8 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
     match brand:
         case "Aldi":
             return "https://upload.wikimedia.org/wikipedia/commons/2/2c/Aldi_Nord_201x_logo.svg"
+        case "Agip":
+            return "https://upload.wikimedia.org/wikipedia/fr/a/ad/Agip.svg"
         case "Atac":
             return "https://upload.wikimedia.org/wikipedia/fr/c/c3/Logo_Atac_2015.svg"
         case "Auchan":
@@ -357,6 +359,8 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
             return "https://upload.wikimedia.org/wikipedia/commons/0/0e/Esso-Logo.svg"
         case "Géant":
             return "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg"
+        case "Gulf":
+            return "https://upload.wikimedia.org/wikipedia/commons/7/70/Gulf_logo.png"
         case "Huit à 8":
             return (
                 "https://upload.wikimedia.org/wikipedia/fr/9/98/Logo_8_%C3%80_Huit.svg"
