@@ -5,7 +5,7 @@
 This a _custom component_ for [Home Assistant](https://www.home-assistant.io/).
 The `prix_carburant` integration allows you to get information and prices from [gouv API](https://data.economie.gouv.fr/explore/dataset/prix-des-carburants-en-france-flux-instantane-v2/table/).
 
-![README complet en français](README.fr.md) :fr:
+:exclamation: [README complet en français](README.fr.md) :fr: :exclamation:
 
 ## Installation
 
