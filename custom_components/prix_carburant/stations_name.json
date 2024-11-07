@@ -17659,6 +17659,10 @@
     "name": "SARL GARAGE LERAY STATION AVIA",
     "brand": "Avia"
   },
+  "44330003": {
+    "name": "Station U VALLET",
+    "brand": "Système U"
+  },
   "44340001": {
     "name": "SO'GEROUEST",
     "brand": "Avia"
@@ -17810,6 +17814,10 @@
   "44430003": {
     "name": "SAS COFIM",
     "brand": "Intermarché"
+  },
+  "44430004": {
+    "name": "Station du Loroux-Bottereau",
+    "brand": "Leclerc"
   },
   "44450002": {
     "name": "Super U LA CHAPELLE BASSE MER",
