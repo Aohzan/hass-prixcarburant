@@ -39003,5 +39003,21 @@
   "95870009": {
     "name": "Relais du Drapeau",
     "brand": "Total Access"
-  }
+  },
+  "83160008": {
+    "name": "Auchan La Valette du Var",
+    "brand": "Auchan"
+  },
+  "83200006": {
+    "name": "Auchan Bon Rencontre",
+    "brand": "Auchan"
+  },
+  "83130008": {
+    "name": "ENI La Garde",
+    "brand": "ENI"
+  },  
+  "83130007": {
+    "name": "Carrefour Contact La Garde",
+    "brand": "Carrefour"
+  },  
 }
