@@ -25412,7 +25412,7 @@
   "63122002": {
     "name": "Intermarché Ceyrat",
     "brand": "Intermarché",
-    "address": "12, avenue de Royat"
+    "address": "12 avenue de Royat"
   },
   "63140001": {
     "name": "Station Aubert",
@@ -25722,6 +25722,7 @@
   "63670001": {
     "name": "CBP / Intermarché LE CENDRE",
     "brand": "Intermarché"
+    "address": "rue Jean Mermoz"
   },
   "63670002": {
     "name": "Intermarché Contact",
