@@ -110,7 +110,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
     def __init__(self, config_entry: ConfigEntry) -> None:
         """Initialize options flow."""
-        self.config_entry = config_entry
+        self.hass.config_entries.async_forward_entry_setup()
 
     async def async_step_init(self, user_input) -> ConfigFlowResult:
         """Manage the options."""
