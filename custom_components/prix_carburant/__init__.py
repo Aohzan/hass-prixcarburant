@@ -25,6 +25,7 @@ from .const import (
     ATTR_CITY,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
+    CONF_API_SSL_CHECK,
     CONF_DISPLAY_ENTITY_PICTURES,
     CONF_MAX_KM,
     CONF_STATIONS,
@@ -46,7 +47,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     websession = async_get_clientsession(hass)
 
     tool = await hass.async_add_executor_job(
-        PrixCarburantTool, hass.config.time_zone, 60, websession
+        PrixCarburantTool,
+        hass.config.time_zone,
+        60,
+        config.get(CONF_API_SSL_CHECK, True),
+        websession,
     )
 
     display_entity_pictures = config.get(CONF_DISPLAY_ENTITY_PICTURES, True)
