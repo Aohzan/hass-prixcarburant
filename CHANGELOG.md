@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.10.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.9.1...3.10.0) (2025-04-24)
+
+### Features
+
+* add option to ignore API's certificate verification ([#97](https://github.com/Aohzan/hass-prixcarburant/issues/97)) ([b28e90b](https://github.com/Aohzan/hass-prixcarburant/commit/b28e90b09e9f586995519baa8ba10401e44d832e))
+
 ## [3.9.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.9.0...3.9.1) (2025-04-24)
 
 ### Bug Fixes
