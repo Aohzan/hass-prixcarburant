@@ -25,6 +25,7 @@
       "init": {
         "data": {
           "scan_interval": "Time in hours between two data updates",
+          "api_ssl_check": "Check SSL certificate of API server",
           "display_entity_pictures": "Add brand logo to entity pictures",
           "max_km": "Maximum distance from home",
           "fuels_Gazole": "Show Gazole",

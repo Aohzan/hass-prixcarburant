@@ -7,6 +7,12 @@ from homeassistant.const import Platform
 DOMAIN: Final = "prix_carburant"
 PLATFORMS: Final = [Platform.BUTTON, Platform.SENSOR]
 
+CONF_MAX_KM: Final = "max_km"
+CONF_FUELS: Final = "fuels"
+CONF_STATIONS: Final = "stations"
+CONF_DISPLAY_ENTITY_PICTURES: Final = "display_entity_pictures"
+CONF_API_SSL_CHECK: Final = "api_ssl_check"
+
 DEFAULT_NAME: Final = "Prix Carburant"
 DEFAULT_MAX_KM: Final = 15
 DEFAULT_SCAN_INTERVAL: Final = 4
@@ -21,10 +27,6 @@ ATTR_FUEL_TYPE = "fuel_type"
 ATTR_UPDATED_DATE = "updated_date"
 ATTR_DAYS_SINCE_LAST_UPDATE = "days_since_last_update"
 ATTR_PRICE = "price"
-CONF_MAX_KM = "max_km"
-CONF_FUELS = "fuels"
-CONF_STATIONS = "stations"
-CONF_DISPLAY_ENTITY_PICTURES = "display_entity_pictures"
 
 ATTR_GAZOLE = "Gazole"
 ATTR_SP95 = "SP95"

@@ -36,10 +36,12 @@ class PrixCarburantTool:
         self,
         time_zone: str = "Europe/Paris",
         request_timeout: int = 30,
+        api_ssl_check: bool = True,
         session: ClientSession | None = None,
     ) -> None:
         """Init tool."""
         self._user_time_zone = time_zone
+        self._api_ssl_check = api_ssl_check
         self._local_stations_data: dict[str, dict] = {}
         self._stations_data: dict[str, dict] = {}
 
@@ -79,7 +81,10 @@ class PrixCarburantTool:
             )
             async with timeout(self._request_timeout):
                 response = await self._session.request(  # type: ignore[union-attr]
-                    method="GET", url=PRIX_CARBURANT_API_URL, params=params
+                    method="GET",
+                    url=PRIX_CARBURANT_API_URL,
+                    params=params,
+                    ssl=self._api_ssl_check,
                 )
                 content = await response.json()
 
@@ -346,10 +351,7 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
         case "Bricomarché":
             return "https://upload.wikimedia.org/wikipedia/commons/d/dc/BRICOMARCHE.png"
         case (
-            "Carrefour"
-            | "Carrefour Contact"
-            | "Carrefour Express"
-            | "Carrefour Market"
+            "Carrefour" | "Carrefour Contact" | "Carrefour Express" | "Carrefour Market"
         ):
             return "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
         case "Casino" | "Super Casino":
