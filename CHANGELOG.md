@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.9.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.9.0...3.9.1) (2025-04-24)
+
+### Bug Fixes
+
+* options configflow error ([2ecd341](https://github.com/Aohzan/hass-prixcarburant/commit/2ecd341a53e8eedbae77b065bbe52d7063616762))
+
 ## [3.9.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.8.2...3.9.0) (2025-04-22)
 
 ### Features
