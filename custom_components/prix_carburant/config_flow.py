@@ -102,15 +102,11 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
     @callback
     def async_get_options_flow(config_entry: ConfigEntry) -> OptionsFlow:
         """Define the config flow to handle options."""
-        return PrixCarburantOptionsFlowHandler(config_entry)
+        return PrixCarburantOptionsFlowHandler()
 
 
 class PrixCarburantOptionsFlowHandler(OptionsFlow):
     """Handle a PrixCarburant options flow."""
-
-    def __init__(self, config_entry: ConfigEntry) -> None:
-        """Initialize options flow."""
-        self.hass.config_entries.async_forward_entry_setup()
 
     async def async_step_init(self, user_input) -> ConfigFlowResult:
         """Manage the options."""
