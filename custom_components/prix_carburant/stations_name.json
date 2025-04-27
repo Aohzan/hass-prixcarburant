@@ -31649,6 +31649,13 @@
     "name": "CASINO SUPERMARCHE",
     "brand": "Casino"
   },
+  "77164002": {
+    "name": "Intermarché FERRIERES EN BRIE",
+    "brand": "Intermarché",
+    "address": "Zac des hauts de ferrieres - parc des merlettes",
+    "postal_code": "77164",
+    "city": "Ferrieres en brie"
+  },
   "77165002": {
     "name": "Carrefour Market",
     "brand": "Carrefour Market"
@@ -31852,6 +31859,20 @@
   "77340006": {
     "name": "RELAIS DE COMBAULT",
     "brand": "Total Access"
+  },
+  "77340007": {
+    "name": "RELAIS PONTAULT EST | TotalEnergies Access",
+    "brand": "TotalEnergies Access",
+    "address": "N104 la francilienne - aire pre de l'aulnes et de la gde mar",
+    "postal_code": "77340",
+    "city": "Pontault-Combault"
+  },
+  "77340009": {
+    "name": "Costco Pontault-Combault",
+    "brand": "Costco Wholesale",
+    "address": "35 route de Paris - Zac Les 4 Chênes",
+    "postal_code": "77340",
+    "city": "Pontault-Combault"
   },
   "77346001": {
     "name": "Carrefour PONTAULT-COMBAULT",
