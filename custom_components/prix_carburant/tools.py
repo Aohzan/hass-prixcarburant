@@ -358,6 +358,8 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
             return "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
         case "Cora" | "CORA":
             return "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
+        case "Costco" | "COSTCO":
+            return "https://upload.wikimedia.org/wikipedia/commons/5/59/Costco_Wholesale_logo_2010-10-26.svg"
         case "Elf":
             return (
                 "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg"
