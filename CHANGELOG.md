@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.10.2](https://github.com/Aohzan/hass-prixcarburant/compare/3.10.1...3.10.2) (2025-04-28)
+
+### Bug Fixes
+
+* Update in stations_name.json and update in tools.py ([#100](https://github.com/Aohzan/hass-prixcarburant/issues/100)) ([97f4e7b](https://github.com/Aohzan/hass-prixcarburant/commit/97f4e7b0e9d17f55ee6b1c57c10f48a5fc273024))
+
 ## [3.10.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.10.0...3.10.1) (2025-04-28)
 
 ### Bug Fixes
