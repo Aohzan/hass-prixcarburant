@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.10.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.10.0...3.10.1) (2025-04-28)
+
+### Bug Fixes
+
+* Update station Pontault & Ferrieres ([#99](https://github.com/Aohzan/hass-prixcarburant/issues/99)) ([884f921](https://github.com/Aohzan/hass-prixcarburant/commit/884f92110fee0fe02f01008b36b1a71181b8cf98))
+
 ## [3.10.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.9.1...3.10.0) (2025-04-24)
 
 ### Features
