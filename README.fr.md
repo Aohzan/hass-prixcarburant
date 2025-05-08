@@ -18,6 +18,8 @@ Faire une PR en ajoutant/modifiant la station dans le fichier [stations_name.jso
 - `postal_code`: Code postal de la station
 - `city`: Ville de la station
 
+Un workflow GitHub validera automatiquement la structure et le format du fichier JSON. Si la PR ne modifie que le fichier stations_name.json et passe la validation, elle sera automatiquement approuvée et fusionnée.
+
 ### Ajouter/corriger une image d'entité (entity picture)
 
 Faire une PR en ajoutant/corrigeant l'image dans le fichier [tools.py](custom_components/prix_carburant/tools.py), dans la fonction `get_entity_picture`.

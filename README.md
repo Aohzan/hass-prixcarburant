@@ -34,6 +34,18 @@ sensor:
         - 34567890
 ```
 
+## Contributing
+
+### Stations Data
+
+The `stations_name.json` file contains information about gas stations with their IDs, names, and brands. If you want to contribute by adding or updating station information:
+
+1. Fork the repository
+2. Edit the `custom_components/prix_carburant/stations_name.json` file
+3. Create a pull request
+
+A GitHub workflow will automatically validate the JSON structure and format. If the PR only modifies the stations_name.json file and passes validation, it will be automatically approved and merged.
+
 ## Crédits
 
 Thanks to https://github.com/max5962/prixCarburant-home-assistant for base code.
