@@ -61,4 +61,4 @@ jobs:
         run: |
           gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --subject "feat: update stations data (#${{ github.event.pull_request.number }})"
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_GITHUB }}
