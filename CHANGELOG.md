@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.12.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.11.0...3.12.0) (2025-05-08)
+
+### Features
+
+* update stations data ([#103](https://github.com/Aohzan/hass-prixcarburant/issues/103)) ([9ec1959](https://github.com/Aohzan/hass-prixcarburant/commit/9ec19593f403559fe138dca2982edda5844fedfd))
+
 ## [3.11.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.10.2...3.11.0) (2025-05-06)
 
 ### Features
