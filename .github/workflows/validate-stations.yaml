@@ -44,17 +44,20 @@ jobs:
         uses: dorny/paths-filter@v3
         with:
           filters: |
-            stations_only:
+            stations_file:
               - 'custom_components/prix_carburant/stations_name.json'
+            custom_components:
+              - 'custom_components/prix_carburant/*.py'
 
+      # Those actions will auto-approve and auto-merge the PR if it only modifies the stations_name.json file
       - name: Auto-approve PR
-        if: steps.check-pr-files.outputs.stations_only == 'true'
+        if: steps.check-pr-files.outputs.stations_file == 'true' && steps.check-pr-files.outputs.custom_components == 'false'
         uses: hmarr/auto-approve-action@v4
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Enable auto-merge
-        if: steps.check-pr-files.outputs.stations_only == 'true'
+        if: steps.check-pr-files.outputs.stations_file == 'true' && steps.check-pr-files.outputs.custom_components == 'false'
         run: |
           gh pr merge --auto --merge "${{ github.event.pull_request.number }}"
         env:
