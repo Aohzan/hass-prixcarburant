@@ -59,6 +59,15 @@ jobs:
       - name: Enable auto-merge
         if: steps.check-pr-files.outputs.stations_file == 'true' && steps.check-pr-files.outputs.custom_components == 'false'
         run: |
-          gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --subject "feat: update stations data (#${{ github.event.pull_request.number }})"
+          # Wait for other required checks to pass
+          gh pr checks "${{ github.event.pull_request.number }}" --watch
+          
+          # Only merge if all checks pass
+          if [ $? -eq 0 ]; then
+            gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --subject "feat: update stations data (#${{ github.event.pull_request.number }})"
+          else
+            echo "Not all checks passed. PR will not be auto-merged."
+            exit 1
+          fi
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
