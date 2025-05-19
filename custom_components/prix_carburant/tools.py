@@ -54,14 +54,8 @@ class PrixCarburantTool:
                 _LOGGER.debug("Successfully retrieved data from: %s", STATIONS_NAME_URL)
                 self._local_stations_data = response.json()
             else:
-                _LOGGER.error("Loading stations data from github request failed with error: %s, loading from local file: %s", request.status_code, STATIONS_NAME_FILE)
-                with open(
-                    os.path.join(
-                        os.path.dirname(os.path.abspath(__file__)), STATIONS_NAME_FILE
-                    ),
-                    encoding="UTF-8",
-                ) as file:
-                    self._local_stations_data = json.load(file)
+                _LOGGER.error("Loading stations data from github request failed with error. Status code %s, error: %s", request.status_code, request.text)
+                raise Exception("")
         except:
             _LOGGER.error("Loading stations data from github failed, loading from local file: %s", STATIONS_NAME_FILE)
             with open(
