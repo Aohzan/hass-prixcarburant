@@ -1591,6 +1591,10 @@
     "name": "Super U",
     "brand": "Système U"
   },
+  "6130013": {
+    "name": "BP Grasse des Campanettes",
+    "brand": "BP"
+  },  
   "6140004": {
     "name": "RELAIS VENCE LA ROCADE",
     "brand": "Total"
@@ -1955,6 +1959,10 @@
     "name": "STATION Esso",
     "brand": "Esso"
   },
+  "6560006": {
+    "name": "Total Valbonne",
+    "brand": "Total"
+  },  
   "6580001": {
     "name": "Super U",
     "brand": "Système U"
@@ -4722,6 +4730,10 @@
   "13800009": {
     "name": "SARL SUD AUTO 2000 - STATION AVIA",
     "brand": "Avia"
+  },
+  "13800011": {
+    "name": "Auchan Istres",
+    "brand": "Auchan"
   },
   "13850001": {
     "name": "Intermarché GREASQUE",
