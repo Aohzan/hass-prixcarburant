@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.16.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.15.0...3.16.0) (2025-05-20)
+
+### Features
+
+* pull stations data from github on each integration loading ([d1c5768](https://github.com/Aohzan/hass-prixcarburant/commit/d1c5768600b62a0c5f303f68cd6c4f474c4d665b))
+
 ## [3.15.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.14.0...3.15.0) (2025-05-19)
 
 ### Features
