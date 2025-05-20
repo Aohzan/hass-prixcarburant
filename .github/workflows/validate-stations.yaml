@@ -6,7 +6,7 @@ on:
       - "custom_components/prix_carburant/stations_name.json"
 
 jobs:
-  validate-json:
+  validate-stations:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -61,15 +61,16 @@ jobs:
       - name: Enable auto-merge
         if: steps.check-pr-files.outputs.stations_file == 'true' && steps.check-pr-files.outputs.custom_components == 'false'
         run: |
-          # Wait for other required checks to pass
-          gh pr checks "${{ github.event.pull_request.number }}" --watch
-          
-          # Only merge if all checks pass
-          if [ $? -eq 0 ]; then
-            gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --subject "chore: update stations data (#${{ github.event.pull_request.number }})"
-          else
-            echo "Not all checks passed. PR will not be auto-merged."
-            exit 1
-          fi
+          echo "Waiting for other checks to complete..."
+          for i in {1..120}; do
+            STATUS=$(gh pr checks ${{ github.event.pull_request.number }} --json name,state --jq '[.[] | select(.name != "validate-stations")] | all(.state == "SUCCESS")')
+            if [[ "$STATUS" == "true" ]]; then
+              gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --subject "chore: update stations data (#${{ github.event.pull_request.number }})"
+              exit 0
+            fi
+            sleep 10
+          done
+          echo "Timeout: Other checks did not complete successfully within 20 minutes."
+          exit 1
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
