@@ -3,6 +3,7 @@
 from asyncio import timeout
 import json
 import logging
+import requests
 from math import atan2, cos, radians, sin, sqrt
 import os
 from socket import gaierror
@@ -27,6 +28,7 @@ _LOGGER = logging.getLogger(__name__)
 
 PRIX_CARBURANT_API_URL = "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records"
 STATIONS_NAME_FILE = "stations_name.json"
+STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/custom_components/prix_carburant/stations_name.json"
 
 
 class PrixCarburantTool:
@@ -44,15 +46,24 @@ class PrixCarburantTool:
         self._api_ssl_check = api_ssl_check
         self._local_stations_data: dict[str, dict] = {}
         self._stations_data: dict[str, dict] = {}
-
-        _LOGGER.debug("Load stations data from local file %s", STATIONS_NAME_FILE)
-        with open(
-            os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), STATIONS_NAME_FILE
-            ),
-            encoding="UTF-8",
-        ) as file:
-            self._local_stations_data = json.load(file)
+        
+        try: 
+            _LOGGER.debug("Loading stations from: %s", STATIONS_NAME_URL)
+            response = requests.get(STATIONS_NAME_URL)
+            if response.status_code == 200 and "Bad Gateway" not in response.text and "Not Found" not in response.text :
+                _LOGGER.debug("Successfully retrieved data from: %s", STATIONS_NAME_URL)
+                self._local_stations_data = response.json()
+            else:
+                raise Exception(f"Request error: {response.status_code}")
+        except Exception as ex:
+            _LOGGER.error("Loading stations data from github failed with error: [ %s ], instead loading data from local file: %s", ex, STATIONS_NAME_FILE)
+            with open(
+                os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)), STATIONS_NAME_FILE
+                ),
+                encoding="UTF-8",
+            ) as file:
+                self._local_stations_data = json.load(file)
 
         self._request_timeout = request_timeout
         self._session = session

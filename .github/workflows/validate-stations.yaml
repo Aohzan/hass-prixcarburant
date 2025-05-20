@@ -1,7 +1,7 @@
 name: Validate Stations JSON
 
 on:
-  pull_request:
+  pull_request_target:
     paths:
       - "custom_components/prix_carburant/stations_name.json"
 
@@ -55,6 +55,7 @@ jobs:
         if: steps.check-pr-files.outputs.stations_file == 'true' && steps.check-pr-files.outputs.custom_components == 'false'
         uses: hmarr/auto-approve-action@v4
         with:
+          review-message: "Stations data automated approved PR"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Enable auto-merge
@@ -65,7 +66,7 @@ jobs:
           
           # Only merge if all checks pass
           if [ $? -eq 0 ]; then
-            gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --subject "feat: update stations data (#${{ github.event.pull_request.number }})"
+            gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --subject "chore: update stations data (#${{ github.event.pull_request.number }})"
           else
             echo "Not all checks passed. PR will not be auto-merged."
             exit 1
