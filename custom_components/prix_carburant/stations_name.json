@@ -39150,5 +39150,17 @@
   "83130007": {
     "name": "Carrefour Contact La Garde",
     "brand": "Carrefour"
+  },
+  "67500009": {
+    "name": "LECLERC HAGUENAU",
+    "brand": "Leclerc"
+  },
+  "67500012": {
+    "name": "Supermarché Auchan Haguenau",
+    "brand": "Auchan"
+  },
+  "67510001": {
+    "name": "Carrefour EXPRESS Lembach",
+    "brand": "Carrefour"
   }
 }
