@@ -407,7 +407,7 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
             return "https://upload.wikimedia.org/wikipedia/commons/6/69/Spar_logo_without_red_background.png"
         case "Système U" | "Super U" | "Station U":
             return "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
-        case "Total" | "Total Access":
+        case "Total" | "Total Access" | "Elan":
             return (
                 "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
             )
