@@ -15335,6 +15335,10 @@
     "name": "RELAIS DE LA ROIZE",
     "brand": "Total Access"
   },
+  "38340018": {
+    "name": "ENI A48 AIRE ILE ROSE",
+    "brand": "ENI"
+  },
   "38350001": {
     "name": "SA LAMUREDIS",
     "brand": "Système U"
@@ -15379,6 +15383,10 @@
     "name": "Intermarché ST LAURENT DU PONT",
     "brand": "Intermarché"
   },
+  "38380004": {
+    "name": "Station-service Intercommunale",
+    "brand": "COMMUNAUTE DE COMMUNES COEUR DE CHARTREUSE"
+  },
   "38390001": {
     "name": "Carrefour Market",
     "brand": "Carrefour Market"
@@ -15418,6 +15426,10 @@
   "38430003": {
     "name": "Carrefour Market",
     "brand": "Carrefour Market"
+  },
+  "38430004": {
+    "name": "SAS VALICIA",
+    "brand": "Intermarché"
   },
   "38431001": {
     "name": "Carrefour ECHIROLLES",
@@ -15506,6 +15518,10 @@
   "38500007": {
     "name": "RELAIS VOIRON VALOIS",
     "brand": "Total Access"
+  },
+  "38500008": {
+    "name": "Market VOIRON COLOMBIER",
+    "brand": "Carrefour Market"
   },
   "38510002": {
     "name": "CASINO SUPERMARCHE",
