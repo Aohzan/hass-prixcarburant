@@ -15187,13 +15187,13 @@
     "name": "AGIP MEYLAN 7 LAUX",
     "brand": "Agip"
   },
-  "38250001": {
-    "name": "GARAGE DE LA BOURNE",
-    "brand": "Avia"
-  },
   "38250002": {
     "name": "Intermarché VILLARD-DE-LANS",
     "brand": "Intermarché"
+  },
+  "38250003": {
+    "name": "GARAGE DE LA BOURNE",
+    "brand": "Avia"
   },
   "38260002": {
     "name": "SARL TRAPIER FRERES",
@@ -15684,7 +15684,7 @@
     "brand": "Intermarché"
   },
   "38880002": {
-    "name": "ELAN",
+    "name": "TOTAL",
     "brand": "Elan"
   },
   "38920001": {
