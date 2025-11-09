@@ -360,7 +360,7 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
         case "BP" | "BP Express":
             return "https://upload.wikimedia.org/wikipedia/fr/3/32/B_P.svg"
         case "Bricomarché":
-            return "https://upload.wikimedia.org/wikipedia/commons/d/dc/BRICOMARCHE.png"
+            return "https://upload.wikimedia.org/wikipedia/commons/4/4e/Bricomarch%C3%A9_logo_2022.svg"
         case (
             "Carrefour" | "Carrefour Contact" | "Carrefour Express" | "Carrefour Market"
         ):
@@ -380,14 +380,14 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
                 "https://upload.wikimedia.org/wikipedia/fr/b/b8/Eni_SpA_%28logo%29.svg"
             )
         case "Esso" | "Esso Express":
-            return "https://upload.wikimedia.org/wikipedia/commons/0/0e/Esso-Logo.svg"
+            return "https://upload.wikimedia.org/wikipedia/commons/2/22/Esso_textlogo.svg"
         case "Géant":
             return "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg"
         case "Gulf":
             return "https://upload.wikimedia.org/wikipedia/commons/7/70/Gulf_logo.png"
         case "Huit à 8":
             return (
-                "https://upload.wikimedia.org/wikipedia/fr/9/98/Logo_8_%C3%80_Huit.svg"
+                "https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_8_A_Huit.svg"
             )
         case "Intermarché" | "Intermarché Contact":
             return "https://upload.wikimedia.org/wikipedia/commons/9/96/Intermarch%C3%A9_logo_2009_classic.svg"
@@ -404,7 +404,7 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
         case "Shell":
             return "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
         case "SPAR" | "SPAR STATION" | "Supermarchés Spar":
-            return "https://upload.wikimedia.org/wikipedia/commons/6/69/Spar_logo_without_red_background.png"
+            return "https://upload.wikimedia.org/wikipedia/commons/archive/7/7c/20230427121841%21Spar-logo.svg"
         case "Système U" | "Super U" | "Station U":
             return "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
         case "Total" | "Total Access" | "Elan":
@@ -412,7 +412,7 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
                 "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
             )
         case "Weldom":
-            return "https://upload.wikimedia.org/wikipedia/commons/4/4b/Logo_weldom.png"
+            return "https://upload.wikimedia.org/wikipedia/commons/9/9d/Weldom_logo_2012.svg"
         case "Supermarché Match":
             return "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg"
     return ""
