@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.16.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.16.0...3.16.1) (2025-11-09)
+
+### Bug Fixes
+
+* update brand logo URLs in tools.py ([#122](https://github.com/Aohzan/hass-prixcarburant/issues/122)) ([0ce7648](https://github.com/Aohzan/hass-prixcarburant/commit/0ce7648cb7c442fb9746160a6f3b23e0a56c6b6a))
+
 ## [3.16.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.15.0...3.16.0) (2025-05-20)
 
 ### Features
