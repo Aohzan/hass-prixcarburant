@@ -353,7 +353,7 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
             return "https://upload.wikimedia.org/wikipedia/fr/a/ad/Agip.svg"
         case "Atac":
             return "https://upload.wikimedia.org/wikipedia/fr/c/c3/Logo_Atac_2015.svg"
-        case "Auchan":
+        case "Auchan" | "Simply Market":
             return "https://upload.wikimedia.org/wikipedia/fr/c/cd/Logo_Auchan_%282015%29.svg"
         case "Avia":
             return "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
@@ -367,10 +367,14 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
             return "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
         case "Casino" | "Super Casino":
             return "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
+        case "Colruyt" | "COLRUYT":
+            return "https://upload.wikimedia.org/wikipedia/commons/f/f8/Logo_Colruyt.svg"
         case "Cora" | "CORA":
             return "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
         case "Costco" | "COSTCO":
             return "https://upload.wikimedia.org/wikipedia/commons/5/59/Costco_Wholesale_logo_2010-10-26.svg"
+        case "Dyneff":
+            return "https://upload.wikimedia.org/wikipedia/commons/9/92/Logo_Dyneff.svg"
         case "Elf":
             return (
                 "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg"
@@ -381,33 +385,49 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
             )
         case "Esso" | "Esso Express":
             return "https://upload.wikimedia.org/wikipedia/commons/2/22/Esso_textlogo.svg"
+        case "G20" | "Supermarché G20":
+            return "https://upload.wikimedia.org/wikipedia/fr/9/9a/Logo_Supermarch%C3%A9s_G20_%282011%29.svg"
         case "Géant":
             return "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg"
         case "Gulf":
             return "https://upload.wikimedia.org/wikipedia/commons/7/70/Gulf_logo.png"
-        case "Huit à 8":
+        case "Huit à 8" | "8 à Huit":
             return (
                 "https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_8_A_Huit.svg"
             )
-        case "Intermarché" | "Intermarché Contact":
+        case "Intermarché" | "Intermarché Contact" | "Intermarché Super":
             return "https://upload.wikimedia.org/wikipedia/commons/9/96/Intermarch%C3%A9_logo_2009_classic.svg"
         case "Leclerc":
             return "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
         case "Leader Price" | "LEADER-PRICE":
             return "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg"
+        case "LIDL":
+            return "https://upload.wikimedia.org/wikipedia/commons/9/91/Lidl-Logo.svg"
+        case "Maximarché":
+            return "https://upload.wikimedia.org/wikipedia/commons/3/34/Maximarch%C3%A9_logo.png"
+        case "MIGROS":
+            return "https://upload.wikimedia.org/wikipedia/fr/0/0e/Migrol_logo.svg"
         case "Monoprix":
             return (
                 "https://upload.wikimedia.org/wikipedia/commons/0/0a/Monoprix_logo.svg"
             )
+        case "Netto":
+            return "https://upload.wikimedia.org/wikipedia/commons/f/fd/French_Netto_logo_2019.svg"
+        case "Proxy" | "PROXI SUPER":
+            return "https://upload.wikimedia.org/wikipedia/fr/5/58/Logo_Proxi_-_2012.svg"
+        case "Renault":
+            return "https://upload.wikimedia.org/wikipedia/commons/b/b7/Renault_2021_Text.svg"
         case "Roady":
             return "https://upload.wikimedia.org/wikipedia/fr/6/62/Roady.svg"
+        case "ROMPETROL":
+            return "https://upload.wikimedia.org/wikipedia/commons/a/a3/Logo-Rompetrol_KMG_colored_approved.jpg"
         case "Shell":
             return "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
         case "SPAR" | "SPAR STATION" | "Supermarchés Spar":
             return "https://upload.wikimedia.org/wikipedia/commons/archive/7/7c/20230427121841%21Spar-logo.svg"
         case "Système U" | "Super U" | "Station U":
             return "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
-        case "Total" | "Total Access" | "Elan":
+        case "Total" | "Total Access" | "Total Contact" | "Elan":
             return (
                 "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
             )
@@ -415,6 +435,8 @@ def get_entity_picture(brand: str) -> str:  # noqa: C901
             return "https://upload.wikimedia.org/wikipedia/commons/9/9d/Weldom_logo_2012.svg"
         case "Supermarché Match":
             return "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg"
+        case "VITO":
+            return "https://upload.wikimedia.org/wikipedia/commons/5/57/Logo_Vito.svg"
     return ""
 
 
