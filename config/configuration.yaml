@@ -1,0 +1,27 @@
+# Home Assistant Development Configuration
+# This is a minimal configuration for testing the custom component
+default_config:
+
+# Enable the logger in debug mode
+logger:
+  default: warning
+  logs:
+    custom_components.prix_carburant: debug
+
+# Enable developer mode
+homeassistant:
+  name: Development
+  latitude: 48.678197
+  longitude: 2.137429
+  elevation: 35
+  unit_system: metric
+  time_zone: Europe/Paris
+  internal_url: "http://localhost:8123"
+  external_url: "http://localhost:8123"
+
+# Example configuration for prix_carburant
+# Uncomment and configure after first setup
+# prix_carburant:
+#   stations:
+#     - id: "59000001"
+#       name: "Station Test"
