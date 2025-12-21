@@ -201,6 +201,48 @@ class PrixCarburantTool:
 
         self._stations_data = data
 
+    async def add_manual_stations(
+        self, manual_station_ids: list[int], latitude: float, longitude: float
+    ) -> None:
+        """Add manual stations to existing stations data without overwriting."""
+        _LOGGER.debug("Adding %s manual stations", len(manual_station_ids))
+        
+        for station_id in manual_station_ids:
+            # Skip if station already exists
+            if str(station_id) in self._stations_data:
+                _LOGGER.debug("Station %s already exists, skipping", station_id)
+                continue
+                
+            _LOGGER.debug("Adding manual station ID %s", station_id)
+            response = await self._request_api(
+                {
+                    "select": "id,latitude,longitude,cp,ad"
+                    "resse,ville",  # split string to avoid codespell french word
+                    "where": f"id={station_id}",
+                    "limit": 1,
+                }
+            )
+            if response["total_count"] != 1:
+                _LOGGER.error(
+                    "Station %s not found in API (returned %s results)",
+                    station_id,
+                    response["total_count"],
+                )
+                continue
+            
+            # Add station to existing data
+            self._stations_data.update(
+                self._build_station_data(
+                    response["results"][0],
+                    user_latitude=latitude,
+                    user_longitude=longitude,
+                )
+            )
+        
+        _LOGGER.info(
+            "Manual stations added. Total stations: %s", len(self._stations_data)
+        )
+
     async def update_stations_prices(self) -> None:
         """Update prices of specified stations."""
         _LOGGER.debug("Call %s API to retrieve fuel prices", PRIX_CARBURANT_API_URL)

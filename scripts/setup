@@ -8,6 +8,8 @@ cd "$(dirname "$0")/.."
 python3 -m pip install --upgrade pip
 python3 -m pip install --requirement requirements.txt
 
+pre-commit install
+
 # Create config dir if not present
 if [[ ! -d "${PWD}/config" ]]; then
     mkdir -p "${PWD}/config"

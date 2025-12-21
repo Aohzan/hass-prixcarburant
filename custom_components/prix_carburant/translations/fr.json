@@ -4,8 +4,6 @@
       "user": {
         "description": "Récupération de la liste des stations depuis la localisation de votre Home-Assistant (à vérifier dans les options générales). Sélectionnez ensuite les carburants dont vous souhaitez obtenir les tarifs.",
         "data": {
-          "scan_interval": "Temps en heures entre deux mise à jour de données",
-          "display_entity_pictures": "Ajoute le logo de la marque en image d'entité",
           "max_km": "Distance maximum",
           "fuels_Gazole": "Afficher le gasoil",
           "fuels_E10": "Afficher le E10",
@@ -23,11 +21,28 @@
   "options": {
     "step": {
       "init": {
+        "title": "Options Prix Carburant",
+        "menu_options": {
+          "general_options": "Options générales",
+          "fuels_select": "Sélection des carburants",
+          "manage_stations": "Gérer les stations",
+          "add_station": "Ajouter une station"
+        }
+      },
+      "general_options": {
+        "title": "Options générales",
+        "description": "Configurer les paramètres généraux de l'intégration",
         "data": {
           "scan_interval": "Temps en heures entre deux mise à jour de données",
           "api_ssl_check": "Vérifier le certificat SSL du serveur d'API",
           "display_entity_pictures": "Ajoute le logo de la marque en image d'entité",
-          "max_km": "Distance maximum",
+          "max_km": "Distance maximum"
+        }
+      },
+      "fuels_select": {
+        "title": "Sélection des carburants à afficher",
+        "description": "Choisissez les types de carburants à afficher comme capteurs",
+        "data": {
           "fuels_Gazole": "Afficher le gasoil",
           "fuels_E10": "Afficher le E10",
           "fuels_E85": "Afficher le E85",
@@ -35,10 +50,30 @@
           "fuels_SP98": "Afficher le SP98",
           "fuels_GPLc": "Afficher le GPL"
         }
+      },
+      "manage_stations": {
+        "title": "Gérer les stations",
+        "description": "Sélectionnez les stations à supprimer. Les stations découvertes automatiquement réapparaîtront au prochain rechargement si elles sont toujours dans la zone.",
+        "data": {
+          "stations_to_remove": "Stations à supprimer"
+        }
+      },
+      "add_station": {
+        "title": "Ajouter une station manuellement",
+        "description": "Entrez l'identifiant de la station (trouvable sur prix-carburant.gouv.fr)",
+        "data": {
+          "station_id": "Identifiant de la station"
+        }
       }
     },
+    "error": {
+      "invalid_station_id": "Format d'identifiant de station invalide. Veuillez entrer un nombre valide.",
+      "station_not_found": "Station non trouvée dans l'API. Veuillez vérifier l'identifiant.",
+      "station_already_exists": "Cette station est déjà dans votre liste."
+    },
     "abort": {
-      "yaml_configuration": "Intégration configurée depuis configuration.yaml"
+      "yaml_configuration": "Intégration configurée depuis configuration.yaml. La gestion des stations n'est pas disponible.",
+      "no_stations": "Aucune station trouvée. Veuillez d'abord ajouter des stations."
     }
   },
   "services": {

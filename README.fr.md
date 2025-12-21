@@ -340,10 +340,10 @@ card_mod:
 Note: c'est un exemple donc on peut changer comme on veut.
 
 1. Créer le sensor avec des stations autour de 'toi'
-Utiliser le service (action)  
+Utiliser le service (action)
 
 ```
-template: 
+template:
   - trigger:
       - platform: time_pattern
         minutes: /1
@@ -358,7 +358,7 @@ template:
       - name: test_stations
         unique_id: test_stations
         state: "{{ now().isoformat() }}"
-        attributes:        
+        attributes:
             stations: "{{ stations_feed.stations }}"
 ```
 

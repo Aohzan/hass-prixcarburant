@@ -10,7 +10,7 @@ def validate_stations_json(file_path):
     """Validate the stations_name.json file."""
     try:
         # Load the JSON file
-        with open(file_path, "r", encoding="UTF-8") as file:
+        with open(file_path, encoding="UTF-8") as file:
             data = json.load(file)
 
         # Check if the data is a dictionary

@@ -27,6 +27,7 @@ from .const import (
     ATTR_PRICE,
     CONF_API_SSL_CHECK,
     CONF_DISPLAY_ENTITY_PICTURES,
+    CONF_MANUAL_STATIONS,
     CONF_MAX_KM,
     CONF_STATIONS,
     DEFAULT_SCAN_INTERVAL,
@@ -74,6 +75,17 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             distance=config[CONF_MAX_KM],
         )
         _LOGGER.info("%s stations found", str(len(tool.stations)))
+        
+        # Add manual stations if any
+        if CONF_MANUAL_STATIONS in config and config[CONF_MANUAL_STATIONS]:
+            _LOGGER.info(
+                "Adding %s manual stations", len(config[CONF_MANUAL_STATIONS])
+            )
+            await tool.add_manual_stations(
+                manual_station_ids=config[CONF_MANUAL_STATIONS],
+                latitude=hass.config.latitude,
+                longitude=hass.config.longitude,
+            )
 
     async def async_update_data():
         """Fetch data from API."""
