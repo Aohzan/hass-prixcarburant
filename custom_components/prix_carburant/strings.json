@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Get stations from your Home-Assistant location (check general settings to check it)",
+        "description": "Get stations from your Home-Assistant location (check general settings to check it). Set maximum distance to 0 to disable automatic station discovery and add stations manually later in options.",
         "data": {
           "scan_interval": "Time in hours between two data updates",
           "display_entity_pictures": "Add brand logo to entity pictures",
@@ -27,8 +27,8 @@
         "menu_options": {
           "general_options": "General Options",
           "fuels_select": "Select Fuels",
-          "manage_stations": "Manage Stations",
-          "add_station": "Add a Station"
+          "add_station": "Add a Station",
+          "delete_stations": "Delete Stations"
         }
       },
       "general_options": {
@@ -53,9 +53,9 @@
           "fuels_GPLc": "Show GPL"
         }
       },
-      "manage_stations": {
-        "title": "Manage Stations",
-        "description": "Select stations to remove. Auto-discovered stations will reappear on next reload if still in range.",
+      "delete_stations": {
+        "title": "Delete Stations",
+        "description": "Select manually added stations to remove. Auto-discovered stations cannot be deleted, adjust the maximum distance instead.",
         "data": {
           "stations_to_remove": "Stations to remove"
         }

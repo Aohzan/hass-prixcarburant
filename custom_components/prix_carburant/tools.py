@@ -1,15 +1,14 @@
 """Tools for Prix Carburant."""
 
-from asyncio import timeout
 import json
 import logging
-import requests
+from asyncio import timeout
 from math import atan2, cos, radians, sin, sqrt
-import os
+from pathlib import Path
 from socket import gaierror
 
+import requests
 from aiohttp import ClientError, ClientSession
-
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 
 from .const import (
@@ -29,6 +28,7 @@ _LOGGER = logging.getLogger(__name__)
 PRIX_CARBURANT_API_URL = "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records"
 STATIONS_NAME_FILE = "stations_name.json"
 STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/custom_components/prix_carburant/stations_name.json"
+HTTP_OK = 200
 
 
 class PrixCarburantTool:
@@ -38,7 +38,7 @@ class PrixCarburantTool:
         self,
         time_zone: str = "Europe/Paris",
         request_timeout: int = 30,
-        api_ssl_check: bool = True,
+        api_ssl_check: bool = True,  # noqa: FBT001, FBT002
         session: ClientSession | None = None,
     ) -> None:
         """Init tool."""
@@ -46,21 +46,23 @@ class PrixCarburantTool:
         self._api_ssl_check = api_ssl_check
         self._local_stations_data: dict[str, dict] = {}
         self._stations_data: dict[str, dict] = {}
-        
-        try: 
-            _LOGGER.debug("Loading stations from: %s", STATIONS_NAME_URL)
-            response = requests.get(STATIONS_NAME_URL)
-            if response.status_code == 200 and "Bad Gateway" not in response.text and "Not Found" not in response.text :
-                _LOGGER.debug("Successfully retrieved data from: %s", STATIONS_NAME_URL)
-                self._local_stations_data = response.json()
-            else:
-                raise Exception(f"Request error: {response.status_code}")
-        except Exception as ex:
-            _LOGGER.error("Loading stations data from github failed with error: [ %s ], instead loading data from local file: %s", ex, STATIONS_NAME_FILE)
-            with open(
-                os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)), STATIONS_NAME_FILE
-                ),
+
+        _LOGGER.debug("Loading stations from: %s", STATIONS_NAME_URL)
+        response = requests.get(STATIONS_NAME_URL, timeout=request_timeout)
+        if (
+            response.status_code == HTTP_OK
+            and "Bad Gateway" not in response.text
+            and "Not Found" not in response.text
+        ):
+            _LOGGER.debug("Successfully retrieved data from: %s", STATIONS_NAME_URL)
+            self._local_stations_data = response.json()
+        else:
+            _LOGGER.exception(
+                "Loading stations data from github failed with error: [ Request error: %s ], instead loading data from local file: %s",
+                response.status_code,
+                STATIONS_NAME_FILE,
+            )
+            with (Path(__file__).parent / STATIONS_NAME_FILE).open(
                 encoding="UTF-8",
             ) as file:
                 self._local_stations_data = json.load(file)
@@ -78,7 +80,7 @@ class PrixCarburantTool:
         """Return stations information."""
         return self._stations_data
 
-    async def _request_api(
+    async def request_api(
         self,
         params: dict,
     ) -> dict:
@@ -99,22 +101,19 @@ class PrixCarburantTool:
                 )
                 content = await response.json()
 
-                if response.status == 200 and "results" in content:
+                if response.status == HTTP_OK and "results" in content:
                     response.close()
                     return content
 
-                raise PrixCarburantToolRequestError(
-                    f"API request error {response.status}: {content}"
-                )
+                msg = f"API request error {response.status}: {content}"
+                raise PrixCarburantToolRequestError(msg)
 
         except TimeoutError as exception:
-            raise PrixCarburantToolCannotConnectError(
-                "Timeout occurred while connecting to Prix Carburant API."
-            ) from exception
+            msg = "Timeout occurred while connecting to Prix Carburant API."
+            raise PrixCarburantToolCannotConnectError(msg) from exception
         except (ClientError, gaierror) as exception:
-            raise PrixCarburantToolCannotConnectError(
-                "Error occurred while communicating with the Prix Carburant API."
-            ) from exception
+            msg = "Error occurred while communicating with the Prix Carburant API."
+            raise PrixCarburantToolCannotConnectError(msg) from exception
 
     async def init_stations_from_list(
         self, stations_ids: list[int], latitude: float, longitude: float
@@ -128,10 +127,9 @@ class PrixCarburantTool:
                 "Search station ID %s",
                 station_id,
             )
-            response = await self._request_api(
+            response = await self.request_api(
                 {
-                    "select": "id,latitude,longitude,cp,ad"
-                    "resse,ville",  # split string to avoid codespell french word
+                    "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
                     "where": f"id={station_id}",
                     "limit": 1,
                 }
@@ -160,7 +158,7 @@ class PrixCarburantTool:
         """Get data from near stations."""
         data = {}
         _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
-        response_count = await self._request_api(
+        response_count = await self.request_api(
             {
                 "select": "id",
                 "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
@@ -183,10 +181,9 @@ class PrixCarburantTool:
                 stations_count,
             )
             async with timeout(self._request_timeout):
-                response = await self._request_api(
+                response = await self.request_api(
                     {
-                        "select": "id,latitude,longitude,cp,ad"
-                        "resse,ville",  # split string to avoid codespell french word
+                        "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
                         "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
                         "offset": query_offset,
                         "limit": query_limit,
@@ -206,18 +203,17 @@ class PrixCarburantTool:
     ) -> None:
         """Add manual stations to existing stations data without overwriting."""
         _LOGGER.debug("Adding %s manual stations", len(manual_station_ids))
-        
+
         for station_id in manual_station_ids:
             # Skip if station already exists
             if str(station_id) in self._stations_data:
                 _LOGGER.debug("Station %s already exists, skipping", station_id)
                 continue
-                
+
             _LOGGER.debug("Adding manual station ID %s", station_id)
-            response = await self._request_api(
+            response = await self.request_api(
                 {
-                    "select": "id,latitude,longitude,cp,ad"
-                    "resse,ville",  # split string to avoid codespell french word
+                    "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
                     "where": f"id={station_id}",
                     "limit": 1,
                 }
@@ -229,7 +225,7 @@ class PrixCarburantTool:
                     response["total_count"],
                 )
                 continue
-            
+
             # Add station to existing data
             self._stations_data.update(
                 self._build_station_data(
@@ -238,7 +234,7 @@ class PrixCarburantTool:
                     user_longitude=longitude,
                 )
             )
-        
+
         _LOGGER.info(
             "Manual stations added. Total stations: %s", len(self._stations_data)
         )
@@ -255,7 +251,7 @@ class PrixCarburantTool:
                 station_id,
                 station_data[ATTR_NAME],
             )
-            response = await self._request_api(
+            response = await self.request_api(
                 {
                     "select": query_select,
                     "where": f"id={station_id}",
@@ -289,10 +285,10 @@ class PrixCarburantTool:
             "Call %s API to retrieve nearest stations ordered by price",
             PRIX_CARBURANT_API_URL,
         )
-        response = await self._request_api(
+        response = await self.request_api(
             {
-                "select": "id,latitude,longitude,cp,ad"
-                f"resse,ville,{fuel.lower()}_prix,{fuel.lower()}_maj",  # split string to avoid codespell french word
+                "select": "id,latitude,longitude,cp,adresse,ville,"  # codespell:ignore-words-list=adresse
+                f"{fuel.lower()}_prix,{fuel.lower()}_maj",
                 "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
                 "order_by": f"{fuel.lower()}_prix",
                 "limit": 10,
@@ -362,11 +358,10 @@ class PrixCarburantTool:
                             data[station["id"]][attr_key] = attr_value.title()
                         else:
                             data[station["id"]][attr_key] = attr_value
-        except (KeyError, TypeError) as error:
-            _LOGGER.error(
-                "Error while getting station %s information: %s",
+        except (KeyError, TypeError):
+            _LOGGER.exception(
+                "Error while getting station %s information",
                 station.get("id", "no ID"),
-                error,
             )
         return data
 
@@ -386,78 +381,56 @@ def _get_distance(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
     return round(calcul_c * earth_radius, 2)
 
 
-def get_entity_picture(brand: str) -> str:  # noqa: C901
+def get_entity_picture(brand: str) -> str:
     """Get entity picture based on brand."""
-    match brand:
-        case "Aldi":
-            return "https://upload.wikimedia.org/wikipedia/commons/2/2c/Aldi_Nord_201x_logo.svg"
-        case "Agip":
-            return "https://upload.wikimedia.org/wikipedia/fr/a/ad/Agip.svg"
-        case "Atac":
-            return "https://upload.wikimedia.org/wikipedia/fr/c/c3/Logo_Atac_2015.svg"
-        case "Auchan":
-            return "https://upload.wikimedia.org/wikipedia/fr/c/cd/Logo_Auchan_%282015%29.svg"
-        case "Avia":
-            return "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg"
-        case "BP" | "BP Express":
-            return "https://upload.wikimedia.org/wikipedia/fr/3/32/B_P.svg"
-        case "Bricomarché":
-            return "https://upload.wikimedia.org/wikipedia/commons/4/4e/Bricomarch%C3%A9_logo_2022.svg"
-        case (
-            "Carrefour" | "Carrefour Contact" | "Carrefour Express" | "Carrefour Market"
-        ):
-            return "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg"
-        case "Casino" | "Super Casino":
-            return "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg"
-        case "Cora" | "CORA":
-            return "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg"
-        case "Costco" | "COSTCO":
-            return "https://upload.wikimedia.org/wikipedia/commons/5/59/Costco_Wholesale_logo_2010-10-26.svg"
-        case "Elf":
-            return (
-                "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg"
-            )
-        case "ENI FRANCE" | "ENI":
-            return (
-                "https://upload.wikimedia.org/wikipedia/fr/b/b8/Eni_SpA_%28logo%29.svg"
-            )
-        case "Esso" | "Esso Express":
-            return "https://upload.wikimedia.org/wikipedia/commons/2/22/Esso_textlogo.svg"
-        case "Géant":
-            return "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg"
-        case "Gulf":
-            return "https://upload.wikimedia.org/wikipedia/commons/7/70/Gulf_logo.png"
-        case "Huit à 8":
-            return (
-                "https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_8_A_Huit.svg"
-            )
-        case "Intermarché" | "Intermarché Contact":
-            return "https://upload.wikimedia.org/wikipedia/commons/9/96/Intermarch%C3%A9_logo_2009_classic.svg"
-        case "Leclerc":
-            return "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg"
-        case "Leader Price" | "LEADER-PRICE":
-            return "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg"
-        case "Monoprix":
-            return (
-                "https://upload.wikimedia.org/wikipedia/commons/0/0a/Monoprix_logo.svg"
-            )
-        case "Roady":
-            return "https://upload.wikimedia.org/wikipedia/fr/6/62/Roady.svg"
-        case "Shell":
-            return "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg"
-        case "SPAR" | "SPAR STATION" | "Supermarchés Spar":
-            return "https://upload.wikimedia.org/wikipedia/commons/archive/7/7c/20230427121841%21Spar-logo.svg"
-        case "Système U" | "Super U" | "Station U":
-            return "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg"
-        case "Total" | "Total Access" | "Elan":
-            return (
-                "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg"
-            )
-        case "Weldom":
-            return "https://upload.wikimedia.org/wikipedia/commons/9/9d/Weldom_logo_2012.svg"
-        case "Supermarché Match":
-            return "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg"
-    return ""
+    brand_logos = {
+        "Aldi": "https://upload.wikimedia.org/wikipedia/commons/2/2c/Aldi_Nord_201x_logo.svg",
+        "Agip": "https://upload.wikimedia.org/wikipedia/fr/a/ad/Agip.svg",
+        "Atac": "https://upload.wikimedia.org/wikipedia/fr/c/c3/Logo_Atac_2015.svg",
+        "Auchan": "https://upload.wikimedia.org/wikipedia/fr/c/cd/Logo_Auchan_%282015%29.svg",
+        "Avia": "https://upload.wikimedia.org/wikipedia/commons/c/c0/AVIA_International_logo.svg",
+        "BP": "https://upload.wikimedia.org/wikipedia/fr/3/32/B_P.svg",
+        "BP Express": "https://upload.wikimedia.org/wikipedia/fr/3/32/B_P.svg",
+        "Bricomarché": "https://upload.wikimedia.org/wikipedia/commons/4/4e/Bricomarch%C3%A9_logo_2022.svg",
+        "Carrefour": "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg",
+        "Carrefour Contact": "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg",
+        "Carrefour Express": "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg",
+        "Carrefour Market": "https://upload.wikimedia.org/wikipedia/fr/3/3b/Logo_Carrefour.svg",
+        "Casino": "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg",
+        "Super Casino": "https://upload.wikimedia.org/wikipedia/commons/6/68/Logo_of_Casino_Supermarch%C3%A9s.svg",
+        "Cora": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg",
+        "CORA": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cora_logo.svg",
+        "Costco": "https://upload.wikimedia.org/wikipedia/commons/5/59/Costco_Wholesale_logo_2010-10-26.svg",
+        "COSTCO": "https://upload.wikimedia.org/wikipedia/commons/5/59/Costco_Wholesale_logo_2010-10-26.svg",
+        "Elf": "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg",
+        "ENI FRANCE": "https://upload.wikimedia.org/wikipedia/fr/b/b8/Eni_SpA_%28logo%29.svg",
+        "ENI": "https://upload.wikimedia.org/wikipedia/fr/b/b8/Eni_SpA_%28logo%29.svg",
+        "Esso": "https://upload.wikimedia.org/wikipedia/commons/2/22/Esso_textlogo.svg",
+        "Esso Express": "https://upload.wikimedia.org/wikipedia/commons/2/22/Esso_textlogo.svg",
+        "Géant": "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg",
+        "Gulf": "https://upload.wikimedia.org/wikipedia/commons/7/70/Gulf_logo.png",
+        "Huit à 8": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_8_A_Huit.svg",
+        "Intermarché": "https://upload.wikimedia.org/wikipedia/commons/9/96/Intermarch%C3%A9_logo_2009_classic.svg",
+        "Intermarché Contact": "https://upload.wikimedia.org/wikipedia/commons/9/96/Intermarch%C3%A9_logo_2009_classic.svg",
+        "Leclerc": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg",
+        "Leader Price": "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg",
+        "LEADER-PRICE": "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg",
+        "Monoprix": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Monoprix_logo.svg",
+        "Roady": "https://upload.wikimedia.org/wikipedia/fr/6/62/Roady.svg",
+        "Shell": "https://upload.wikimedia.org/wikipedia/fr/e/e8/Shell_logo.svg",
+        "SPAR": "https://upload.wikimedia.org/wikipedia/commons/archive/7/7c/20230427121841%21Spar-logo.svg",
+        "SPAR STATION": "https://upload.wikimedia.org/wikipedia/commons/archive/7/7c/20230427121841%21Spar-logo.svg",
+        "Supermarchés Spar": "https://upload.wikimedia.org/wikipedia/commons/archive/7/7c/20230427121841%21Spar-logo.svg",
+        "Système U": "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg",
+        "Super U": "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg",
+        "Station U": "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg",
+        "Total": "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg",
+        "Total Access": "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg",
+        "Elan": "https://upload.wikimedia.org/wikipedia/fr/f/f7/Logo_TotalEnergies.svg",
+        "Weldom": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Weldom_logo_2012.svg",
+        "Supermarché Match": "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg",
+    }
+    return brand_logos.get(brand, "")
 
 
 def normalize_string(string: str | None) -> str:

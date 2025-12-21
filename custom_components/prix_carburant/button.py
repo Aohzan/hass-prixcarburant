@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+from typing import TYPE_CHECKING
 
 from homeassistant.components.button import ButtonDeviceClass, ButtonEntity
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
+
+if TYPE_CHECKING:
+    from homeassistant.config_entries import ConfigEntry
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import DOMAIN
 
@@ -20,17 +24,16 @@ async def async_setup_entry(
     async_add_entities: AddEntitiesCallback,
 ) -> None:
     """Set up the platform from config_entry."""
-
     async_add_entities(
         [RefreshPrixCarburantButton(hass.data[DOMAIN][entry.entry_id]["coordinator"])],
-        True,
+        update_before_add=True,
     )
 
 
 class RefreshPrixCarburantButton(ButtonEntity):
     """Representation of a refresh button."""
 
-    def __init__(self, coordinator) -> None:
+    def __init__(self, coordinator: DataUpdateCoordinator) -> None:
         """Initialize the button."""
         self.coordinator = coordinator
         self._attr_device_class = ButtonDeviceClass.UPDATE

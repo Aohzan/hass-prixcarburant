@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
 import logging
+from datetime import UTC, datetime
+from typing import TYPE_CHECKING
 
+import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
-
 from homeassistant.components.sensor import (
     PLATFORM_SCHEMA_BASE,
     RestoreSensor,
@@ -14,11 +15,13 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME, CURRENCY_EURO
-from homeassistant.core import HomeAssistant
-import homeassistant.helpers.config_validation as cv
+
+if TYPE_CHECKING:
+    from homeassistant.core import HomeAssistant
+    from homeassistant.helpers.entity_platform import AddEntitiesCallback
+    from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
+
 from homeassistant.helpers.device_registry import DeviceInfo
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.typing import ConfigType, DiscoveryInfoType
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import (
@@ -53,8 +56,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA_BASE.extend(
 async def async_setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
-    async_add_entities: AddEntitiesCallback,
-    discovery_info: DiscoveryInfoType | None = None,
+    async_add_entities: AddEntitiesCallback,  # noqa: ARG001
+    discovery_info: DiscoveryInfoType | None = None,  # noqa: ARG001
 ) -> None:
     """Set up the Prix Carburant sensor."""
     hass.async_create_task(
@@ -93,7 +96,7 @@ async def async_setup_entry(
             ]
         )
 
-    async_add_entities(entities, True)
+    async_add_entities(entities, update_before_add=True)
 
 
 class PrixCarburant(CoordinatorEntity, RestoreSensor):
@@ -168,6 +171,5 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
                     self._attr_name,
                     err,
                 )
-            # return price
             return float(fuel[ATTR_PRICE])
         return None

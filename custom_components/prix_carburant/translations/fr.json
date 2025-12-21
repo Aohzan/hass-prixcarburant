@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Récupération de la liste des stations depuis la localisation de votre Home-Assistant (à vérifier dans les options générales). Sélectionnez ensuite les carburants dont vous souhaitez obtenir les tarifs.",
+        "description": "Récupération de la liste des stations depuis la localisation de votre Home-Assistant (à vérifier dans les options générales). Sélectionnez ensuite les carburants dont vous souhaitez obtenir les tarifs. Définissez la distance maximum à 0 pour désactiver la découverte automatique et ajouter les stations manuellement dans les options.",
         "data": {
           "max_km": "Distance maximum",
           "fuels_Gazole": "Afficher le gasoil",
@@ -25,8 +25,8 @@
         "menu_options": {
           "general_options": "Options générales",
           "fuels_select": "Sélection des carburants",
-          "manage_stations": "Gérer les stations",
-          "add_station": "Ajouter une station"
+          "add_station": "Ajouter une station",
+          "delete_stations": "Supprimer des stations"
         }
       },
       "general_options": {
@@ -51,9 +51,9 @@
           "fuels_GPLc": "Afficher le GPL"
         }
       },
-      "manage_stations": {
-        "title": "Gérer les stations",
-        "description": "Sélectionnez les stations à supprimer. Les stations découvertes automatiquement réapparaîtront au prochain rechargement si elles sont toujours dans la zone.",
+      "delete_stations": {
+        "title": "Supprimer des stations",
+        "description": "Sélectionnez les stations ajoutées manuellement à supprimer. Les stations auto-découvertes ne peuvent pas être supprimées, ajustez plutôt la distance maximum.",
         "data": {
           "stations_to_remove": "Stations à supprimer"
         }
