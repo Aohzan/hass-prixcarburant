@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.17.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.16.1...3.17.0) (2025-12-24)
+
+### Features
+
+* allow to add/remove stations from the UI  ([#126](https://github.com/Aohzan/hass-prixcarburant/issues/126)) ([ceb5a92](https://github.com/Aohzan/hass-prixcarburant/commit/ceb5a9272ede06af1dacf0f5588dd7615108ca38))
+
 ## [3.16.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.16.0...3.16.1) (2025-11-09)
 
 ### Bug Fixes
