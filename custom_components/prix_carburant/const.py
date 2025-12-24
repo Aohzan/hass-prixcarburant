@@ -10,6 +10,7 @@ PLATFORMS: Final = [Platform.BUTTON, Platform.SENSOR]
 CONF_MAX_KM: Final = "max_km"
 CONF_FUELS: Final = "fuels"
 CONF_STATIONS: Final = "stations"
+CONF_MANUAL_STATIONS: Final = "manual_stations"
 CONF_DISPLAY_ENTITY_PICTURES: Final = "display_entity_pictures"
 CONF_API_SSL_CHECK: Final = "api_ssl_check"
 

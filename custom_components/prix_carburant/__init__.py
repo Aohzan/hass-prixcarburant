@@ -1,7 +1,7 @@
 """Prix Carburant integration."""
 
-from datetime import timedelta
 import logging
+from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import (
@@ -27,6 +27,7 @@ from .const import (
     ATTR_PRICE,
     CONF_API_SSL_CHECK,
     CONF_DISPLAY_ENTITY_PICTURES,
+    CONF_MANUAL_STATIONS,
     CONF_MAX_KM,
     CONF_STATIONS,
     DEFAULT_SCAN_INTERVAL,
@@ -67,7 +68,12 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
     # ui configuration
     else:
-        _LOGGER.info("Init stations list near Home-Assistant location")
+        _LOGGER.info(
+            "Init stations list near Home-Assistant location (%s km around %s %s)",
+            config[CONF_MAX_KM],
+            hass.config.latitude,
+            hass.config.longitude,
+        )
         await tool.init_stations_from_location(
             latitude=hass.config.latitude,
             longitude=hass.config.longitude,
@@ -75,7 +81,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         )
         _LOGGER.info("%s stations found", str(len(tool.stations)))
 
-    async def async_update_data():
+        # Add manual stations if any
+        if config.get(CONF_MANUAL_STATIONS):
+            _LOGGER.info("Adding %s manual stations", len(config[CONF_MANUAL_STATIONS]))
+            await tool.add_manual_stations(
+                manual_station_ids=config[CONF_MANUAL_STATIONS],
+                latitude=hass.config.latitude,
+                longitude=hass.config.longitude,
+            )
+
+    async def async_update_data() -> dict:
         """Fetch data from API."""
         _LOGGER.info("Update stations prices")
         await tool.update_stations_prices()
@@ -108,11 +123,11 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entity_id = call.data["entity_id"]
         entity = hass.states.get(entity_id)
         if not entity:
-            raise HomeAssistantError("The entity specified was not found")
+            msg = "The entity specified was not found"
+            raise HomeAssistantError(msg)
         if "longitude" not in entity.attributes and "latitude" not in entity.attributes:
-            raise HomeAssistantError(
-                f"No coordinate attributes found for the entity {entity_id}"
-            )
+            msg = f"No coordinate attributes found for the entity {entity_id}"
+            raise HomeAssistantError(msg)
         stations = await tool.find_nearest_station(
             longitude=float(entity.attributes["longitude"]),
             latitude=float(entity.attributes["latitude"]),

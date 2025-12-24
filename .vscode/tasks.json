@@ -1,0 +1,72 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run Home Assistant",
+            "type": "shell",
+            "command": "hass",
+            "args": [
+                "-c",
+                "config"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Run Home Assistant (Debug)",
+            "type": "shell",
+            "command": "hass",
+            "args": [
+                "--debug",
+                "-c",
+                "config"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Restart Home Assistant",
+            "type": "shell",
+            "command": "pkill",
+            "args": [
+                "-f",
+                "hass"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "Run Tests",
+            "type": "shell",
+            "command": "pytest",
+            "args": [
+                "tests/",
+                "-v"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Check Code (Ruff)",
+            "type": "shell",
+            "command": "ruff",
+            "args": [
+                "check",
+                "custom_components/prix_carburant"
+            ],
+            "problemMatcher": [],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ]
+}

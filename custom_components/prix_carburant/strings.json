@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "description": "Get stations from your Home-Assistant location (check general settings to check it)",
+        "description": "Get stations from your Home-Assistant location (check general settings to check it). Set maximum distance to 0 to disable automatic station discovery and add stations manually later in options.",
         "data": {
           "scan_interval": "Time in hours between two data updates",
           "display_entity_pictures": "Add brand logo to entity pictures",
@@ -23,11 +23,28 @@
   "options": {
     "step": {
       "init": {
+        "title": "Prix Carburant Options",
+        "menu_options": {
+          "general_options": "General Options",
+          "fuels_select": "Select Fuels",
+          "add_station": "Add a Station",
+          "delete_stations": "Delete Stations"
+        }
+      },
+      "general_options": {
+        "title": "General Options",
+        "description": "Configure general settings for the integration",
         "data": {
           "scan_interval": "Time in hours between two data updates",
           "api_ssl_check": "Check SSL certificate of API server",
           "display_entity_pictures": "Add brand logo to entity pictures",
-          "max_km": "Maximum distance from home",
+          "max_km": "Maximum distance from home"
+        }
+      },
+      "fuels_select": {
+        "title": "Select Fuels to Display",
+        "description": "Choose which fuel types to display as sensors",
+        "data": {
           "fuels_Gazole": "Show Gazole",
           "fuels_E10": "Show E10",
           "fuels_E85": "Show E85",
@@ -35,10 +52,30 @@
           "fuels_SP98": "Show SP98",
           "fuels_GPLc": "Show GPL"
         }
+      },
+      "delete_stations": {
+        "title": "Delete Stations",
+        "description": "Select manually added stations to remove. Auto-discovered stations cannot be deleted, adjust the maximum distance instead.",
+        "data": {
+          "stations_to_remove": "Stations to remove"
+        }
+      },
+      "add_station": {
+        "title": "Add a Station Manually",
+        "description": "Enter the station ID (found on prix-carburant.gouv.fr)",
+        "data": {
+          "station_id": "Station ID"
+        }
       }
     },
+    "error": {
+      "invalid_station_id": "Invalid station ID format. Please enter a valid number.",
+      "station_not_found": "Station not found in the API. Please verify the ID.",
+      "station_already_exists": "This station is already in your list."
+    },
     "abort": {
-      "yaml_configuration": "Integration configured in configuration.yaml"
+      "yaml_configuration": "Integration configured in configuration.yaml. Station management is not available.",
+      "no_stations": "No stations found. Please add stations first."
     }
   },
   "services": {
