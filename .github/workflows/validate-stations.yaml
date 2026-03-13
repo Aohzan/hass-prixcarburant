@@ -42,7 +42,7 @@ jobs:
       - name: Check if PR only modifies stations_name.json
         id: check-pr-files
         if: steps.validate-json.outputs.valid == 'true'
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         with:
           filters: |
             stations_file:
