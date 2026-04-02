@@ -12,6 +12,7 @@ from homeassistant.components.sensor import (
     PLATFORM_SCHEMA_BASE,
     RestoreSensor,
     SensorDeviceClass,
+    SensorStateClass,
 )
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME, CURRENCY_EURO
@@ -104,6 +105,7 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
 
     _attr_icon = "mdi:gas-station"
     _attr_device_class = SensorDeviceClass.MONETARY
+    _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = CURRENCY_EURO
 
     def __init__(
