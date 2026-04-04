@@ -141,13 +141,10 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
             new_options = dict(self.config_entry.options)
             new_options.update(user_input)
 
-            self.hass.config_entries.async_update_entry(
-                self.config_entry, options=new_options
-            )
             self.hass.async_create_task(
                 self.hass.config_entries.async_reload(self.config_entry.entry_id)
             )
-            return self.async_create_entry(title="", data={})
+            return self.async_create_entry(title="", data=new_options)
 
         config = dict(self.config_entry.data) | dict(self.config_entry.options)
 
@@ -189,13 +186,10 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
             new_options = dict(self.config_entry.options)
             new_options.update(user_input)
 
-            self.hass.config_entries.async_update_entry(
-                self.config_entry, options=new_options
-            )
             self.hass.async_create_task(
                 self.hass.config_entries.async_reload(self.config_entry.entry_id)
             )
-            return self.async_create_entry(title="", data={})
+            return self.async_create_entry(title="", data=new_options)
 
         config = dict(self.config_entry.data) | dict(self.config_entry.options)
 
@@ -230,7 +224,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
             except ValueError:
                 errors["station_id"] = "invalid_station_id"
             else:
-                # Check if already exists in manual stations (check both data and options)
+                # Check if already exists in manual stations
                 manual_stations = list(
                     self.config_entry.data.get(CONF_MANUAL_STATIONS)
                     or self.config_entry.options.get(CONF_MANUAL_STATIONS)
