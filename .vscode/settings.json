@@ -33,5 +33,6 @@
     "**/*.pyc": true,
     ".pytest_cache": true,
     ".ruff_cache": true
-  }
+  },
+  "python-envs.defaultEnvManager": "ms-python.python:system"
 }

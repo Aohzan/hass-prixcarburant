@@ -1,6 +1,6 @@
 colorlog==6.10.1
-homeassistant==2026.04.0
+homeassistant==2026.04.1
 pip>=25
-ruff==0.15.8
+ruff>=0.15.8
 pycares>=4.9.0,<6.0.0
 pre-commit==4.5.1

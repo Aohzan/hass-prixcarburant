@@ -5,7 +5,6 @@ set -e
 cd "$(dirname "$0")/.."
 
 # Install Python dependencies
-python3 -m pip install --upgrade pip
 python3 -m pip install --requirement requirements.txt
 
 pre-commit install
@@ -14,12 +13,6 @@ pre-commit install
 if [[ ! -d "${PWD}/config" ]]; then
     mkdir -p "${PWD}/config"
     hass --config "${PWD}/config" --script ensure_config
-fi
-
-# Set up the integration in config
-mkdir -p "${PWD}/config/custom_components"
-if [[ ! -L "${PWD}/config/custom_components/prix_carburant" ]]; then
-    ln -s "${PWD}/custom_components/prix_carburant" "${PWD}/config/custom_components/prix_carburant"
 fi
 
 echo "Setup complete!"
