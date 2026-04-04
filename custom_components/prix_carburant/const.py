@@ -28,6 +28,7 @@ ATTR_FUEL_TYPE = "fuel_type"
 ATTR_UPDATED_DATE = "updated_date"
 ATTR_DAYS_SINCE_LAST_UPDATE = "days_since_last_update"
 ATTR_PRICE = "price"
+ATTR_SHORTAGE_SINCE = "shortage_since"
 
 ATTR_GAZOLE = "Gazole"
 ATTR_SP95 = "SP95"

@@ -19,6 +19,7 @@ from .const import (
     ATTR_FUELS,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
+    ATTR_SHORTAGE_SINCE,
     ATTR_UPDATED_DATE,
     FUELS,
 )
@@ -243,7 +244,9 @@ class PrixCarburantTool:
         """Update prices of specified stations."""
         _LOGGER.debug("Call %s API to retrieve fuel prices", PRIX_CARBURANT_API_URL)
         query_select = ",".join(
-            [f"{f.lower()}_prix" for f in FUELS] + [f"{f.lower()}_maj" for f in FUELS]
+            f"{fuel.lower()}_{suffix}"
+            for suffix in ("prix", "maj", "rupture_debut", "rupture_type")
+            for fuel in FUELS
         )
         for station_id, station_data in self._stations_data.items():
             _LOGGER.debug(
@@ -266,12 +269,18 @@ class PrixCarburantTool:
             new_prices = response["results"][0]
             for fuel in FUELS:
                 fuel_key = fuel.lower()
-                if new_prices[f"{fuel_key}_prix"]:
+                if (
+                    new_prices[f"{fuel_key}_prix"]
+                    or new_prices.get(f"{fuel_key}_rupture_type") == "temporaire"
+                ):
                     station_data[ATTR_FUELS].update(
                         {
                             fuel: {
-                                ATTR_UPDATED_DATE: new_prices[f"{fuel_key}_maj"],
-                                ATTR_PRICE: new_prices[f"{fuel_key}_prix"],
+                                ATTR_UPDATED_DATE: new_prices.get(f"{fuel_key}_maj"),
+                                ATTR_PRICE: new_prices.get(f"{fuel_key}_prix"),
+                                ATTR_SHORTAGE_SINCE: new_prices.get(
+                                    f"{fuel_key}_rupture_debut"
+                                ),
                             }
                         }
                     )
@@ -289,7 +298,9 @@ class PrixCarburantTool:
             {
                 "select": "id,latitude,longitude,cp,adresse,ville,"  # codespell:ignore-words-list=adresse
                 f"{fuel.lower()}_prix,{fuel.lower()}_maj",
-                "where": f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)",
+                "where": (
+                    f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)"
+                ),
                 "order_by": f"{fuel.lower()}_prix",
                 "limit": 10,
             }
@@ -358,7 +369,7 @@ class PrixCarburantTool:
                             data[station["id"]][attr_key] = attr_value.title()
                         else:
                             data[station["id"]][attr_key] = attr_value
-        except (KeyError, TypeError):
+        except KeyError, TypeError:
             _LOGGER.exception(
                 "Error while getting station %s information",
                 station.get("id", "no ID"),

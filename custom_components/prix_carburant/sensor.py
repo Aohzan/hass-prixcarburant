@@ -34,6 +34,7 @@ from .const import (
     ATTR_FUELS,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
+    ATTR_SHORTAGE_SINCE,
     ATTR_UPDATED_DATE,
     CONF_DISPLAY_ENTITY_PICTURES,
     CONF_FUELS,
@@ -147,29 +148,34 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
             ATTR_UPDATED_DATE: None,
             ATTR_DAYS_SINCE_LAST_UPDATE: None,
             ATTR_FUEL_TYPE: self.fuel,
+            ATTR_SHORTAGE_SINCE: self.station_info[ATTR_FUELS][self.fuel].get(
+                ATTR_SHORTAGE_SINCE
+            ),
         }
 
     @property
     def native_value(self) -> float | None:
         """Return the current price."""
-        fuel = self.coordinator.data[self.station_id][ATTR_FUELS].get(self.fuel)
-        if fuel:
+        if fuel := self.coordinator.data[self.station_id][ATTR_FUELS].get(self.fuel):
             # Update date in attributes
-            self._attr_extra_state_attributes[ATTR_UPDATED_DATE] = fuel[
-                ATTR_UPDATED_DATE
-            ]
-            try:
-                delay = datetime.now(tz=UTC) - datetime.strptime(
-                    fuel[ATTR_UPDATED_DATE], "%Y-%m-%dT%H:%M:%S%z"
-                )
-                self._attr_extra_state_attributes[ATTR_DAYS_SINCE_LAST_UPDATE] = (
-                    delay.days
-                )
-            except ValueError as err:
-                _LOGGER.warning(
-                    "Cannot calculate days for %s since last update: %s",
-                    self._attr_name,
-                    err,
-                )
-            return float(fuel[ATTR_PRICE])
+            self._attr_extra_state_attributes |= {
+                ATTR_UPDATED_DATE: fuel.get(ATTR_UPDATED_DATE),
+                ATTR_SHORTAGE_SINCE: fuel.get(ATTR_SHORTAGE_SINCE),
+            }
+            if fuel.get(ATTR_UPDATED_DATE) is not None:
+                try:
+                    delay = datetime.now(tz=UTC) - datetime.strptime(
+                        fuel[ATTR_UPDATED_DATE], "%Y-%m-%dT%H:%M:%S%z"
+                    )
+                    self._attr_extra_state_attributes[ATTR_DAYS_SINCE_LAST_UPDATE] = (
+                        delay.days
+                    )
+                except ValueError as err:
+                    _LOGGER.warning(
+                        "Cannot calculate days for %s since last update: %s",
+                        self._attr_name,
+                        err,
+                    )
+            if fuel.get(ATTR_PRICE) is not None:
+                return float(fuel[ATTR_PRICE])
         return None
