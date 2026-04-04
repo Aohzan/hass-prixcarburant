@@ -11,10 +11,10 @@ import voluptuous as vol
 from homeassistant.components.sensor import (
     PLATFORM_SCHEMA_BASE,
     RestoreSensor,
-    SensorDeviceClass,
+    SensorStateClass,
 )
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
-from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME, CURRENCY_EURO
+from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -103,8 +103,8 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
     """Representation of a Sensor."""
 
     _attr_icon = "mdi:gas-station"
-    _attr_device_class = SensorDeviceClass.MONETARY
-    _attr_native_unit_of_measurement = CURRENCY_EURO
+    _attr_state_class = SensorStateClass.MEASUREMENT
+    _attr_native_unit_of_measurement = "€/l"
 
     def __init__(
         self, station_id: str, station_info: dict, fuel: str, entry_data: dict
