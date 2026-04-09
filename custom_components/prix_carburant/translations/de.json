@@ -1,0 +1,100 @@
+{
+    "config": {
+        "abort": {
+            "single_instance_allowed": "Bereits konfiguriert. Es ist nur eine Konfiguration möglich."
+        },
+        "step": {
+            "user": {
+                "data": {
+                    "fuels_E10": "Zeige Super E10",
+                    "fuels_E85": "Zeige E85",
+                    "fuels_GPLc": "Zeige LPG",
+                    "fuels_Gazole": "Zeige Diesel",
+                    "fuels_SP95": "Zeige Super E5",
+                    "fuels_SP98": "Zeige Super Plus",
+                    "max_km": "Maximale Entfernung zum Standort"
+                },
+                "description": "Tankstellen um die Home-Assistant-Position (Allgemeine Einstellungen zur Überprüfung) herum ermitteln. Die maximale Entfernung auf 0 setzen, um die automatische Tankstellensuche zu unterbinden und Tankstellen später in den Einstellungen manuell hinzuzufügen."
+            }
+        }
+    },
+    "options": {
+        "abort": {
+            "yaml_configuration": "Integration bereits in configuration.yaml konfiguriert. Tankstellenverwaltung nicht möglich.",
+            "no_stations": "Keine Tankstellen gefunden. Bitte zuerst Tankstellen zufügen."
+        },
+        "error": {
+            "invalid_station_id": "Ungültiges Format der Tankstellen-ID. Bitte eine gültige Nummer eingeben.",
+            "station_not_found": "Tankstelle nicht über die API gefunden. Bitte die ID überprüfen.",
+            "station_already_exists": "Diese Tankstelle ist bereits in der Liste."
+        },
+        "step": {
+            "init": {
+                "title": "Einstellungen Prix Carburant",
+                "menu_options": {
+                    "general_options": "Allgemeine Einstellungen",
+                    "fuels_select": "Treibstoffauswahl",
+                    "add_station": "Tankstelle hinzufügen",
+                    "delete_stations": "Tankstelle(n) entfernen"
+                }
+            },
+            "general_options": {
+                "title": "Allgemeine Einstellungen",
+                "description": "Allgemeine Einstellungen der Integration konfigurieren",
+                "data": {
+                    "scan_interval": "Zeit zwischen zwei Datenabfragen in Stunden",
+                    "api_ssl_check": "SSL-Zertifikat des API-Servers prüfen",
+                    "display_entity_pictures": "Markenlogo als Entitätsbild nutzen",
+                    "max_km": "Maximale Entfernung um den Standort"
+                }
+            },
+            "fuels_select": {
+                "title": "Treibstoffauswahl",
+                "description": "Welche Treibstoffe sollen als Sensor angelegt werden",
+                "data": {
+                    "fuels_Gazole": "Diesel",
+                    "fuels_E10": "Super E10",
+                    "fuels_E85": "E85",
+                    "fuels_SP95": "Super E5",
+                    "fuels_SP98": "Super Plus",
+                    "fuels_GPLc": "LPG"
+                }
+            },
+            "delete_stations": {
+                "title": "Tankstelle(n) entfernen",
+                "description": "Manuell zugefügte Tankstellen zum Entfernen auswählen. Automatisch gefundene Tankstellen können nicht entfernt werden, stattdessen die maximale Entfernung anpassen.",
+                "data": {
+                    "stations_to_remove": "Zu entfernende Tankstellen"
+                }
+            },
+            "add_station": {
+                "title": "Tankstelle manuell hinzufügen",
+                "description": "ID der zuzufügenden Tankstelle (Siehe prix-carburant.gouv.fr)",
+                "data": {
+                    "station_id": "Tankstellen-ID"
+                }
+            }
+        }
+    },
+    "services": {
+        "find_nearest_stations": {
+            
+			"name": "Nächstgelegene Tankstelle finden",
+            "description": "Suche nach weniger teuren Tankstellen in der Umgebung",
+            "fields": {
+                "entity_id": {
+                    "name": "Entität",
+                    "description": "Eine Entität mit einem Geo-Standort"
+                },
+                "fuel": {
+                    "name": "Treibstoff",
+                    "description": "Treibstofftyp"
+                },
+                "distance": {
+                    "name": "Maximale Entfernung",
+                    "description": "Maximale Entfernung der Tankstelle zur Entität"
+                }
+            }
+        }
+    }
+}
