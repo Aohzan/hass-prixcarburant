@@ -1,30 +1,238 @@
 {
+  "57140003": {
+    "name": "Esso Aire de Saint Rémy (E25/A31)",
+    "brand": "Esso"
+  },
+  "57140005": {
+    "name": "Eni Aire de la Maxe (E25/A31)",
+    "brand": "Eni"
+  },
+  "54700010": {
+    "name": "TotalEnergies Aire de L'Obrion (E25/A31)",
+    "brand": "Total"
+  },
+  "54700011": {
+    "name": "Dyneff Aire de Loisy (E25/A31)",
+    "brand": "Dyneff"
+  },
+  "54200014": {
+    "name": "Fulli Aire de Toul-Dommartin (E25/A31)",
+    "brand": "Fulli"
+  },
+  "88170007": {
+    "name": "TotalEnergies Aire Lorraine Sandaucourt-la-Trelle (E25/A31)",
+    "brand": "Total"
+  },
+  "88170006": {
+    "name": "TotalEnergies Aire Lorraine Sandaucourt-lès-Rappes (E25/A31)",
+    "brand": "Total"
+  },
+  "52140006": {
+    "name": "AVIA Aire de Montigny-le-Roi (E25/A31)",
+    "brand": "Avia"
+  },
+  "52140007": {
+    "name": "TotalEnergies Aire de Val de Meuse (E25/A31)",
+    "brand": "Total"
+  },
+  "52160008": {
+    "name": "AVIA Aire de Langres-Perrogney (E25/A31)",
+    "brand": "Avia"
+  },
+  "52160010": {
+    "name": "AVIA Aire de Langres-Noidant (E25/A31)",
+    "brand": "Avia"
+  },
+  "21490003": {
+    "name": "TotalEnergies Aire de Dijon-Brognon (E25/A31)",
+    "brand": "Total"
+  },
+  "21220006": {
+    "name": "Fulli Aire de Gevrey-Chambertin Ouest (E25/A31)",
+    "brand": "Fulli"
+  },
+  "21220008": {
+    "name": "AVIA Aire de Gevrey-Chambertin Est (E25/A31)",
+    "brand": "Avia"
+  },
+  "21190006": {
+    "name": "TotalEnergies Aire de Beaune-Tailly (E15/A6)",
+    "brand": "Total"
+  },
+  "21190007": {
+    "name": "TotalEnergies Aire de Beaune-Merceuil (E15/A6)",
+    "brand": "Total"
+  },
+  "71240008": {
+    "name": "Fulli Aire de Saint-Ambreuil (E15/A6)",
+    "brand": "Fulli"
+  },
+  "71260009": {
+    "name": "Shell Aire de Mâcon-Saint-Albain (E15/A6)",
+    "brand": "Shell"
+  },
+  "71260006": {
+    "name": "TotalEnergies Aire de Mâcon-la-Salle (E15/A6)",
+    "brand": "Total"
+  },
+  "69220011": {
+    "name": "Fulli Aire de Dracé (E15/A6)",
+    "brand": "Fulli"
+  },
+  "69220007": {
+    "name": "Shell Aire de Taponas (E15/A6)",
+    "brand": "Shell"
+  },
+  "69380009": {
+    "name": "Esso Aire de les Chères Ouest (E15/A6)",
+    "brand": "Esso"
+  },
+  "69380010": {
+    "name": "Esso Aire de les Chères Est (E15/A6)",
+    "brand": "Esso"
+  },
+  "69360011": {
+    "name": "TotalEnergies Aire de Solaize (E15/A7)",
+    "brand": "Total"
+  },
+  "69360018": {
+    "name": "AVIA Aire de Serezin (E15/A7)",
+    "brand": "Avia"
+  },
+  "26140005": {
+    "name": "E.Leclerc Aire de Saint-Rambert-d'Albon Ouest (E15/A7)",
+    "brand": "Leclerc"
+  },
+  "26140002": {
+    "name": "Esso Aire de Saint-Rambert-d'Albon Est (E15/A7)",
+    "brand": "Esso"
+  },
+  "26600013": {
+    "name": "TotalEnergies Aire Pont de l’Isère (E15/A7)",
+    "brand": "Total"
+  },
+  "26600011": {
+    "name": "AVIA Aire de Latitude 45 (E15/A7)",
+    "brand": "Avia"
+  },
+  "26800002": {
+    "name": "AVIA Aire de Portes lès Valence (E15/A7)",
+    "brand": "Avia"
+  },
+  "26800007": {
+    "name": "TotalEnergies Aire Portes Les Valence (E15/A7)",
+    "brand": "Total"
+  },
+  "26780008": {
+    "name": "Shell Aire de Montélimar Ouest (E15/A7)",
+    "brand": "Shell"
+  },
+  "26780009": {
+    "name": "Shell Aire de Montélimar Est (E15/A7)",
+    "brand": "Shell"
+  },
+  "84550004": {
+    "name": "Esso Aire de Mornas Village (E15/A7)",
+    "brand": "Esso"
+  },
+  "84550005": {
+    "name": "E.Leclerc Aire de Mornas - Les Adrets (E15/A7)",
+    "brand": "Leclerc"
+  },
+  "30126005": {
+    "name": "Esso Aire de Tavel Nord (E15/A9)",
+    "brand": "Esso"
+  },
+  "30126008": {
+    "name": "Eni Aire de Tavel Sud (E15/A9)",
+    "brand": "Eni"
+  },
+  "30320006": {
+    "name": "TotalEnergies Aire de Nîmes-Marguerittes Nord (E15/A9)",
+    "brand": "Total"
+  },
+  "30320007": {
+    "name": "AVIA Aire de Nîmes-Marguerittes Sud (E15/A9)",
+    "brand": "Avia"
+  },
+  "34400016": {
+    "name": "Esso Aire d’Ambrussum Nord (E15/A9)",
+    "brand": "Esso"
+  },
+  "34400017": {
+    "name": "TotalEnergies Aire d'Ambrussum Sud (E15/A9)",
+    "brand": "Total"
+  },
+  "34690009": {
+    "name": "TotalEnergies Aire de Montpellier-Fabrègues Nord (E15/A9)",
+    "brand": "Total"
+  },
+  "34690010": {
+    "name": "AVIA Aire de Montpellier-Fabrègues Sud (E15/A9)",
+    "brand": "Avia"
+  },
+  "34290007": {
+    "name": "Shell Aire de Béziers-Montblanc Nord (E15/A9)",
+    "brand": "Shell"
+  },
+  "34290003": {
+    "name": "Shell Aire de Béziers-Montblanc Sud (E15/A9)",
+    "brand": "Shell"
+  },
+  "11110008": {
+    "name": "E.Leclerc Aire de Narbonne-Vinassan (E15/A9)",
+    "brand": "Leclerc"
+  },
+  "11110005": {
+    "name": "TotalEnergies Aire de Narbonne-Vinassan (E15/A9)",
+    "brand": "Total"
+  },
+  "11480009": {
+    "name": "Esso Aire de la Palme Ouest (E15/A9)",
+    "brand": "Esso"
+  },
+  "11480007": {
+    "name": "AVIA Aire de la Palme Est (E15/A9)",
+    "brand": "Avia"
+  },
+  "66300013": {
+    "name": "Dyneff Aire de Village Catalan (E15/A9)",
+    "brand": "Dyneff"
+  },
+  "21200010": {
+    "name": "E.Leclerc Levernois",
+    "brand": "Leclerc"
+  },
+  "71000021": {
+    "name": "Total Access Mâcon RN6",
+    "brand": "Total Access"
+  },
+  "30210001": {
+    "name": "Carrefour Remoulins",
+    "brand": "Carrefour Market"
+  },
   "1000001": {
-    "name": "Carrefour Market",
+    "name": "Carrefour Saint-Denis-lès-Bourg",
     "brand": "Carrefour Market"
   },
   "1000002": {
-    "name": "Carrefour Market",
+    "name": "Carrefour Bourg-en-Bresse",
     "brand": "Carrefour Market"
   },
   "1000004": {
-    "name": "SARL WALES DISTRIBUTION",
+    "name": "TotalEnergies Bourg-en-Bresse",
     "brand": "Total"
   },
-  "1000006": {
-    "name": "CASINO SUPERMARCHE",
-    "brand": "Casino"
-  },
   "1000007": {
-    "name": "CENTRE E. LECLERC",
+    "name": "E.Leclerc Bourg-en-Bresse",
     "brand": "Leclerc"
   },
   "1000008": {
-    "name": "Carrefour bourg en bresse",
+    "name": "Carrefour Bourg-en-Bresse",
     "brand": "Carrefour"
   },
   "1000009": {
-    "name": "Intermarché BOURG EN BRESSE",
+    "name": "Intermarché Bourg-en-Bresse",
     "brand": "Intermarché"
   },
   "1000012": {
@@ -3127,14 +3335,6 @@
     "name": "Intermarché SALLES D'AUDE",
     "brand": "Intermarché"
   },
-  "11110005": {
-    "name": "RELAIS DE VINASSAN",
-    "brand": "Total"
-  },
-  "11110008": {
-    "name": "SODIPLEC NARBONNE",
-    "brand": "Leclerc"
-  },
   "11120001": {
     "name": "Intermarché ST MARCEL SUR AUDE",
     "brand": "Intermarché"
@@ -3278,10 +3478,6 @@
   "11480001": {
     "name": "AIRE DE LA PALME OUEST",
     "brand": "Carrefour"
-  },
-  "11480007": {
-    "name": "STATION AVIA",
-    "brand": "Avia"
   },
   "11480008": {
     "name": "STATION AVIA",
@@ -7375,14 +7571,6 @@
     "name": "Carrefour MARKET",
     "brand": "Carrefour Market"
   },
-  "21190006": {
-    "name": "RELAIS DE BEAUNE TAILLY",
-    "brand": "Total"
-  },
-  "21190007": {
-    "name": "RELAIS DE MERCEUIL",
-    "brand": "Total"
-  },
   "21200001": {
     "name": "Carrefour BEAUNE",
     "brand": "Carrefour"
@@ -7586,10 +7774,6 @@
   "21460003": {
     "name": "Maximarché Epoisses",
     "brand": "Maximarché"
-  },
-  "21490003": {
-    "name": "RELAIS DE DIJON BROGNON",
-    "brand": "Total"
   },
   "21490004": {
     "name": "sarl julidis",
@@ -9091,20 +9275,12 @@
     "name": "Intermarché ST PAUL 3 CHATEAUX",
     "brand": "Intermarché"
   },
-  "26140002": {
-    "name": "BP A7 AIRE DE SAINT RAMBERT D'ALBON",
-    "brand": "BP"
-  },
   "26140003": {
     "name": "Intermarché SAS ANEBUIS",
     "brand": "Intermarché"
   },
   "26140004": {
     "name": "Centre E LECLERC",
-    "brand": "Leclerc"
-  },
-  "26140005": {
-    "name": "E. LECLERC",
     "brand": "Leclerc"
   },
   "26150001": {
@@ -9351,14 +9527,6 @@
     "name": "NETTO",
     "brand": "Netto"
   },
-  "26600011": {
-    "name": "AVIA Latitude 45",
-    "brand": "Avia"
-  },
-  "26600013": {
-    "name": "RELAIS PONT DE L'ISERE",
-    "brand": "Total"
-  },
   "26600014": {
     "name": "RELAIS PONT DE L'ISERE RN 7",
     "brand": "Total Access"
@@ -9427,10 +9595,6 @@
     "name": "station service u",
     "brand": "Système U"
   },
-  "26800002": {
-    "name": "SARL SRV",
-    "brand": "Avia"
-  },
   "26800004": {
     "name": "CASINO SUPERMARCHE",
     "brand": "Casino"
@@ -9439,13 +9603,9 @@
     "name": "Intermarché ETOILE SUR RHONE",
     "brand": "Intermarché"
   },
-  "26800007": {
-    "name": "RELAIS VALENTINOIS",
-    "brand": "Total"
-  },
   "26800008": {
-    "name": "AGIP PORTES LES VALENCES",
-    "brand": "Agip"
+    "name": "Eni Portes-lès-Valence",
+    "brand": "Eni"
   },
   "26902001": {
     "name": "GEANT CASINO VALENCE 2",
@@ -10819,14 +10979,6 @@
     "name": "CASINO CARBURANTS",
     "brand": "Casino"
   },
-  "30126005": {
-    "name": "Esso TAVEL NORD",
-    "brand": "Esso"
-  },
-  "30126008": {
-    "name": "AGIP TAVEL SUD",
-    "brand": "Agip"
-  },
   "30127001": {
     "name": "Carrefour Market",
     "brand": "Carrefour Market"
@@ -10931,10 +11083,6 @@
     "name": "RELAIS D'ORSAN",
     "brand": "Total Access"
   },
-  "30210001": {
-    "name": "Carrefour Market",
-    "brand": "Carrefour Market"
-  },
   "30210002": {
     "name": "SARL ANDREOTTI",
     "brand": "Total"
@@ -11029,14 +11177,6 @@
   },
   "30320005": {
     "name": "AVIA",
-    "brand": "Avia"
-  },
-  "30320006": {
-    "name": "RELAIS MARGUERITTES NORD",
-    "brand": "Total"
-  },
-  "30320007": {
-    "name": "Sodi Est - station Avia",
     "brand": "Avia"
   },
   "30330001": {
@@ -13411,16 +13551,12 @@
     "name": "Super U",
     "brand": "Système U"
   },
-  "34290003": {
-    "name": "SARL ROCAMAR",
-    "brand": "Shell"
-  },
   "34290004": {
     "name": "Sarl SGPA",
     "brand": "Shell"
   },
   "34300001": {
-    "name": "Hyper U",
+    "name": "Hyper U Agde",
     "brand": "Système U"
   },
   "34300002": {
@@ -13428,7 +13564,7 @@
     "brand": "Total"
   },
   "34300006": {
-    "name": "Intermarché AGDE - ACAR",
+    "name": "Intermarché Agde",
     "brand": "Intermarché"
   },
   "34300008": {
@@ -13436,12 +13572,12 @@
     "brand": "Indépendant sans enseigne"
   },
   "34300009": {
-    "name": "RELAIS CAP D'AGDE",
+    "name": "TotalEnergies Cap d'Agde",
     "brand": "Total"
   },
   "34300011": {
-    "name": "AGIP CAP D'AGDE",
-    "brand": "Agip"
+    "name": "Eni Cap d'Agde",
+    "brand": "Eni"
   },
   "34310002": {
     "name": "Intermarché CAPESTANG",
@@ -13494,14 +13630,6 @@
   "34400013": {
     "name": "Intermarché LUNEL LES PORTES DE LA MER",
     "brand": "Intermarché"
-  },
-  "34400016": {
-    "name": "Esso Aire d’Ambrussum Nord (E15/A9)",
-    "brand": "Esso"
-  },
-  "34400017": {
-    "name": "RELAIS DU VIDOURLE",
-    "brand": "Total"
   },
   "34400018": {
     "name": "RELAIS LA PETIOLE",
@@ -20555,14 +20683,6 @@
     "name": "GARAGE CENTRAL DUGRILLON",
     "brand": "Avia"
   },
-  "52160008": {
-    "name": "AVIA Perrogney",
-    "brand": "Avia"
-  },
-  "52160010": {
-    "name": "Noidant SARL MCV",
-    "brand": "Avia"
-  },
   "52170001": {
     "name": "Intermarché",
     "brand": "Intermarché"
@@ -21234,10 +21354,6 @@
   "54700009": {
     "name": "SUPERMARCHE MATCH",
     "brand": "Supermarché Match"
-  },
-  "54700010": {
-    "name": "RELAIS Total DE L'OBRION",
-    "brand": "Total"
   },
   "54710001": {
     "name": "Intermarché LUDRES",
@@ -22113,10 +22229,6 @@
   },
   "57140002": {
     "name": "Esso SERVICE LA MAXE",
-    "brand": "Esso"
-  },
-  "57140003": {
-    "name": "Esso SAINT-REMY",
     "brand": "Esso"
   },
   "57150002": {
@@ -26644,10 +26756,6 @@
     "name": "NETTO THUIR",
     "brand": "Netto"
   },
-  "66300013": {
-    "name": "ROMPETROL Banyuls",
-    "brand": "Dyneff"
-  },
   "66300014": {
     "name": "SUPER U LES ASPRES",
     "brand": "Système U"
@@ -28101,10 +28209,6 @@
     "name": "ROADY",
     "brand": "Roady"
   },
-  "69220007": {
-    "name": "SHELL Taponas",
-    "brand": "Shell"
-  },
   "69220008": {
     "name": "Netto St Jean d'Ardieres",
     "brand": "Netto"
@@ -28233,10 +28337,6 @@
     "name": "SARL SEREDIS",
     "brand": "Carrefour Contact"
   },
-  "69360011": {
-    "name": "TotalEnergies Aire de Solaize (E15/A7)",
-    "brand": "Total"
-  },
   "69360012": {
     "name": "RELAIS DE TERNAY",
     "brand": "Total"
@@ -28251,10 +28351,6 @@
   },
   "69360017": {
     "name": "AVIA",
-    "brand": "Avia"
-  },
-  "69360018": {
-    "name": "AVIA Serezin",
     "brand": "Avia"
   },
   "69360019": {
@@ -28276,18 +28372,6 @@
   "69380008": {
     "name": "SAS ELGARREKIN",
     "brand": "Intermarché Contact"
-  },
-  "69380009": {
-    "name": "Les Cheres Ouest",
-    "brand": "Esso"
-  },
-  "69380010": {
-    "name": "Les Cheres Est",
-    "brand": "Esso"
-  },
-  "69380011": {
-    "name": "Esso les Chères Est",
-    "brand": "Esso"
   },
   "69390001": {
     "name": "CHARLY AUTOMOBILES",
@@ -28470,7 +28554,7 @@
     "brand": "Esso Express"
   },
   "69570005": {
-    "name": "TotalEnergies Aire de Paisy (E15/A6)",
+    "name": "RELAIS DES BRUYERES - PAISY",
     "brand": "Total"
   },
   "69571001": {
@@ -28909,10 +28993,6 @@
     "name": "SAS ROPIMAX",
     "brand": "Intermarché"
   },
-  "71000021": {
-    "name": "RELAIS CONDEMINES",
-    "brand": "Total Access"
-  },
   "71000022": {
     "name": "RELAIS MACON ED HERRIOT",
     "brand": "Total Access"
@@ -29124,10 +29204,6 @@
   "71260005": {
     "name": "EURL GOUPIL PHILIPPE",
     "brand": "Total Access"
-  },
-  "71260006": {
-    "name": "RELAIS DE LA SALLE",
-    "brand": "Total"
   },
   "71260007": {
     "name": "SAS BENJALEX",
@@ -36445,10 +36521,6 @@
     "name": "SARL GILBERT PATRICK",
     "brand": "Total"
   },
-  "88170006": {
-    "name": "REL.LORRAINE LES RAPPES",
-    "brand": "Total"
-  },
   "88190001": {
     "name": "GOLDIS",
     "brand": "Leclerc"
@@ -39238,13 +39310,5 @@
   "67500013": {
     "name": "Intermarché Haguenau",
     "brand": "Intermarché"
-  },
-  "83210008": {
-    "name": "Intermarché Sollies Pont",
-    "brand": "Intermarché"
-  },
-  "83260007": {
-    "name": "Lidl La Crau",
-    "brand": "Lidl"
   }
 }
