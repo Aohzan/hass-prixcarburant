@@ -95,6 +95,10 @@
     "name": "Esso Aire de les Chères Est (E15/A6)",
     "brand": "Esso"
   },
+  "69570005": {
+    "name": "TotalEnergies Aire de Paisy",
+    "brand": "Total"
+  },
   "69360011": {
     "name": "TotalEnergies Aire de Solaize (E15/A7)",
     "brand": "Total"
@@ -28560,10 +28564,6 @@
   "69570002": {
     "name": "Esso PORTES LYON",
     "brand": "Esso Express"
-  },
-  "69570005": {
-    "name": "RELAIS DES BRUYERES - PAISY",
-    "brand": "Total"
   },
   "69571001": {
     "name": "AUCHAN DARDILLY",
