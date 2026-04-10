@@ -1,0 +1,44 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1595 772" width="1595" height="772">
+	<title>TotalEnergies_logo-svg</title>
+	<defs>
+		<linearGradient id="g1" x1="828.2" y1="299.8" x2="1242.5" y2="749.9" gradientUnits="userSpaceOnUse">
+			<stop offset="0" stop-color="#0186f5"/>
+			<stop offset=".1" stop-color="#0186f5"/>
+			<stop offset=".3" stop-color="#35c2b0"/>
+			<stop offset=".7" stop-color="#aad825"/>
+			<stop offset="1" stop-color="#fed700"/>
+		</linearGradient>
+		<linearGradient id="g2" x1="493.7" y1="714.2" x2="497.1" y2="431.7" gradientUnits="userSpaceOnUse">
+			<stop offset="0" stop-color="#ff7f00"/>
+			<stop offset="1" stop-color="#fe0201"/>
+		</linearGradient>
+		<linearGradient id="g3" x1="911.2" y1="125.1" x2="1368.8" y2="133.9" gradientUnits="userSpaceOnUse">
+			<stop offset="0" stop-color="#0186f5"/>
+			<stop offset=".2" stop-color="#0186f5"/>
+			<stop offset="1" stop-color="#3156fd"/>
+		</linearGradient>
+		<linearGradient id="g4" x1="1438.8" y1="359" x2="1481" y2="275.8" gradientUnits="userSpaceOnUse">
+			<stop offset="0" stop-color="#8434d5"/>
+			<stop offset=".9" stop-color="#3156fd"/>
+			<stop offset="1" stop-color="#3156fd"/>
+		</linearGradient>
+		<linearGradient id="g5" x1="1346" y1="379" x2="994.6" y2="395.6" gradientUnits="userSpaceOnUse">
+			<stop offset="0" stop-color="#8434d5"/>
+			<stop offset="1" stop-color="#fe0201"/>
+		</linearGradient>
+	</defs>
+	<style>
+		.s0 { fill: url(#g1) } 
+		.s1 { fill: url(#g2) } 
+		.s2 { fill: url(#g3) } 
+		.s3 { fill: url(#g4) } 
+		.s4 { fill: url(#g5) } 
+	</style>
+	<g id="surface1">
+		<path id="Layer" class="s0" d="m991.3 245.5c-16.8 10.7-103.5 68.8-63.4 225.7 14 54.7 54.8 94.6 115.3 120.7 95.8 41.4 175.5 38.5 248.5 22.3 105-23.3 108.4-39 143.6-18.4 36.1 21.1 33.5 69.2 16.7 94-15.5 23-86.7 47.6-132.5 59.4-129.9 33.6-273.2 30.2-387.1-20-79.8-35.1-146.9-83.4-179.9-178.9-24.3-70.2-55.8-178.2 1-295.8 27.6-57.2 75.1-109.5 124.7-149z"/>
+		<path id="Layer" class="s1" d="m984.8 476.7c-31.8-2.7-422.3-44.1-422.3-44.1 0 0 32.9 169.2 47.3 231.8 25.4 109.7-110.8 117.8-127.5 66.3-42.7-131.3-80.4-237.4-94.7-265.5-46.7-92.4-239.2-71.9-309.1-91.4-123.5-34.4-97.7-235.3 56.9-224.5 80.5 5.6 332.2 58.4 546.4 96.3 138.4 24.6 270.6 38.6 315.8 44.6z"/>
+		<path id="Layer" class="s2" d="m990.7 246.4l-113.3-140.4c94.7-75.4 213.5-100.2 326.4-105 118.2-5 196.9 18.1 253 46.3 73.9 37.3 139.8 102 137.8 222.3l-216.7-42.8c-38.9-25.9-125.2-38.7-174.7-40-92-2.4-159.1 25.8-212.5 59.6z"/>
+		<path id="Layer" class="s3" d="m1594.6 267.3c-1.6 92.9-58.4 168.9-187.3 203.4l-56.6-175.1c71.5-11.8 63.7-37.5 40.1-59.1-4.9-4.6-16.4-11.9-16.4-11.9z"/>
+		<path id="Layer" class="s4" d="m1409.4 470.1c-53.1 14.2-150 30.4-425.6 6.6l12.8-186.5c169.6 22.5 292.7 15.7 356.2 5.2z"/>
+	</g>
+</svg>

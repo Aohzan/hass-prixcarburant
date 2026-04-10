@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   version="1.2"
+   viewBox="0 0 1811 701"
+   width="1811"
+   height="701"
+   id="svg15"
+   sodipodi:docname="roady-white.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs15" />
+  <sodipodi:namedview
+     id="namedview15"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="2.036444"
+     inkscape:cx="941.10127"
+     inkscape:cy="350.36565"
+     inkscape:window-width="3840"
+     inkscape:window-height="2030"
+     inkscape:window-x="2869"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="g14" />
+  <title
+     id="title1">Roady-svg</title>
+  <style
+     id="style1">
+		.s0 { fill: #e2001a } 
+		.s1 { fill: #ffffff } 
+		.s2 { fill: #1a171a } 
+	</style>
+  <g
+     id="logo Raody Quadri">
+    <g
+       id="g15">
+      <g
+         id="g9">
+        <path
+           id="&lt;Path&gt;"
+           class="s0"
+           d="m1752.9 530.7l-20.6 169.8h-1186.4l-97.3-169.8z" />
+        <g
+           id="&lt;Group&gt;">
+          <path
+             id="&lt;Compound Path&gt;"
+             class="s1"
+             d="m571.1 603.2c0-22.5 12.7-27.9 34-27.9h27.8c33.6 0 38 7.3 37.8 29.1h-23.7v-2.1c0-5.5-4-7.1-11-7.1h-25.8c-12.5 0-14.8 5.8-14.8 15.4v8.3c0 11.2 2.3 15.4 13.6 15.4h25.2c10.6 0 13.8-1.1 13.8-10.6h23.6v7.2c0 13-4.6 23.2-28.4 23.2h-38.1c-21.3 0-34-5.3-34-27.9z" />
+          <path
+             id="path1"
+             class="s1"
+             d="m685.9 576.2h84.3v17.9h-60.7v12.3h57.5v16h-57.5v12.3h62.1v18.6h-85.7z" />
+          <path
+             id="path2"
+             class="s1"
+             d="m785.8 576.2h36.6l44.4 56h0.2v-56h23.7v77.1h-36.7l-44.3-56.1h-0.2v56.1h-23.7z" />
+          <path
+             id="path3"
+             class="s1"
+             d="m901 576.2h90v19.2h-33.2v57.9h-23.6v-57.9h-33.2z" />
+          <path
+             id="path4"
+             fill-rule="evenodd"
+             class="s1"
+             d="m1001.4 576.2h71.3c18.2 0 23.1 9.1 23.1 22.9v4.9c0 10.3-2.3 16.4-13.2 18.9v0.2c7 1.3 12.9 4.4 12.9 17.1v13.1h-23.7v-9.3c0-8.1-2.3-10.8-9.6-10.8h-37.2v20.1h-23.6zm23.6 37.9h39.1c6.4 0 8.7-2.6 8.7-8.1v-2.6c0-6.8-3.4-8.1-10.9-8.1h-36.9z" />
+          <path
+             id="path5"
+             class="s1"
+             d="m1111.8 576.2h84.2v17.9h-60.6v12.3h57.4v16h-57.4v12.3h62v18.6h-85.6z" />
+          <path
+             id="path6"
+             fill-rule="evenodd"
+             class="s1"
+             d="m1298.4 576.2h30.8l42.3 77.1h-26.2l-7.4-13.7h-47.9l-6.9 13.7h-26.4zm0.5 46.8h30.2l-15.4-28.9z" />
+          <path
+             id="path7"
+             class="s1"
+             d="m1380 576.2h23.6v44.5c0 9.8 3.5 13.6 13.2 13.6h23.4c9.7 0 13.2-3.8 13.2-13.6v-44.5h23.6v49.6c0 19.1-9.9 28.3-31.6 28.3h-33.8c-21.8 0-31.6-9.2-31.6-28.3z" />
+          <path
+             id="path8"
+             class="s1"
+             d="m1487.3 576.2h90.1v19.2h-33.2v57.9h-23.6v-57.9h-33.3z" />
+          <path
+             id="path9"
+             fill-rule="evenodd"
+             class="s1"
+             d="m1586 603.2c0-22.5 12.7-27.9 34-27.9h37.9c21.3 0 33.9 5.4 33.9 27.9v23c0 22.6-12.6 27.9-33.9 27.9h-37.9c-21.3 0-34-5.3-34-27.9zm24.3 15.7c0 11.2 2.3 15.4 13.5 15.4h30.2c11.2 0 13.6-4.2 13.6-15.4v-8.3c0-9.6-2.4-15.4-14.9-15.4h-27.6c-12.5 0-14.8 5.8-14.8 15.4z" />
+        </g>
+      </g>
+      <g
+         id="g14">
+        <path
+           id="path10"
+           fill-rule="evenodd"
+           class="s2"
+           d="m1464.8 0.7l-65.3 466.1q-135 0-146.3 0c-116.6 0-155.6-42.8-146.2-112l16.4-127.2c8.5-69.2 58.7-112.8 175.3-112.8 10 0 19.1 0.3 28.3 0.8q5.8-108.1 137.8-114.9zm-146.6 177.4c-6.6-1.8-14.8-3-25.6-3-30.7 0-43.2 17.9-45.8 39.1l-19.9 154.1c-2.9 21.1 5.1 39.1 35.7 39.1 9.6 0 17.2-1 23.8-2.5z"
+           style="fill:#ffffff;fill-opacity:1" />
+        <path
+           id="path11"
+           fill-rule="evenodd"
+           class="s2"
+           d="m348 240.3c-6 41.5-27.2 73.5-68.6 92.5l211.6 367.9h-32.6c-24.4 0-43.5-15.2-58.6-35.8l-230.3-312.9-31-0.1-16.2 115.8h-121.8l45.9-325c38.1-16.1 93.8-26.3 157.8-26.3 116.7 0 155.4 42.1 145.7 111.4zm-153.5-63.7c-13.4 0-23.3 1.9-31.4 4.4l-16.1 112.1h30c30.9 0.2 43.8-17.6 46.9-38.6l6.2-38.8c2.9-21.2-4.8-39.1-35.6-39.1z"
+           style="fill:#ffffff;fill-opacity:1" />
+        <g
+           id="g12"
+           style="fill:#ffffff;fill-opacity:1">
+          <path
+             id="path12"
+             fill-rule="evenodd"
+             class="s2"
+             d="m939 116.4c109.9 2.1 146.2 46.4 136.7 113.9l-30.5 216.5c-38.2 16-93.5 26.2-157.6 26.2-116.4 0-155.2-43.5-145.6-112.6l1.9-12.5c9.8-66.9 58.6-109.7 168.7-111.7h40.5l5.3-34.4c3-21.2-4.8-40.3-35.5-40.3h-124.2c3.8-27.2 18.4-45.1 36.5-45.1zm5.8 179.7h-29.8c-30.9 0-43.8 17.7-46.9 38.9l-6.2 38.6c-3 21.2 4.7 39.2 35.4 39.2 13.6 0 23.4-2 31.5-4.5z"
+             style="fill:#ffffff;fill-opacity:1" />
+        </g>
+        <path
+           id="path13"
+           fill-rule="evenodd"
+           class="s2"
+           d="m721.5 225.7c-4.1 29.7-20 141.9-21.3 150.8-9.8 58.8-54.3 96.2-154.8 96.2q-2 0-2.6 0c-118.6 0-172.9-30.6-162-111.6q11-81 31.3-220.8 55-26.3 173.7-26.3c86 0 146.6 30.7 135.7 111.7zm-173.8 178.7q41 0.1 48.6-45.5h0.1l19.3-137.5q5.7-45.9-35-45.9-48.2 0-64 7.9l-25.4 175q-5.7 46 35 46z"
+           style="fill:#ffffff;fill-opacity:1" />
+        <path
+           id="path14"
+           class="s2"
+           d="m1810.2 132.5c-8.6 60.1-33.7 235.4-34.1 238.3-9.7 57.8-53 94.8-150.1 96h-145.7l2.2-15.5c2.2-16.1 11.8-29.1 30.9-29.1h92.5c30.7 0 44-19 47.1-40.1l4.6-34.4h-40.5c-109.5-2-146.1-44.8-136.6-111.7l13.7-96.6c0.9-0.7 34.6-25.1 128-25.1l-21.2 134.6c-3 21.1 4.7 38.9 35.7 38.8h29.9l24.9-175.1c66.9 0 103.2 12.5 118.7 19.9z"
+           style="fill:#ffffff;fill-opacity:1" />
+      </g>
+    </g>
+  </g>
+  <metadata
+     id="metadata15">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:title>Roady-svg</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+</svg>
