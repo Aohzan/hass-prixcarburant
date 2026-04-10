@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from typing import TYPE_CHECKING
 
 import homeassistant.helpers.config_validation as cv
@@ -164,9 +164,9 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
             }
             if fuel.get(ATTR_UPDATED_DATE) is not None:
                 try:
-                    delay = datetime.now(tz=UTC) - datetime.strptime(
+                    delay = max((datetime.now(tz=UTC) - datetime.strptime(
                         fuel[ATTR_UPDATED_DATE], "%Y-%m-%dT%H:%M:%S%z"
-                    )
+                    )),timedelta(0))
                     self._attr_extra_state_attributes[ATTR_DAYS_SINCE_LAST_UPDATE] = (
                         delay.days
                     )
