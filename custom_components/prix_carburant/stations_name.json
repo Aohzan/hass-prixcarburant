@@ -63,8 +63,12 @@
     "name": "TotalEnergies Aire de Beaune-Merceuil (E15/A6)",
     "brand": "Total"
   },
+  "71240009": {
+    "name": "Fulli Aire de Saint-Ambreuil Ouest (E15/A6)",
+    "brand": "Fulli"
+  },
   "71240008": {
-    "name": "Fulli Aire de Saint-Ambreuil (E15/A6)",
+    "name": "Fulli Aire de Saint-Ambreuil Est (E15/A6)",
     "brand": "Fulli"
   },
   "71260009": {
@@ -122,6 +126,10 @@
   "26800007": {
     "name": "TotalEnergies Aire Portes Les Valence (E15/A7)",
     "brand": "Total"
+  },
+  "26270009": {
+    "name": "Dyneff Aire de Saulce (E15/A7)",
+    "brand": "Dyneff"
   },
   "26780008": {
     "name": "Shell Aire de Montélimar Ouest (E15/A7)",
@@ -13575,7 +13583,7 @@
     "name": "TotalEnergies Cap d'Agde",
     "brand": "Total"
   },
-  "34300011": {
+  "34300013": {
     "name": "Eni Cap d'Agde",
     "brand": "Eni"
   },
