@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) by Marsupilami -->
+
+<svg
+   version="1.0"
+   width="110.844"
+   height="110.844"
+   viewBox="0 0 110.844 110.844"
+   id="svg2826"
+   sodipodi:docname="AVIA.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.87702787"
+     inkscape:cx="511.38626"
+     inkscape:cy="360.87793"
+     inkscape:window-width="3840"
+     inkscape:window-height="2030"
+     inkscape:window-x="2869"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2826" />
+  <defs
+     id="defs2828" />
+  <g
+     transform="translate(-244.0821,-535.66277)"
+     id="layer1">
+    <path
+       d="m 72.75,0 -1.875,5.65625 h 11 L 83.75,0 Z M 10.65625,8.34375 0,40.59375 H 11.3125 L 12.46875,35.5 h 9.375 L 23,40.59375 h 11.34375 l -10.6875,-32.25 z m 19.4375,0 10.625,32.21875 12.4375,0.03125 10.6875,-32.25 h -11 L 46.9375,27.90625 41.09375,8.34375 Z m 39.90625,0 -10.65625,32.25 h 11 L 81,8.34375 Z m 17.15625,0 L 76.5,40.59375 H 87.8125 L 88.96875,35.5 h 9.375 L 99.5,40.59375 h 11.34375 l -10.6875,-32.25 z m -70,6.59375 2.75,12.0625 h -5.5 z m 76.5,0 2.75,12.0625 h -5.5 z m -93.5,33.90625 v 5.5 h 110.625 v -5.5 z M 0,57.96875 v 20.1875 h 110.84375 v -20.1875 z"
+       transform="translate(244.0821,553.66277)"
+       style="fill:#ed1c24;fill-opacity:1;fill-rule:nonzero;stroke:none"
+       id="path20139" />
+  </g>
+</svg>
