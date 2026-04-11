@@ -427,7 +427,7 @@ def get_entity_picture(brand: str) -> str:
         "G20": BRAND_LOGO_BASE_URL + "G20.svg",
         "Supermarché G20": BRAND_LOGO_BASE_URL + "G20.svg",
         "Géant": BRAND_LOGO_BASE_URL + "Geant_Casino.svg",
-        "Gulf": BRAND_LOGO_BASE_URL + "Gulf_logo.svg",
+        "Gulf": BRAND_LOGO_BASE_URL + "Gulf.svg",
         "Huit à 8": BRAND_LOGO_BASE_URL + "8_A_Huit.svg",
         "8 à Huit": BRAND_LOGO_BASE_URL + "8_A_Huit.svg",
         "Intermarché": BRAND_LOGO_BASE_URL + "Intermarche.svg",
