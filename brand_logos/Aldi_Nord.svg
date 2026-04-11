@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="ALDI_Logo"
+   data-name="ALDI Logo"
+   width="164.25999"
+   height="164.25999"
+   viewBox="0 0 164.25999 164.26"
+   version="1.1"
+   sodipodi:docname="Aldi_Nord_201x_logo.svg"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="10.903446"
+     inkscape:cx="78.461432"
+     inkscape:cy="82.129997"
+     inkscape:window-width="3840"
+     inkscape:window-height="2030"
+     inkscape:window-x="2869"
+     inkscape:window-y="-11"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="ALDI_Logo" />
+  <g
+     id="Background"
+     transform="translate(4)">
+    <rect
+       id="White_Border"
+       data-name="White Border"
+       width="157"
+       height="164.25999"
+       fill="#ffffff"
+       x="0"
+       y="0" />
+  </g>
+  <g
+     id="ALDI_Nord_Logo_2021"
+     data-name="ALDI Nord Logo 2021"
+     transform="translate(4)">
+    <g
+       id="Logo">
+      <rect
+         id="Rechteck_1923"
+         data-name="Rechteck 1923"
+         width="157"
+         height="164.25999"
+         fill="none"
+         x="0"
+         y="0" />
+      <path
+         id="Pfad_1900"
+         data-name="Pfad 1900"
+         d="M 156.632,163.9 V 5.669 H 5.669 V 163.9 Z m -6.039,-6.027 H 11.708 V 11.7 h 138.885 v 146.174 z"
+         transform="translate(-2.65,-2.655)"
+         fill="#c51718" />
+      <path
+         id="Pfad_1901"
+         data-name="Pfad 1901"
+         d="M 31.181,218.268 H 154.97 v 31.646 H 31.181 Z"
+         transform="translate(-14.575,-102.231)"
+         fill="#202b78" />
+      <path
+         id="Pfad_1902"
+         data-name="Pfad 1902"
+         d="m 153.586,249.466 v -24.113 h -10.858 v 24.112 z m -13.3,-12.054 a 12.025,12.025 0 0 0 -11.99,-12.058 h -16.044 v 24.112 H 128.3 a 12.023,12.023 0 0 0 11.99,-12.054 z m -9.972,0 a 5.08,5.08 0 0 1 -4.907,5.239 h -2.325 v -10.48 h 2.328 a 5.078,5.078 0 0 1 4.9,5.238 z m -40.659,12.054 h 20.507 V 242.5 h -9.481 V 225.353 H 89.655 Z m -12.374,0 H 88.228 L 75.856,225.353 H 64.813 l -12.372,24.113 h 10.948 l 1.164,-2.535 h 11.563 z m -4.412,-8.881 H 67.8 l 2.47,-5.352 z"
+         transform="translate(-24.513,-105.549)"
+         fill="#ffffff" />
+      <path
+         id="Pfad_1903"
+         data-name="Pfad 1903"
+         d="m 141.44,127.627 a 19.365,19.365 0 0 0 2.483,-9.871 c -0.077,-4.05 -1.756,-6.654 -4.051,-10.093 l -33.541,-50.272 5.459,-8.222 37.333,55.731 c 3.073,4.583 4.83,8.006 4.953,13.116 a 22.935,22.935 0 0 1 -2.231,9.61 z M 98.965,31.181 49.893,104.9 c -3.072,4.583 -4.83,8.006 -4.953,13.116 a 22.959,22.959 0 0 0 2.23,9.61 h 10.406 a 19.364,19.364 0 0 1 -2.483,-9.871 c 0.078,-4.05 1.757,-6.654 4.051,-10.093 L 109.859,31.18 Z m -30.647,78.38 h 59.348 l -4.054,-6.075 h -51.3 l -2.373,3.552 c -0.539,0.812 -1.101,1.682 -1.621,2.523 z"
+         transform="translate(-21.007,-14.604)"
+         fill="#00b6ed" />
+      <path
+         id="Pfad_1904"
+         data-name="Pfad 1904"
+         d="m 144.966,127.627 c 0.276,-0.594 0.412,-0.948 0.625,-1.514 A 21.877,21.877 0 0 0 147.3,118 c -0.129,-5.356 -1.994,-8.946 -5.1,-13.574 l -37.941,-56.571 4.389,-6.566 41.277,61.8 c 3.623,5.427 5.322,8.593 5.322,13.633 0,5.743 -1.533,8.276 -2.7,10.909 z m -23.163,0 h 9.446 a 18.657,18.657 0 0 0 2.61,-9.854 c -0.073,-3.771 -1.608,-6.186 -3.908,-9.631 l -32.978,-49.386 -4.281,6.419 27.964,41.863 c 2.491,3.729 4.57,7.085 4.756,10.494 a 13.852,13.852 0 0 1 -3.607,10.095 z m -41.876,-96.446 -47.673,71.9 c -3.624,5.426 -5.323,8.593 -5.325,13.633 0,5.744 1.534,8.274 2.7,10.909 h 7.615 c -0.2,-0.449 -0.418,-0.961 -0.632,-1.525 A 21.951,21.951 0 0 1 35.076,118 c 0.128,-5.356 1.994,-8.946 5.1,-13.575 l 48.751,-73.24 z m 23.131,0 -51.032,76.962 c -2.3,3.444 -3.835,5.859 -3.908,9.631 a 18.646,18.646 0 0 0 2.609,9.854 h 9.649 a 13.857,13.857 0 0 1 -3.607,-10.095 12.375,12.375 0 0 1 0.442,-2.666 h 64.943 a 12.717,12.717 0 0 0 -1.967,-3.842 H 59.02 c 0.706,-1.227 1.633,-2.686 2.5,-3.986 l 3.349,-5.013 h 49.344 l -2.7,-4.047 H 67.575 l 44.266,-66.8 z"
+         transform="translate(-12.588,-14.604)"
+         fill="#202b78" />
+    </g>
+  </g>
+</svg>
