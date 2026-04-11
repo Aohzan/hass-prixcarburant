@@ -29,6 +29,7 @@ _LOGGER = logging.getLogger(__name__)
 PRIX_CARBURANT_API_URL = "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records"
 STATIONS_NAME_FILE = "stations_name.json"
 STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/custom_components/prix_carburant/stations_name.json"
+BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Schimmelreiter/hass-prixcarburant/refs/heads/master/custom_components/prix_carburant/brand_logos"
 HTTP_OK = 200
 
 
@@ -417,12 +418,12 @@ def get_entity_picture(brand: str) -> str:
         "COSTCO": "https://upload.wikimedia.org/wikipedia/commons/5/59/Costco_Wholesale_logo_2010-10-26.svg",
         "Dyneff": "https://upload.wikimedia.org/wikipedia/commons/9/92/Logo_Dyneff.svg",
         "Elf": "https://upload.wikimedia.org/wikipedia/fr/1/17/ELF_logo_1991-2004.svg",
-        "ENI FRANCE": "https://github.com/Aohzan/hass-prixcarburant/tree/master/custom_components/prix_carburant/brand_logos/Eni.svg",
-        "ENI": "https://github.com/Aohzan/hass-prixcarburant/tree/master/custom_components/prix_carburant/brand_logos/Eni.svg",
-        "Eni": "https://github.com/Aohzan/hass-prixcarburant/tree/master/custom_components/prix_carburant/brand_logos/Eni.svg",
-        "Esso": "https://github.com/Aohzan/hass-prixcarburant/tree/master/custom_components/prix_carburant/brand_logos/Esso.svg",
-        "Esso Express": "https://github.com/Aohzan/hass-prixcarburant/tree/master/custom_components/prix_carburant/brand_logos/Esso.svg",
-        "Fulli": "https://github.com/Aohzan/hass-prixcarburant/tree/master/custom_components/prix_carburant/brand_logos/Fulli.svg",
+        "ENI FRANCE": BRAND_LOGO_BASE_URL + "/Eni.svg",
+        "ENI": BRAND_LOGO_BASE_URL + "/Eni.svg",
+        "Eni": BRAND_LOGO_BASE_URL + "/Eni.svg",
+        "Esso": BRAND_LOGO_BASE_URL + "/Esso.svg",
+        "Esso Express": BRAND_LOGO_BASE_URL + "/Esso.svg",
+        "Fulli": BRAND_LOGO_BASE_URL + "/Fulli.svg",
         "G20": "https://upload.wikimedia.org/wikipedia/fr/9/9a/Logo_Supermarch%C3%A9s_G20_%282011%29.svg",
         "Supermarché G20": "https://upload.wikimedia.org/wikipedia/fr/9/9a/Logo_Supermarch%C3%A9s_G20_%282011%29.svg",
         "Géant": "https://upload.wikimedia.org/wikipedia/commons/3/31/Hypermarche_Geant_Casino.jpg",
@@ -431,7 +432,7 @@ def get_entity_picture(brand: str) -> str:
         "8 à Huit": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Logo_8_A_Huit.svg",
         "Intermarché": "https://upload.wikimedia.org/wikipedia/commons/9/96/Intermarch%C3%A9_logo_2009_classic.svg",
         "Intermarché Contact": "https://upload.wikimedia.org/wikipedia/commons/9/96/Intermarch%C3%A9_logo_2009_classic.svg",
-        "Leclerc": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Logo_E.Leclerc_Sans_le_texte.svg",
+        "Leclerc": BRAND_LOGO_BASE_URL + "/Leclerc.svg",
         "Leader Price": "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg",
         "LEADER-PRICE": "https://upload.wikimedia.org/wikipedia/fr/2/2d/Logo_Leader_Price_-_2017.svg",
         "Lidl": "https://upload.wikimedia.org/wikipedia/commons/9/91/Lidl-Logo.svg",
@@ -453,10 +454,10 @@ def get_entity_picture(brand: str) -> str:
         "Système U": "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg",
         "Super U": "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg",
         "Station U": "https://upload.wikimedia.org/wikipedia/fr/1/13/U_commer%C3%A7ants_logo_2018.svg",
-        "Total": "https://github.com/Aohzan/hass-prixcarburant/tree/master/custom_components/prix_carburant/brand_logos/TotalEnergies.svg",
-        "Total Access": "https://github.com/Aohzan/hass-prixcarburant/tree/master/custom_components/prix_carburant/brand_logos/TotalEnergies.svg",
-        "Total Contact": "https://github.com/Aohzan/hass-prixcarburant/tree/master/custom_components/prix_carburant/brand_logos/TotalEnergies.svg",
-        "Elan": "https://upload.wikimedia.org/wikipedia/commons/0/02/Logo_Elan.svg",
+        "Total": BRAND_LOGO_BASE_URL + "/TotalEnergies.svg",
+        "Total Access": BRAND_LOGO_BASE_URL + "/TotalEnergies.svg",
+        "Total Contact": BRAND_LOGO_BASE_URL + "/TotalEnergies.svg",
+        "Elan": BRAND_LOGO_BASE_URL + "/ELAN-FR.svg",
         "Weldom": "https://upload.wikimedia.org/wikipedia/commons/9/9d/Weldom_logo_2012.svg",
         "Supermarché Match": "https://upload.wikimedia.org/wikipedia/fr/a/ad/Logo_Supermarché_Match.svg",
         "VITO": "https://upload.wikimedia.org/wikipedia/commons/5/57/Logo_Vito.svg",
