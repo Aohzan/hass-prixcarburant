@@ -134,7 +134,7 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
             manufacturer=station_info.get(ATTR_BRAND, "Station"),
             model=self.station_id,
             name=station_name,
-            configuration_url="https://www.prix-carburants.gouv.fr/",
+            configuration_url="https://www.prix-carburants.gouv.fr/station/" + str(self.station_id),
         )
         self._attr_extra_state_attributes = {
             ATTR_NAME: normalize_string(self.station_info[ATTR_NAME]),
