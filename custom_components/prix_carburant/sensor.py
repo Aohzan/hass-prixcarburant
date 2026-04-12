@@ -134,7 +134,8 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
             manufacturer=station_info.get(ATTR_BRAND, "Station"),
             model=self.station_id,
             name=station_name,
-            configuration_url="https://www.prix-carburants.gouv.fr/station/" + str(self.station_id),
+            configuration_url="https://www.prix-carburants.gouv.fr/station/"
+            + str(self.station_id),
         )
         self._attr_extra_state_attributes = {
             ATTR_NAME: normalize_string(self.station_info[ATTR_NAME]),
@@ -164,9 +165,15 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
             }
             if fuel.get(ATTR_UPDATED_DATE) is not None:
                 try:
-                    delay = max((datetime.now(tz=UTC) - datetime.strptime(
-                        fuel[ATTR_UPDATED_DATE], "%Y-%m-%dT%H:%M:%S%z"
-                    )),timedelta(0))
+                    delay = max(
+                        (
+                            datetime.now(tz=UTC)
+                            - datetime.strptime(
+                                fuel[ATTR_UPDATED_DATE], "%Y-%m-%dT%H:%M:%S%z"
+                            )
+                        ),
+                        timedelta(0),
+                    )
                     self._attr_extra_state_attributes[ATTR_DAYS_SINCE_LAST_UPDATE] = (
                         delay.days
                     )
@@ -177,5 +184,5 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
                         err,
                     )
             if fuel.get(ATTR_PRICE) is not None:
-                return float(fuel[ATTR_PRICE])
+                return round(float(fuel[ATTR_PRICE]), 3)
         return None
