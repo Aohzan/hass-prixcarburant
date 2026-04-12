@@ -29,7 +29,7 @@ _LOGGER = logging.getLogger(__name__)
 PRIX_CARBURANT_API_URL = "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records"
 STATIONS_NAME_FILE = "stations_name.json"
 STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/custom_components/prix_carburant/stations_name.json"
-BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Schimmelreiter/hass-prixcarburant/refs/heads/master/brand_logos/"
+BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/"
 HTTP_OK = 200
 
 
