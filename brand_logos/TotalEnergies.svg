@@ -139,11 +139,11 @@
   </defs>
   <style
      id="style15">
-		.s0 { fill: url(#g1) } 
-		.s1 { fill: url(#g2) } 
-		.s2 { fill: url(#g3) } 
-		.s3 { fill: url(#g4) } 
-		.s4 { fill: url(#g5) } 
+		.s0 { fill: url(#g1) }
+		.s1 { fill: url(#g2) }
+		.s2 { fill: url(#g3) }
+		.s3 { fill: url(#g4) }
+		.s4 { fill: url(#g5) }
 	</style>
   <g
      id="surface1"

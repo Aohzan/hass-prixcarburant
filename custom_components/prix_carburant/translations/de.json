@@ -78,8 +78,7 @@
     },
     "services": {
         "find_nearest_stations": {
-            
-			"name": "Nächstgelegene Tankstelle finden",
+            "name": "Nächstgelegene Tankstelle finden",
             "description": "Suche nach weniger teuren Tankstellen in der Umgebung",
             "fields": {
                 "entity_id": {
