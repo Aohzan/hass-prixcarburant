@@ -3,4 +3,4 @@ homeassistant==2026.4.2
 pip>=26.0.1
 ruff>=0.15.11
 pycares>=5.0.1,<6.0.0
-pre-commit==4.5.1
+pre-commit==4.6.0
