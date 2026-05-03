@@ -1,5 +1,8 @@
 """Tools for Prix Carburant."""
 
+import bz2
+import csv
+import io
 import json
 import logging
 from asyncio import timeout
@@ -27,10 +30,42 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 PRIX_CARBURANT_API_URL = "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records"
+STATIONS_NAME_OSM_URL = (
+    "https://www.data.gouv.fr/api/1/datasets/r/fcab3bd4-6c6d-4b73-95d2-cfd5e04ee651"
+)
+STATIONS_NAME_OSM_FILE = "stations_name_osm.csv"
 STATIONS_NAME_FILE = "stations_name.json"
 STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/custom_components/prix_carburant/stations_name.json"
 BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/"
 HTTP_OK = 200
+_DELETE_TAG = "DELETE TAG"
+
+
+def _parse_stations_csv(content: str) -> dict[str, dict]:
+    """Parse a stations CSV string into a {station_id: {name, brand}} dict."""
+    result: dict[str, dict] = {}
+    reader = csv.DictReader(io.StringIO(content))
+    for row in reader:
+        station_id = row.get("ref:FR:prix-carburants", "").strip()
+        if not station_id or station_id.startswith(_DELETE_TAG):
+            continue
+
+        def _clean(value: str) -> str:
+            value = value.strip()
+            return "" if value.startswith(_DELETE_TAG) else value
+
+        name = _clean(row.get("name", ""))
+        brand = _clean(row.get("brand", ""))
+        if not brand:
+            brand = _clean(row.get("operator", ""))
+        if not brand:
+            brand = _clean(row.get("branch", ""))
+
+        if not name and not brand:
+            continue
+        if station_id not in result:
+            result[station_id] = {"name": name, "brand": brand}
+    return result
 
 
 class PrixCarburantTool:
@@ -49,22 +84,46 @@ class PrixCarburantTool:
         self._local_stations_data: dict[str, dict] = {}
         self._stations_data: dict[str, dict] = {}
 
-        _LOGGER.debug("Loading stations from: %s", STATIONS_NAME_URL)
+        _LOGGER.debug("Loading OSM stations CSV from: %s", STATIONS_NAME_OSM_URL)
+        try:
+            response = requests.get(STATIONS_NAME_OSM_URL, timeout=request_timeout)
+            response.raise_for_status()
+            csv_content = bz2.decompress(response.content).decode("UTF-8")
+            osm_stations_data: dict[str, dict] = _parse_stations_csv(csv_content)
+            _LOGGER.debug(
+                "Successfully retrieved OSM CSV from: %s", STATIONS_NAME_OSM_URL
+            )
+        except (requests.RequestException, OSError, ValueError) as err:
+            _LOGGER.warning(
+                "Failed to load OSM CSV from data.gouv.fr (%s). Using local file: %s",
+                err,
+                STATIONS_NAME_OSM_FILE,
+            )
+            with (Path(__file__).parent / STATIONS_NAME_OSM_FILE).open(
+                encoding="UTF-8",
+            ) as file:
+                osm_stations_data = _parse_stations_csv(file.read())
+
+        _LOGGER.debug("Loading custom stations from: %s", STATIONS_NAME_URL)
         try:
             response = requests.get(STATIONS_NAME_URL, timeout=request_timeout)
             response.raise_for_status()
-            self._local_stations_data = response.json()
-            _LOGGER.debug("Successfully retrieved data from: %s", STATIONS_NAME_URL)
+            custom_stations_data: dict[str, dict] = response.json()
+            _LOGGER.debug(
+                "Successfully retrieved custom data from: %s", STATIONS_NAME_URL
+            )
         except (requests.RequestException, json.JSONDecodeError, ValueError) as err:
             _LOGGER.warning(
-                "Failed to load stations data from GitHub (%s). Using local file: %s",
+                "Failed to load custom stations data from GitHub (%s). Using local file: %s",
                 err,
                 STATIONS_NAME_FILE,
             )
             with (Path(__file__).parent / STATIONS_NAME_FILE).open(
                 encoding="UTF-8",
             ) as file:
-                self._local_stations_data = json.load(file)
+                custom_stations_data = json.load(file)
+
+        self._local_stations_data = {**osm_stations_data, **custom_stations_data}
 
         self._request_timeout = request_timeout
         self._session = session
