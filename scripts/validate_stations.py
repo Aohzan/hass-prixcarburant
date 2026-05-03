@@ -49,6 +49,17 @@ def validate_stations_json(file_path):
                 print(f"Error: Station {station_id} 'brand' should be a string.")
                 return False
 
+            # Check optional lat/lon overrides
+            for coord_key in ("latitude", "longitude"):
+                if coord_key in station_data:
+                    try:
+                        float(station_data[coord_key])
+                    except (TypeError, ValueError):
+                        print(
+                            f"Error: Station {station_id} '{coord_key}' should be a float."
+                        )
+                        return False
+
         print("The stations_name.json file is valid.")
         return True
 
