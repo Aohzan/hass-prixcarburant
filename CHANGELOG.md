@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.24.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.24.0...3.24.1) (2026-05-03)
+
+### Bug Fixes
+
+* timezone issue by comparing date only ([#181](https://github.com/Aohzan/hass-prixcarburant/issues/181)) ([15564aa](https://github.com/Aohzan/hass-prixcarburant/commit/15564aa8d1de0cdfd477c409154d3ef1b33c4637))
+
 ## [3.24.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.23.0...3.24.0) (2026-04-13)
 
 ### Features
