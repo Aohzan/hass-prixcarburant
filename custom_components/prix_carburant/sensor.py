@@ -119,9 +119,22 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
         self._last_update = None
         self._attr_unique_id = "_".join([DOMAIN, str(self.station_id), self.fuel])
         if self.station_info[ATTR_NAME] != "undefined":
-            station_name = f"Station {self.station_info[ATTR_NAME]}"
+            station_name = self.station_info[ATTR_NAME]
+        elif self.station_info[ATTR_BRAND] and self.station_info[ATTR_CITY]:
+            station_name = (
+                f"{self.station_info[ATTR_BRAND]} {self.station_info[ATTR_CITY]}"
+            )
+        elif self.station_info[ATTR_BRAND]:
+            station_name = f"{self.station_info[ATTR_BRAND]} {self.station_id}"
         else:
-            station_name = f"Station {self.station_id}"
+            station_name = self.station_id
+
+        # Add 'Station' prefix if needed
+        if not station_name.lower().startswith(
+            "station"
+        ) and not station_name.lower().startswith("relais"):
+            station_name = f"Station {station_name}"
+
         self._attr_name = f"{station_name} {self.fuel}"
 
         if entry_data["options"][CONF_DISPLAY_ENTITY_PICTURES] is True:
