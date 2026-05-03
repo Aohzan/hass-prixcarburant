@@ -50,18 +50,15 @@ class PrixCarburantTool:
         self._stations_data: dict[str, dict] = {}
 
         _LOGGER.debug("Loading stations from: %s", STATIONS_NAME_URL)
-        response = requests.get(STATIONS_NAME_URL, timeout=request_timeout)
-        if (
-            response.status_code == HTTP_OK
-            and "Bad Gateway" not in response.text
-            and "Not Found" not in response.text
-        ):
-            _LOGGER.debug("Successfully retrieved data from: %s", STATIONS_NAME_URL)
+        try:
+            response = requests.get(STATIONS_NAME_URL, timeout=request_timeout)
+            response.raise_for_status()
             self._local_stations_data = response.json()
-        else:
-            _LOGGER.exception(
-                "Loading stations data from github failed with error: [ Request error: %s ], instead loading data from local file: %s",
-                response.status_code,
+            _LOGGER.debug("Successfully retrieved data from: %s", STATIONS_NAME_URL)
+        except (requests.RequestException, json.JSONDecodeError, ValueError) as err:
+            _LOGGER.warning(
+                "Failed to load stations data from GitHub (%s). Using local file: %s",
+                err,
                 STATIONS_NAME_FILE,
             )
             with (Path(__file__).parent / STATIONS_NAME_FILE).open(
@@ -370,6 +367,25 @@ class PrixCarburantTool:
                             data[station["id"]][attr_key] = attr_value.title()
                         else:
                             data[station["id"]][attr_key] = attr_value
+                # allow overriding GPS coordinates (decimal degrees)
+                if (override_lat := local_station_data.get("latitude")) is not None:
+                    data[station["id"]][ATTR_LATITUDE] = float(override_lat)
+                if (override_lon := local_station_data.get("longitude")) is not None:
+                    data[station["id"]][ATTR_LONGITUDE] = float(override_lon)
+                if (
+                    (
+                        local_station_data.get("latitude") is not None
+                        or local_station_data.get("longitude") is not None
+                    )
+                    and user_longitude
+                    and user_latitude
+                ):
+                    data[station["id"]][ATTR_DISTANCE] = _get_distance(
+                        data[station["id"]][ATTR_LONGITUDE],
+                        data[station["id"]][ATTR_LATITUDE],
+                        user_longitude,
+                        user_latitude,
+                    )
         except KeyError, TypeError:
             _LOGGER.exception(
                 "Error while getting station %s information",
@@ -412,8 +428,6 @@ def get_entity_picture(brand: str) -> str:
         "Super Casino": BRAND_LOGO_BASE_URL + "Casino.svg",
         "Colruyt": BRAND_LOGO_BASE_URL + "Colruyt.svg",
         "COLRUYT": BRAND_LOGO_BASE_URL + "Colruyt.svg",
-        "Cora": BRAND_LOGO_BASE_URL + "Cora.svg",
-        "CORA": BRAND_LOGO_BASE_URL + "Cora.svg",
         "Costco": BRAND_LOGO_BASE_URL + "Costco.svg",
         "COSTCO": BRAND_LOGO_BASE_URL + "Costco.svg",
         "Dyneff": BRAND_LOGO_BASE_URL + "Dyneff.svg",
