@@ -1,5 +1,8 @@
 """Tools for Prix Carburant."""
 
+import bz2
+import csv
+import io
 import json
 import logging
 from asyncio import timeout
@@ -27,10 +30,44 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 PRIX_CARBURANT_API_URL = "https://data.economie.gouv.fr/api/explore/v2.1/catalog/datasets/prix-des-carburants-en-france-flux-instantane-v2/records"
+STATIONS_NAME_OSM_URL = (
+    "https://www.data.gouv.fr/api/1/datasets/r/fcab3bd4-6c6d-4b73-95d2-cfd5e04ee651"
+)
+STATIONS_NAME_OSM_FILE = "stations_name_osm.csv"
 STATIONS_NAME_FILE = "stations_name.json"
 STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/custom_components/prix_carburant/stations_name.json"
 BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/"
 HTTP_OK = 200
+_DELETE_TAG = "DELETE TAG"
+
+
+def _parse_stations_csv(content: str) -> dict[str, dict]:
+    """Parse a stations CSV string into a {station_id: {name, brand}} dict."""
+    result: dict[str, dict] = {}
+    reader = csv.DictReader(io.StringIO(content))
+    for row in reader:
+        raw_ids = row.get("ref:FR:prix-carburants", "").strip()
+        if not raw_ids or raw_ids.startswith(_DELETE_TAG):
+            continue
+
+        def _clean(value: str) -> str:
+            value = value.strip()
+            return "" if value.startswith(_DELETE_TAG) else value
+
+        name = _clean(row.get("name", ""))
+        brand = _clean(row.get("brand", ""))
+        if not brand:
+            brand = _clean(row.get("operator", ""))
+        if not brand:
+            brand = _clean(row.get("branch", ""))
+
+        if not name and not brand:
+            continue
+        for raw_station_id in raw_ids.split(";"):
+            station_id = raw_station_id.strip()
+            if station_id and station_id not in result:
+                result[station_id] = {"name": name, "brand": brand}
+    return result
 
 
 class PrixCarburantTool:
@@ -49,22 +86,46 @@ class PrixCarburantTool:
         self._local_stations_data: dict[str, dict] = {}
         self._stations_data: dict[str, dict] = {}
 
-        _LOGGER.debug("Loading stations from: %s", STATIONS_NAME_URL)
+        _LOGGER.debug("Loading OSM stations CSV from: %s", STATIONS_NAME_OSM_URL)
+        try:
+            response = requests.get(STATIONS_NAME_OSM_URL, timeout=request_timeout)
+            response.raise_for_status()
+            csv_content = bz2.decompress(response.content).decode("UTF-8")
+            osm_stations_data: dict[str, dict] = _parse_stations_csv(csv_content)
+            _LOGGER.debug(
+                "Successfully retrieved OSM CSV from: %s", STATIONS_NAME_OSM_URL
+            )
+        except (requests.RequestException, OSError, ValueError) as err:
+            _LOGGER.warning(
+                "Failed to load OSM CSV from data.gouv.fr (%s). Using local file: %s",
+                err,
+                STATIONS_NAME_OSM_FILE,
+            )
+            with (Path(__file__).parent / STATIONS_NAME_OSM_FILE).open(
+                encoding="UTF-8",
+            ) as file:
+                osm_stations_data = _parse_stations_csv(file.read())
+
+        _LOGGER.debug("Loading custom stations from: %s", STATIONS_NAME_URL)
         try:
             response = requests.get(STATIONS_NAME_URL, timeout=request_timeout)
             response.raise_for_status()
-            self._local_stations_data = response.json()
-            _LOGGER.debug("Successfully retrieved data from: %s", STATIONS_NAME_URL)
+            custom_stations_data: dict[str, dict] = response.json()
+            _LOGGER.debug(
+                "Successfully retrieved custom data from: %s", STATIONS_NAME_URL
+            )
         except (requests.RequestException, json.JSONDecodeError, ValueError) as err:
             _LOGGER.warning(
-                "Failed to load stations data from GitHub (%s). Using local file: %s",
+                "Failed to load custom stations data from GitHub (%s). Using local file: %s",
                 err,
                 STATIONS_NAME_FILE,
             )
             with (Path(__file__).parent / STATIONS_NAME_FILE).open(
                 encoding="UTF-8",
             ) as file:
-                self._local_stations_data = json.load(file)
+                custom_stations_data = json.load(file)
+
+        self._local_stations_data = {**osm_stations_data, **custom_stations_data}
 
         self._request_timeout = request_timeout
         self._session = session
@@ -330,7 +391,7 @@ class PrixCarburantTool:
             longitude = float(station["longitude"]) / 100000
             distance = (
                 _get_distance(longitude, latitude, user_longitude, user_latitude)
-                if user_longitude and user_latitude
+                if user_longitude is not None and user_latitude is not None
                 else None
             )
             data.update(
@@ -377,8 +438,8 @@ class PrixCarburantTool:
                         local_station_data.get("latitude") is not None
                         or local_station_data.get("longitude") is not None
                     )
-                    and user_longitude
-                    and user_latitude
+                    and user_longitude is not None
+                    and user_latitude is not None
                 ):
                     data[station["id"]][ATTR_DISTANCE] = _get_distance(
                         data[station["id"]][ATTR_LONGITUDE],
@@ -428,6 +489,8 @@ def get_entity_picture(brand: str) -> str:
         "Super Casino": BRAND_LOGO_BASE_URL + "Casino.svg",
         "Colruyt": BRAND_LOGO_BASE_URL + "Colruyt.svg",
         "COLRUYT": BRAND_LOGO_BASE_URL + "Colruyt.svg",
+        "Cora": BRAND_LOGO_BASE_URL + "Cora.svg",
+        "CORA": BRAND_LOGO_BASE_URL + "Cora.svg",
         "Costco": BRAND_LOGO_BASE_URL + "Costco.svg",
         "COSTCO": BRAND_LOGO_BASE_URL + "Costco.svg",
         "Dyneff": BRAND_LOGO_BASE_URL + "Dyneff.svg",
@@ -446,6 +509,7 @@ def get_entity_picture(brand: str) -> str:
         "8 à Huit": BRAND_LOGO_BASE_URL + "8_A_Huit.svg",
         "Intermarché": BRAND_LOGO_BASE_URL + "Intermarche.svg",
         "Intermarché Contact": BRAND_LOGO_BASE_URL + "Intermarche.svg",
+        "E.Leclerc": BRAND_LOGO_BASE_URL + "Leclerc.svg",
         "Leclerc": BRAND_LOGO_BASE_URL + "Leclerc.svg",
         "Leader Price": BRAND_LOGO_BASE_URL + "Leader_Price.svg",
         "LEADER-PRICE": BRAND_LOGO_BASE_URL + "Leader_Price.svg",
@@ -471,6 +535,8 @@ def get_entity_picture(brand: str) -> str:
         "Total": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
         "Total Access": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
         "Total Contact": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
+        "TotalEnergies": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
+        "TotalEnergies Access": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
         "Elan": BRAND_LOGO_BASE_URL + "ELAN-FR.svg",
         "Weldom": BRAND_LOGO_BASE_URL + "Weldom.svg",
         "Supermarché Match": BRAND_LOGO_BASE_URL + "Match.svg",

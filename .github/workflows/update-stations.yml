@@ -1,0 +1,29 @@
+name: Update stations data
+
+on:
+  schedule:
+    - cron: "0 4 * * 1" # Every Monday at 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  update-csv:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download and decompress stations CSV
+        run: python3 scripts/update_osm_stations.py
+
+      - name: Clean stations_name.json
+        run: python3 scripts/clean_stations_json.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add custom_components/prix_carburant/stations_name_osm.csv
+          git add custom_components/prix_carburant/stations_name.json
+          git diff --staged --quiet || git commit -m "chore: update stations data"
+          git push
