@@ -10151,6 +10151,10 @@
     "name": "Super U LANDIVISIAU",
     "brand": "Système U"
   },
+  "29400003": {
+    "name": "Esso LANDIVISIAU",
+    "brand": "Esso"
+  },
   "29403001": {
     "name": "LANDI-DISTRIBUTION",
     "brand": "Leclerc"
@@ -10250,6 +10254,10 @@
   "29600004": {
     "name": "RELAIS KEROLZEC",
     "brand": "Total"
+  },
+  "29600005": {
+    "name": "Carrefour Saint Martin des Champs",
+    "brand": "Carrefour"
   },
   "29610002": {
     "name": "U Express Plouigneau",
