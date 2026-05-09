@@ -127,7 +127,7 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
         elif self.station_info[ATTR_BRAND]:
             station_name = f"{self.station_info[ATTR_BRAND]} {self.station_id}"
         else:
-            station_name = self.station_id
+            station_name = str(self.station_id)
 
         # Add 'Station' prefix if needed
         if not station_name.lower().startswith(
