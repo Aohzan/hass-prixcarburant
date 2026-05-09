@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.25.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.24.1...3.25.0) (2026-05-09)
+
+### Features
+
+* allow local overriding of gps coordinates and improve remote stations data retriving ([add1b91](https://github.com/Aohzan/hass-prixcarburant/commit/add1b91d388d989005622cf1475d16a9c7350175))
+* get stations data from osm ([bd0695c](https://github.com/Aohzan/hass-prixcarburant/commit/bd0695c6a10da827796dba7dc32782c7ad77a204))
+
+### Bug Fixes
+
+* error on station without name ([dcaac3a](https://github.com/Aohzan/hass-prixcarburant/commit/dcaac3ae94aa8f925cfc218266700410e5868871))
+* improve station entities naming ([a3361a8](https://github.com/Aohzan/hass-prixcarburant/commit/a3361a842bcb84693a335527d50827f1f92043f5))
+
 ## [3.24.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.24.0...3.24.1) (2026-05-03)
 
 ### Bug Fixes
