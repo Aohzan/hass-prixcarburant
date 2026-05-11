@@ -9243,10 +9243,6 @@
     "name": "Esso IGOVILLE",
     "brand": "Esso Express"
   },
-  "27500002": {
-    "name": "Carrefour Market",
-    "brand": "Carrefour Market"
-  },
   "27500003": {
     "name": "MR LECOEUR",
     "brand": "Total"
@@ -16250,10 +16246,6 @@
   "43230002": {
     "name": "SAS CECARLAEL",
     "brand": "Intermarché Contact"
-  },
-  "43240001": {
-    "name": "Carrefour Market",
-    "brand": "Carrefour Market"
   },
   "43260001": {
     "name": "GARAGE DESSALCES",
@@ -23923,11 +23915,6 @@
     "name": "Relais de la plaine",
     "brand": "Total"
   },
-  "63000024": {
-    "name": "Relais Champradet",
-    "brand": "Total Access",
-    "address": "94 avenue du Puy-de-Dôme"
-  },
   "63000025": {
     "name": "Relais Clermont-Ferrand Lavoisier",
     "brand": "Total Access"
@@ -24363,10 +24350,6 @@
   "64000015": {
     "name": "Relais Barincou",
     "brand": "Total"
-  },
-  "64000016": {
-    "name": "Relais de Pau Mermoz",
-    "brand": "Total Access"
   },
   "64100001": {
     "name": "Total Damestoy",
