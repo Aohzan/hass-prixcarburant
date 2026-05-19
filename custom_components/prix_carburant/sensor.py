@@ -129,12 +129,6 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
         else:
             station_name = str(self.station_id)
 
-        # Add 'Station' prefix if needed
-        if not station_name.lower().startswith(
-            "station"
-        ) and not station_name.lower().startswith("relais"):
-            station_name = f"Station {station_name}"
-
         self._attr_name = f"{station_name} {self.fuel}"
 
         if entry_data["options"][CONF_DISPLAY_ENTITY_PICTURES] is True:
