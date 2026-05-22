@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.25.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.25.0...3.25.1) (2026-05-21)
+
+### Bug Fixes
+
+* retry API request on exceptions ([0628941](https://github.com/Aohzan/hass-prixcarburant/commit/0628941768f10f9c6afe965f58074d92f772069e))
+
 ## [3.25.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.24.1...3.25.0) (2026-05-09)
 
 ### Features

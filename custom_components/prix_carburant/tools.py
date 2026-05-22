@@ -5,7 +5,7 @@ import csv
 import io
 import json
 import logging
-from asyncio import timeout
+from asyncio import sleep, timeout
 from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 from socket import gaierror
@@ -143,37 +143,55 @@ class PrixCarburantTool:
     async def request_api(
         self,
         params: dict,
+        retries: int = 3,
+        retry_delay: int = 10,
     ) -> dict:
         """Make a request to the JSON API."""
-        try:
-            params.update(
-                {
-                    "lang": "fr",
-                    "timezone": self._user_time_zone,
-                }
-            )
-            async with timeout(self._request_timeout):
-                response = await self._session.request(  # type: ignore[union-attr]
-                    method="GET",
-                    url=PRIX_CARBURANT_API_URL,
-                    params=params,
-                    ssl=self._api_ssl_check,
+        params.update(
+            {
+                "lang": "fr",
+                "timezone": self._user_time_zone,
+            }
+        )
+        last_exception: Exception | None = None
+        for attempt in range(1, retries + 1):
+            try:
+                async with timeout(self._request_timeout):
+                    response = await self._session.request(  # type: ignore[union-attr]
+                        method="GET",
+                        url=PRIX_CARBURANT_API_URL,
+                        params=params,
+                        ssl=self._api_ssl_check,
+                    )
+                    content = await response.json()
+
+                    if response.status == HTTP_OK and "results" in content:
+                        response.close()
+                        return content
+
+                    _raise_api_request_error(response.status, content)
+
+            except TimeoutError:
+                msg = "Timeout occurred while connecting to Prix Carburant API."
+                last_exception = PrixCarburantToolCannotConnectError(msg)
+            except ClientError, gaierror:
+                msg = "Error occurred while communicating with the Prix Carburant API."
+                last_exception = PrixCarburantToolCannotConnectError(msg)
+            except PrixCarburantToolRequestError:
+                raise
+
+            if attempt < retries:
+                _LOGGER.warning(
+                    "API request failed (attempt %s/%s), retrying in %ss",
+                    attempt,
+                    retries,
+                    retry_delay,
                 )
-                content = await response.json()
+                await sleep(retry_delay)
 
-                if response.status == HTTP_OK and "results" in content:
-                    response.close()
-                    return content
-
-                msg = f"API request error {response.status}: {content}"
-                raise PrixCarburantToolRequestError(msg)
-
-        except TimeoutError as exception:
-            msg = "Timeout occurred while connecting to Prix Carburant API."
-            raise PrixCarburantToolCannotConnectError(msg) from exception
-        except (ClientError, gaierror) as exception:
-            msg = "Error occurred while communicating with the Prix Carburant API."
-            raise PrixCarburantToolCannotConnectError(msg) from exception
+        if last_exception:
+            raise last_exception
+        return {}
 
     async def init_stations_from_list(
         self, stations_ids: list[int], latitude: float, longitude: float
@@ -313,13 +331,20 @@ class PrixCarburantTool:
                 station_id,
                 station_data[ATTR_NAME],
             )
-            response = await self.request_api(
-                {
-                    "select": query_select,
-                    "where": f"id={station_id}",
-                    "limit": 1,
-                }
-            )
+            try:
+                response = await self.request_api(
+                    {
+                        "select": query_select,
+                        "where": f"id={station_id}",
+                        "limit": 1,
+                    }
+                )
+            except (
+                PrixCarburantToolCannotConnectError,
+                PrixCarburantToolRequestError,
+            ):
+                _LOGGER.exception("Failed to update prices for station %s", station_id)
+                continue
             if response["total_count"] != 1:
                 _LOGGER.error(
                     "%s stations returned, must be 1", response["total_count"]
@@ -453,6 +478,12 @@ class PrixCarburantTool:
                 station.get("id", "no ID"),
             )
         return data
+
+
+def _raise_api_request_error(status: int, body: object) -> None:
+    """Raise a PrixCarburantToolRequestError with a formatted message."""
+    msg = f"API request error {status}: {body}"
+    raise PrixCarburantToolRequestError(msg)
 
 
 def _get_distance(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
