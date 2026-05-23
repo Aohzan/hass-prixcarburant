@@ -117,6 +117,7 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
         self.fuel = fuel
 
         self._last_update = None
+        self._last_value: float | None = None
         self._attr_unique_id = "_".join([DOMAIN, str(self.station_id), self.fuel])
         if self.station_info[ATTR_NAME] != "undefined":
             station_name = self.station_info[ATTR_NAME]
@@ -162,6 +163,12 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
             ),
         }
 
+    async def async_added_to_hass(self) -> None:
+        """Restore last state on startup."""
+        await super().async_added_to_hass()
+        if (last_state := await self.async_get_last_sensor_data()) is not None:
+            self._last_value = last_state.native_value
+
     @property
     def native_value(self) -> float | None:
         """Return the current price."""
@@ -187,5 +194,6 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
                         err,
                     )
             if fuel.get(ATTR_PRICE) is not None:
-                return round(float(fuel[ATTR_PRICE]), 3)
-        return None
+                self._last_value = round(float(fuel[ATTR_PRICE]), 3)
+                return self._last_value
+        return self._last_value

@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.26.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.25.1...3.26.0) (2026-05-22)
+
+### Features
+
+* restore and keep prices if the API is unavailable ([2d4f59d](https://github.com/Aohzan/hass-prixcarburant/commit/2d4f59d47ddc5890d8b0a61197dd3dbb87dcebdd))
+
 ## [3.25.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.25.0...3.25.1) (2026-05-21)
 
 ### Bug Fixes
