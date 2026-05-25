@@ -11327,10 +11327,6 @@
     "name": "Intermarché",
     "brand": "Intermarché"
   },
-  "32000001": {
-    "name": "Carrefour",
-    "brand": "Carrefour"
-  },
   "32000002": {
     "name": "SARL SAMA",
     "brand": "Avia"
@@ -21570,10 +21566,6 @@
   "59139001": {
     "name": "Carrefour Wattignies",
     "brand": "Carrefour"
-  },
-  "59142001": {
-    "name": "Intermarché",
-    "brand": "Intermarché"
   },
   "59146002": {
     "name": "RELAIS DE PECQUENCOURT",
