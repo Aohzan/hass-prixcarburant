@@ -1,5 +1,5 @@
 colorlog==6.10.1
-homeassistant==2026.5.1
+homeassistant==2026.5.3
 ruff>=0.15.12
 pip>=26.1.1
 pycares>=5.0.1,<6.0.0
