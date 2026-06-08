@@ -3547,10 +3547,6 @@
     "name": "SPAR LANUEJOULS",
     "brand": "Supermarchés Spar"
   },
-  "12360001": {
-    "name": "Intermarché",
-    "brand": "Intermarché"
-  },
   "12390001": {
     "name": "U Express",
     "brand": "Système U"
@@ -7803,10 +7799,6 @@
     "name": "Intermarché ST QUAY PERROS",
     "brand": "Intermarché"
   },
-  "22710001": {
-    "name": "Carrefour Market",
-    "brand": "Carrefour Market"
-  },
   "22730001": {
     "name": "Super U TREGASTEL",
     "brand": "Système U"
@@ -9594,10 +9586,6 @@
   "28630001": {
     "name": "Intermarché MORANCEZ",
     "brand": "Intermarché Contact"
-  },
-  "28700001": {
-    "name": "Auchan",
-    "brand": "Auchan"
   },
   "28700004": {
     "name": "Super U",
@@ -29176,10 +29164,6 @@
     "name": "HRC SAS Esso BOLLEVILLE",
     "brand": "Esso"
   },
-  "76220001": {
-    "name": "Auchan",
-    "brand": "Auchan"
-  },
   "76220004": {
     "name": "Super U",
     "brand": "Système U"
@@ -36701,10 +36685,6 @@
   "95400008": {
     "name": "RELAIS VILLIERS LE BEL LES ERA",
     "brand": "Total Access"
-  },
-  "95420002": {
-    "name": "Carrefour Market",
-    "brand": "Carrefour Market"
   },
   "95420003": {
     "name": "E. LECLERC",
