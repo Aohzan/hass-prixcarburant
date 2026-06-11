@@ -10,7 +10,6 @@ from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 from socket import gaierror
 
-import requests
 from aiohttp import ClientError, ClientSession
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 
@@ -85,17 +84,28 @@ class PrixCarburantTool:
         self._api_ssl_check = api_ssl_check
         self._local_stations_data: dict[str, dict] = {}
         self._stations_data: dict[str, dict] = {}
+        self._request_timeout = request_timeout
+        self._session = session
+        self._close_session = False
 
+        if self._session is None:
+            self._session = ClientSession()
+            self._close_session = True
+
+    async def async_initialize(self) -> None:
+        """Load stations name data from remote sources, falling back to local files."""
         _LOGGER.debug("Loading OSM stations CSV from: %s", STATIONS_NAME_OSM_URL)
         try:
-            response = requests.get(STATIONS_NAME_OSM_URL, timeout=request_timeout)
-            response.raise_for_status()
-            csv_content = bz2.decompress(response.content).decode("UTF-8")
+            async with timeout(self._request_timeout):
+                response = await self._session.get(STATIONS_NAME_OSM_URL)  # type: ignore[union-attr]
+                response.raise_for_status()
+                raw = await response.read()
+            csv_content = bz2.decompress(raw).decode("UTF-8")
             osm_stations_data: dict[str, dict] = _parse_stations_csv(csv_content)
             _LOGGER.debug(
                 "Successfully retrieved OSM CSV from: %s", STATIONS_NAME_OSM_URL
             )
-        except (requests.RequestException, OSError, ValueError) as err:
+        except (ClientError, TimeoutError, OSError, ValueError) as err:
             _LOGGER.warning(
                 "Failed to load OSM CSV from data.gouv.fr (%s). Using local file: %s",
                 err,
@@ -108,13 +118,16 @@ class PrixCarburantTool:
 
         _LOGGER.debug("Loading custom stations from: %s", STATIONS_NAME_URL)
         try:
-            response = requests.get(STATIONS_NAME_URL, timeout=request_timeout)
-            response.raise_for_status()
-            custom_stations_data: dict[str, dict] = response.json()
+            async with timeout(self._request_timeout):
+                response = await self._session.get(STATIONS_NAME_URL)  # type: ignore[union-attr]
+                response.raise_for_status()
+                custom_stations_data: dict[str, dict] = await response.json(
+                    content_type=None
+                )
             _LOGGER.debug(
                 "Successfully retrieved custom data from: %s", STATIONS_NAME_URL
             )
-        except (requests.RequestException, json.JSONDecodeError, ValueError) as err:
+        except (ClientError, TimeoutError, json.JSONDecodeError, ValueError) as err:
             _LOGGER.warning(
                 "Failed to load custom stations data from GitHub (%s). Using local file: %s",
                 err,
@@ -126,14 +139,6 @@ class PrixCarburantTool:
                 custom_stations_data = json.load(file)
 
         self._local_stations_data = {**osm_stations_data, **custom_stations_data}
-
-        self._request_timeout = request_timeout
-        self._session = session
-        self._close_session = False
-
-        if self._session is None:
-            self._session = ClientSession()
-            self._close_session = True
 
     @property
     def stations(self) -> dict:
