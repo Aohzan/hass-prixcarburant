@@ -365,7 +365,7 @@ class PrixCarburantTool:
             for fuel in FUELS:
                 fuel_key = fuel.lower()
                 if (
-                    new_prices[f"{fuel_key}_prix"]
+                    new_prices.get(f"{fuel_key}_prix")
                     or new_prices.get(f"{fuel_key}_rupture_type") == "temporaire"
                 ):
                     station_data[ATTR_FUELS].update(
@@ -379,6 +379,8 @@ class PrixCarburantTool:
                             }
                         }
                     )
+                else:
+                    station_data[ATTR_FUELS].pop(fuel, None)
 
         if failed_stations:
             _LOGGER.warning(
