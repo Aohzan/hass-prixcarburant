@@ -330,6 +330,8 @@ class PrixCarburantTool:
             for suffix in ("prix", "maj", "rupture_debut", "rupture_type")
             for fuel in FUELS
         )
+        failed_stations: list[str] = []
+        total_stations = len(self._stations_data)
         for station_id, station_data in self._stations_data.items():
             _LOGGER.debug(
                 "Update fuel prices for station id %s: %s",
@@ -349,11 +351,15 @@ class PrixCarburantTool:
                 PrixCarburantToolRequestError,
             ):
                 _LOGGER.exception("Failed to update prices for station %s", station_id)
+                failed_stations.append(station_id)
                 continue
             if response["total_count"] != 1:
-                _LOGGER.error(
-                    "%s stations returned, must be 1", response["total_count"]
+                _LOGGER.debug(
+                    "Station %s returned %s result(s), expected 1",
+                    station_id,
+                    response["total_count"],
                 )
+                failed_stations.append(station_id)
                 continue
             new_prices = response["results"][0]
             for fuel in FUELS:
@@ -373,6 +379,14 @@ class PrixCarburantTool:
                             }
                         }
                     )
+
+        if failed_stations:
+            _LOGGER.warning(
+                "%s/%s station(s) returned no data from the API: %s",
+                len(failed_stations),
+                total_stations,
+                ", ".join(failed_stations),
+            )
 
     async def find_nearest_station(
         self, longitude: float, latitude: float, fuel: str, distance: int = 10
