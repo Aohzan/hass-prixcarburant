@@ -146,7 +146,7 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, self.station_id)},
             manufacturer=station_info.get(ATTR_BRAND, "Station"),
-            model=self.station_id,
+            model=str(self.station_id),
             name=station_name,
             configuration_url="https://www.prix-carburants.gouv.fr/station/"
             + str(self.station_id),
