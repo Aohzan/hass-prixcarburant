@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.26.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.0...3.26.1) (2026-06-14)
+
+### Bug Fixes
+
+* error during initialization ([f8fc6f8](https://github.com/Aohzan/hass-prixcarburant/commit/f8fc6f8a65189e176f11307b8642a455a919515d))
+* int error in device registry ([39f1692](https://github.com/Aohzan/hass-prixcarburant/commit/39f1692ce3bba5eef7d85b4486827c355b0542eb))
+* sensor stuck in shortage ([b90f64b](https://github.com/Aohzan/hass-prixcarburant/commit/b90f64bc1d10fdb4fa9159a427792e2598a75149))
+
 ## [3.26.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.25.1...3.26.0) (2026-05-22)
 
 ### Features
