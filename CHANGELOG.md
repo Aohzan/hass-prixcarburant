@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.26.2](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.1...3.26.2) (2026-06-16)
+
+### Bug Fixes
+
+* failed stations typing ([dd5d60a](https://github.com/Aohzan/hass-prixcarburant/commit/dd5d60a3d27cb1225b67e452bed343cb68d37aa7))
+
 ## [3.26.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.0...3.26.1) (2026-06-14)
 
 ### Bug Fixes
