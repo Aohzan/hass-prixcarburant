@@ -332,7 +332,8 @@ class PrixCarburantTool:
         )
         failed_stations: list[str] = []
         total_stations = len(self._stations_data)
-        for station_id, station_data in self._stations_data.items():
+        for station_id_, station_data in self._stations_data.items():
+            station_id = str(station_id_)
             _LOGGER.debug(
                 "Update fuel prices for station id %s: %s",
                 station_id,
