@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   viewBox="0 0 500 499.99999"
-   enable-background="new 0 0 382 500"
-   width="500"
-   height="500"
+   viewBox="0 0 86 86"
+   class="MainHeaderV2__logo is-renault"
+   title="Renault - Achat de voitures neuves - Site Officiel"
    version="1.1"
-   id="svg8"
+   id="svg1"
    sodipodi:docname="Renault.svg"
+   width="86"
+   height="86"
    inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
    xmlns:svg="http://www.w3.org/2000/svg">
   <defs
-     id="defs8" />
+     id="defs1" />
   <sodipodi:namedview
-     id="namedview8"
+     id="namedview1"
      pagecolor="#ffffff"
      bordercolor="#000000"
      borderopacity="0.25"
@@ -23,45 +24,17 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.0467484"
-     inkscape:cx="249.90859"
-     inkscape:cy="218.63948"
+     inkscape:zoom="20.825581"
+     inkscape:cx="33.732552"
+     inkscape:cy="43"
      inkscape:window-width="3840"
      inkscape:window-height="2030"
      inkscape:window-x="2869"
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="svg8" />
+     inkscape:current-layer="svg1" />
   <path
-     style="fill:#000000;stroke:none"
-     d="m 208.9847,34 -83.7801,156.00918 83.7801,156.00793 h 23.1817 L 316.8576,190.00918 262.8999,89.53194 250.7151,112.22095 292.4896,190.00918 220.4372,324.17711 148.3861,190.00918 232.1664,34 Z m 48.0051,0 -84.6924,156.00918 53.9591,100.47714 12.1845,-22.68908 -41.7744,-77.78806 72.0524,-134.16799 72.0512,134.16799 -83.7814,156.00793 h 23.1826 L 363.9517,190.00918 280.1714,34 Z"
-     id="path1" />
-  <path
-     style="fill:#000000;fill-rule:evenodd;stroke-width:0.350576"
-     d="m 79.9942,408.10754 v 62.23127 h 54.2125 V 457.79185 H 96.1104 V 445.1899 h 33.3725 V 432.80857 H 96.1104 v -12.31994 h 37.3091 v -12.38109 z"
-     id="path2" />
-  <path
-     style="fill:#000000;fill-rule:evenodd;stroke-width:0.350576"
-     d="m 0,408.10754 v 62.23127 h 16.1162 v -19.49003 h 19.4006 l 11.2528,19.49003 h 18.5865 l -13.496,-22.89223 c 6.5534,-3.61768 11.2722,-10.20709 11.2722,-18.31429 0,-16.64605 -12.6179,-21.02475 -22.8701,-21.02475 z m 16.1162,12.38109 h 22.8561 c 2.9512,0 6.2357,2.29429 6.2357,9.38713 0,2.40483 -0.702,8.59169 -6.2357,8.59169 H 16.1162 Z"
-     id="path3" />
-  <path
-     style="fill:#000000;stroke-width:0.223607"
-     d="m 148.8468,408.10754 v 62.23127 h 16.1162 v -40.08544 l 35.6286,40.08544 h 16.116 v -62.23127 h -16.116 v 39.7587 l -35.6286,-39.7587 z"
-     id="path4" />
-  <path
-     style="fill:#000000;stroke:none"
-     d="m 253.3119,408.10754 -27.4231,62.23127 h 18.4797 l 4.1814,-10.59523 h 31.3448 l 4.1814,10.59523 h 18.4797 l -27.4231,-62.23127 z m 10.9103,11.92151 10.7866,27.33332 h -21.5729 z"
-     id="path5" />
-  <path
-     style="fill:#000000;stroke:none"
-     d="m 391.7109,408.10754 v 62.23127 H 443.34 v -12.54696 h -35.5131 v -49.68431 z"
-     id="path6" />
-  <path
-     style="fill:#000000;stroke:none"
-     d="m 435.4432,408.10754 v 12.38109 h 24.2204 v 49.85018 h 16.1161 V 420.48863 H 500 v -12.38109 z"
-     id="path7" />
-  <path
-     style="fill:#000000;stroke:none"
-     d="m 310.1242,408.10754 v 42.05703 c 0,17.62353 17.8765,21.35867 32.0531,21.35867 14.1766,0 32.0533,-3.73514 32.0533,-21.35867 v -42.05703 h -16.1162 v 41.26999 c 0,6.40728 -9.6883,8.55893 -15.9371,8.55893 -6.2488,0 -15.937,-2.15165 -15.937,-8.55893 v -41.26999 z"
-     id="path8" />
+     d="m 62.3,43 -23,43 H 33 L 10,43 32.9,0 h 6.5 L 16.5,43 36.1,79.9 55.7,43 44.3,21.5 47.6,15.4 Z M 52.5,0 H 45.9 L 23.1,43 37.8,70.6 41,64.5 29.6,43 49.2,6 68.8,43 45.9,86 h 6.6 L 75.3,43 Z"
+     id="path1"
+     style="fill:#f2f2f2;fill-opacity:1" />
 </svg>
