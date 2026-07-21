@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.26.4](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.3...3.26.4) (2026-07-21)
+
+### Bug Fixes
+
+* consistency in station id ([a44f31b](https://github.com/Aohzan/hass-prixcarburant/commit/a44f31b46a78caf716ae3ff254bb734a7eaf7354))
+
 ## [3.26.3](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.2...3.26.3) (2026-07-21)
 
 ### Bug Fixes
