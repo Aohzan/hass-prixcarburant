@@ -127,7 +127,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         if not entity:
             msg = "The entity specified was not found"
             raise HomeAssistantError(msg)
-        if "longitude" not in entity.attributes and "latitude" not in entity.attributes:
+        if "longitude" not in entity.attributes or "latitude" not in entity.attributes:
             msg = f"No coordinate attributes found for the entity {entity_id}"
             raise HomeAssistantError(msg)
         stations = await tool.find_nearest_station(
@@ -142,8 +142,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
                     "name": station_data[ATTR_NAME],
                     "price": station_data.get(ATTR_PRICE),
                     "address": f"{station_data[ATTR_ADDRESS]}, {station_data[ATTR_POSTAL_CODE]} {station_data[ATTR_CITY]}",
-                    "latitude": f"{station_data[ATTR_LATITUDE]}",
-                    "longitude": f"{station_data[ATTR_LONGITUDE]}",
+                    "latitude": station_data[ATTR_LATITUDE],
+                    "longitude": station_data[ATTR_LONGITUDE],
                 }
                 for station_data in stations.values()
             ],

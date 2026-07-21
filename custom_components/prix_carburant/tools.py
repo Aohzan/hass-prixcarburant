@@ -1,5 +1,6 @@
 """Tools for Prix Carburant."""
 
+import asyncio
 import bz2
 import csv
 import io
@@ -38,6 +39,7 @@ STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant
 BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/"
 HTTP_OK = 200
 _DELETE_TAG = "DELETE TAG"
+_MAX_CONCURRENT_API_REQUESTS = 5
 
 
 def _parse_stations_csv(content: str) -> dict[str, dict]:
@@ -86,11 +88,7 @@ class PrixCarburantTool:
         self._stations_data: dict[str, dict] = {}
         self._request_timeout = request_timeout
         self._session = session
-        self._close_session = False
-
-        if self._session is None:
-            self._session = ClientSession()
-            self._close_session = True
+        self._semaphore = asyncio.Semaphore(_MAX_CONCURRENT_API_REQUESTS)
 
     async def async_initialize(self) -> None:
         """Load stations name data from remote sources, falling back to local files."""
@@ -202,42 +200,43 @@ class PrixCarburantTool:
         self, stations_ids: list[int], latitude: float, longitude: float
     ) -> None:
         """Get data from station list ID."""
-        data = {}
         _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
 
-        for station_id in stations_ids:
-            _LOGGER.debug(
-                "Search station ID %s",
-                station_id,
-            )
-            response = await self.request_api(
-                {
-                    "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
-                    "where": f"id={station_id}",
-                    "limit": 1,
-                }
-            )
+        async def _fetch_station(station_id: int) -> dict:
+            _LOGGER.debug("Search station ID %s", station_id)
+            async with self._semaphore:
+                response = await self.request_api(
+                    {
+                        "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
+                        "where": f"id={station_id}",
+                        "limit": 1,
+                    }
+                )
             if response["total_count"] == 0:
                 _LOGGER.warning(
                     "Station %s not found in the API, it may have closed or its ID has changed",
                     station_id,
                 )
-                continue
+                return {}
             if response["total_count"] > 1:
                 _LOGGER.error(
                     "Multiple stations (%s) returned for ID %s, expected 1",
                     response["total_count"],
                     station_id,
                 )
-                continue
-            data.update(
-                self._build_station_data(
-                    response["results"][0],
-                    user_latitude=latitude,
-                    user_longitude=longitude,
-                )
+                return {}
+            return self._build_station_data(
+                response["results"][0],
+                user_latitude=latitude,
+                user_longitude=longitude,
             )
 
+        results = await asyncio.gather(
+            *[_fetch_station(sid) for sid in stations_ids],
+        )
+        data: dict = {}
+        for result in results:
+            data.update(result)
         self._stations_data = data
 
     async def init_stations_from_location(
@@ -247,7 +246,6 @@ class PrixCarburantTool:
         distance: int,
     ) -> None:
         """Get data from near stations."""
-        data = {}
         _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
         response_count = await self.request_api(
             {
@@ -259,19 +257,14 @@ class PrixCarburantTool:
         stations_count = response_count["total_count"]
         _LOGGER.debug("%s stations returned by the API", stations_count)
 
-        for query_offset in range(0, stations_count, 100):
-            query_limit = (
-                100
-                if query_offset < stations_count - 100
-                else stations_count - query_offset
-            )
+        async def _fetch_page(query_offset: int, query_limit: int) -> dict:
             _LOGGER.debug(
                 "Query stations from %s to %s/%s",
                 query_offset,
                 query_limit,
                 stations_count,
             )
-            async with timeout(self._request_timeout):
+            async with self._semaphore:
                 response = await self.request_api(
                     {
                         "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
@@ -280,13 +273,28 @@ class PrixCarburantTool:
                         "limit": query_limit,
                     }
                 )
+            data: dict = {}
             for station in response["results"]:
                 data.update(
                     self._build_station_data(
                         station, user_longitude=longitude, user_latitude=latitude
                     )
                 )
+            return data
 
+        offsets_limits = [
+            (
+                offset,
+                100 if offset < stations_count - 100 else stations_count - offset,
+            )
+            for offset in range(0, stations_count, 100)
+        ]
+        results = await asyncio.gather(
+            *[_fetch_page(off, lim) for off, lim in offsets_limits],
+        )
+        data: dict = {}
+        for result in results:
+            data.update(result)
         self._stations_data = data
 
     async def add_manual_stations(
@@ -295,36 +303,37 @@ class PrixCarburantTool:
         """Add manual stations to existing stations data without overwriting."""
         _LOGGER.debug("Adding %s manual stations", len(manual_station_ids))
 
-        for station_id in manual_station_ids:
-            # Skip if station already exists
+        async def _fetch_station(station_id: int) -> dict:
             if str(station_id) in self._stations_data:
                 _LOGGER.debug("Station %s already exists, skipping", station_id)
-                continue
-
+                return {}
             _LOGGER.debug("Adding manual station ID %s", station_id)
-            response = await self.request_api(
-                {
-                    "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
-                    "where": f"id={station_id}",
-                    "limit": 1,
-                }
-            )
+            async with self._semaphore:
+                response = await self.request_api(
+                    {
+                        "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
+                        "where": f"id={station_id}",
+                        "limit": 1,
+                    }
+                )
             if response["total_count"] != 1:
                 _LOGGER.error(
                     "Station %s not found in API (returned %s results)",
                     station_id,
                     response["total_count"],
                 )
-                continue
-
-            # Add station to existing data
-            self._stations_data.update(
-                self._build_station_data(
-                    response["results"][0],
-                    user_latitude=latitude,
-                    user_longitude=longitude,
-                )
+                return {}
+            return self._build_station_data(
+                response["results"][0],
+                user_latitude=latitude,
+                user_longitude=longitude,
             )
+
+        results = await asyncio.gather(
+            *[_fetch_station(sid) for sid in manual_station_ids],
+        )
+        for result in results:
+            self._stations_data.update(result)
 
         _LOGGER.info(
             "Manual stations added. Total stations: %s", len(self._stations_data)
@@ -338,9 +347,10 @@ class PrixCarburantTool:
             for suffix in ("prix", "maj", "rupture_debut", "rupture_type")
             for fuel in FUELS
         )
-        failed_stations: list[str] = []
-        total_stations = len(self._stations_data)
-        for station_id_, station_data in self._stations_data.items():
+
+        async def _fetch_prices(
+            station_id_: str, station_data: dict
+        ) -> tuple[str, dict | None]:
             station_id = str(station_id_)
             _LOGGER.debug(
                 "Update fuel prices for station id %s: %s",
@@ -348,29 +358,40 @@ class PrixCarburantTool:
                 station_data[ATTR_NAME],
             )
             try:
-                response = await self.request_api(
-                    {
-                        "select": query_select,
-                        "where": f"id={station_id}",
-                        "limit": 1,
-                    }
-                )
+                async with self._semaphore:
+                    response = await self.request_api(
+                        {
+                            "select": query_select,
+                            "where": f"id={station_id}",
+                            "limit": 1,
+                        }
+                    )
             except (
                 PrixCarburantToolCannotConnectError,
                 PrixCarburantToolRequestError,
             ):
                 _LOGGER.exception("Failed to update prices for station %s", station_id)
-                failed_stations.append(station_id)
-                continue
+                return station_id_, None
             if response["total_count"] != 1:
                 _LOGGER.debug(
                     "Station %s returned %s result(s), expected 1",
                     station_id,
                     response["total_count"],
                 )
-                failed_stations.append(station_id)
+                return station_id_, None
+            return station_id_, response["results"][0]
+
+        results = await asyncio.gather(
+            *[_fetch_prices(sid, sdata) for sid, sdata in self._stations_data.items()],
+        )
+
+        failed_stations: list[str] = []
+        total_stations = len(self._stations_data)
+        for station_id_, new_prices in results:
+            if new_prices is None:
+                failed_stations.append(station_id_)
                 continue
-            new_prices = response["results"][0]
+            station_data = self._stations_data[station_id_]
             for fuel in FUELS:
                 fuel_key = fuel.lower()
                 if (
@@ -456,8 +477,8 @@ class PrixCarburantTool:
                         ATTR_LONGITUDE: longitude,
                         ATTR_DISTANCE: distance,
                         ATTR_ADDRESS: station[
-                            "ad" + "resse"
-                        ],  # split string to avoid codespell french word
+                            "adresse"
+                        ],  # codespell:ignore-words-list=adresse
                         ATTR_POSTAL_CODE: station["cp"],
                         ATTR_CITY: station["ville"],
                         ATTR_NAME: "undefined",
@@ -531,79 +552,81 @@ def _get_distance(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
     return round(calcul_c * earth_radius, 2)
 
 
+_BRAND_LOGOS: dict[str, str] = {
+    "8 à Huit": BRAND_LOGO_BASE_URL + "8_A_Huit.svg",
+    "Aldi": BRAND_LOGO_BASE_URL + "Aldi_Nord.svg",
+    "Agip": BRAND_LOGO_BASE_URL + "Agip.svg",
+    "Atac": BRAND_LOGO_BASE_URL + "Atac.svg",
+    "Auchan": BRAND_LOGO_BASE_URL + "Auchan.svg",
+    "Avia": BRAND_LOGO_BASE_URL + "AVIA.svg",
+    "BP": BRAND_LOGO_BASE_URL + "BP.svg",
+    "BP Express": BRAND_LOGO_BASE_URL + "BP.svg",
+    "Bricomarché": BRAND_LOGO_BASE_URL + "Bricomarche.svg",
+    "Carrefour": BRAND_LOGO_BASE_URL + "Carrefour.svg",
+    "Carrefour Contact": BRAND_LOGO_BASE_URL + "Carrefour.svg",
+    "Carrefour Express": BRAND_LOGO_BASE_URL + "Carrefour.svg",
+    "Carrefour Market": BRAND_LOGO_BASE_URL + "Carrefour.svg",
+    "Casino": BRAND_LOGO_BASE_URL + "Casino.svg",
+    "COLRUYT": BRAND_LOGO_BASE_URL + "Colruyt.svg",
+    "CORA": BRAND_LOGO_BASE_URL + "Cora.svg",
+    "COSTCO": BRAND_LOGO_BASE_URL + "Costco.svg",
+    "Colruyt": BRAND_LOGO_BASE_URL + "Colruyt.svg",
+    "Cora": BRAND_LOGO_BASE_URL + "Cora.svg",
+    "Costco": BRAND_LOGO_BASE_URL + "Costco.svg",
+    "Dyneff": BRAND_LOGO_BASE_URL + "Dyneff.svg",
+    "ENI": BRAND_LOGO_BASE_URL + "Eni.svg",
+    "ENI FRANCE": BRAND_LOGO_BASE_URL + "Eni.svg",
+    "Elf": BRAND_LOGO_BASE_URL + "ELF.svg",
+    "Elan": BRAND_LOGO_BASE_URL + "ELAN-FR.svg",
+    "Eni": BRAND_LOGO_BASE_URL + "Eni.svg",
+    "Esso": BRAND_LOGO_BASE_URL + "Esso.svg",
+    "Esso Express": BRAND_LOGO_BASE_URL + "Esso.svg",
+    "Fulli": BRAND_LOGO_BASE_URL + "Fulli.svg",
+    "G20": BRAND_LOGO_BASE_URL + "G20.svg",
+    "Géant": BRAND_LOGO_BASE_URL + "Geant_Casino.svg",
+    "Gulf": BRAND_LOGO_BASE_URL + "Gulf.svg",
+    "Huit à 8": BRAND_LOGO_BASE_URL + "8_A_Huit.svg",
+    "Intermarché": BRAND_LOGO_BASE_URL + "Intermarche.svg",
+    "Intermarché Contact": BRAND_LOGO_BASE_URL + "Intermarche.svg",
+    "E.Leclerc": BRAND_LOGO_BASE_URL + "Leclerc.svg",
+    "LEADER-PRICE": BRAND_LOGO_BASE_URL + "Leader_Price.svg",
+    "LIDL": BRAND_LOGO_BASE_URL + "Lidl.svg",
+    "Leclerc": BRAND_LOGO_BASE_URL + "Leclerc.svg",
+    "Leader Price": BRAND_LOGO_BASE_URL + "Leader_Price.svg",
+    "Lidl": BRAND_LOGO_BASE_URL + "Lidl.svg",
+    "MIGROS": BRAND_LOGO_BASE_URL + "Migrol.svg",
+    "Maximarché": BRAND_LOGO_BASE_URL + "Maximarche.png",
+    "Monoprix": BRAND_LOGO_BASE_URL + "Monoprix.svg",
+    "PROXI SUPER": BRAND_LOGO_BASE_URL + "Proxi.svg",
+    "Netto": BRAND_LOGO_BASE_URL + "Netto-FR.svg",
+    "Proxy": BRAND_LOGO_BASE_URL + "Proxi.svg",
+    "Renault": BRAND_LOGO_BASE_URL + "Renault.svg",
+    "ROMPETROL": BRAND_LOGO_BASE_URL + "Rompetrol.svg",
+    "Roady": BRAND_LOGO_BASE_URL + "Roady-white.svg",
+    "SPAR": BRAND_LOGO_BASE_URL + "Spar.svg",
+    "SPAR STATION": BRAND_LOGO_BASE_URL + "Spar.svg",
+    "Shell": BRAND_LOGO_BASE_URL + "Shell.svg",
+    "Simply Market": BRAND_LOGO_BASE_URL + "Auchan.svg",
+    "Station U": BRAND_LOGO_BASE_URL + "Hyper-U.svg",
+    "Super Casino": BRAND_LOGO_BASE_URL + "Casino.svg",
+    "Super U": BRAND_LOGO_BASE_URL + "Hyper-U.svg",
+    "Supermarché G20": BRAND_LOGO_BASE_URL + "G20.svg",
+    "Supermarché Match": BRAND_LOGO_BASE_URL + "Match.svg",
+    "Supermarchés Spar": BRAND_LOGO_BASE_URL + "Spar.svg",
+    "Système U": BRAND_LOGO_BASE_URL + "Hyper-U.svg",
+    "Total": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
+    "Total Access": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
+    "Total Contact": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
+    "TotalEnergies": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
+    "TotalEnergies Access": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
+    "VITO": BRAND_LOGO_BASE_URL + "Vito.svg",
+    "Weldom": BRAND_LOGO_BASE_URL + "Weldom.svg",
+}
+
+
 def get_entity_picture(brand: str) -> str:
     """Get entity picture based on brand."""
-    brand_logos = {
-        "Aldi": BRAND_LOGO_BASE_URL + "Aldi_Nord.svg",
-        "Agip": BRAND_LOGO_BASE_URL + "Agip.svg",
-        "Atac": BRAND_LOGO_BASE_URL + "Atac.svg",
-        "Auchan": BRAND_LOGO_BASE_URL + "Auchan.svg",
-        "Avia": BRAND_LOGO_BASE_URL + "AVIA.svg",
-        "BP": BRAND_LOGO_BASE_URL + "BP.svg",
-        "BP Express": BRAND_LOGO_BASE_URL + "BP.svg",
-        "Bricomarché": BRAND_LOGO_BASE_URL + "Bricomarche.svg",
-        "Carrefour": BRAND_LOGO_BASE_URL + "Carrefour.svg",
-        "Carrefour Contact": BRAND_LOGO_BASE_URL + "Carrefour.svg",
-        "Carrefour Express": BRAND_LOGO_BASE_URL + "Carrefour.svg",
-        "Carrefour Market": BRAND_LOGO_BASE_URL + "Carrefour.svg",
-        "Casino": BRAND_LOGO_BASE_URL + "Casino.svg",
-        "Super Casino": BRAND_LOGO_BASE_URL + "Casino.svg",
-        "Colruyt": BRAND_LOGO_BASE_URL + "Colruyt.svg",
-        "COLRUYT": BRAND_LOGO_BASE_URL + "Colruyt.svg",
-        "Cora": BRAND_LOGO_BASE_URL + "Cora.svg",
-        "CORA": BRAND_LOGO_BASE_URL + "Cora.svg",
-        "Costco": BRAND_LOGO_BASE_URL + "Costco.svg",
-        "COSTCO": BRAND_LOGO_BASE_URL + "Costco.svg",
-        "Dyneff": BRAND_LOGO_BASE_URL + "Dyneff.svg",
-        "Elf": BRAND_LOGO_BASE_URL + "ELF.svg",
-        "ENI FRANCE": BRAND_LOGO_BASE_URL + "Eni.svg",
-        "ENI": BRAND_LOGO_BASE_URL + "Eni.svg",
-        "Eni": BRAND_LOGO_BASE_URL + "Eni.svg",
-        "Esso": BRAND_LOGO_BASE_URL + "Esso.svg",
-        "Esso Express": BRAND_LOGO_BASE_URL + "Esso.svg",
-        "Fulli": BRAND_LOGO_BASE_URL + "Fulli.svg",
-        "G20": BRAND_LOGO_BASE_URL + "G20.svg",
-        "Supermarché G20": BRAND_LOGO_BASE_URL + "G20.svg",
-        "Géant": BRAND_LOGO_BASE_URL + "Geant_Casino.svg",
-        "Gulf": BRAND_LOGO_BASE_URL + "Gulf.svg",
-        "Huit à 8": BRAND_LOGO_BASE_URL + "8_A_Huit.svg",
-        "8 à Huit": BRAND_LOGO_BASE_URL + "8_A_Huit.svg",
-        "Intermarché": BRAND_LOGO_BASE_URL + "Intermarche.svg",
-        "Intermarché Contact": BRAND_LOGO_BASE_URL + "Intermarche.svg",
-        "E.Leclerc": BRAND_LOGO_BASE_URL + "Leclerc.svg",
-        "Leclerc": BRAND_LOGO_BASE_URL + "Leclerc.svg",
-        "Leader Price": BRAND_LOGO_BASE_URL + "Leader_Price.svg",
-        "LEADER-PRICE": BRAND_LOGO_BASE_URL + "Leader_Price.svg",
-        "Lidl": BRAND_LOGO_BASE_URL + "Lidl.svg",
-        "LIDL": BRAND_LOGO_BASE_URL + "Lidl.svg",
-        "Maximarché": BRAND_LOGO_BASE_URL + "Maximarche.png",
-        "MIGROS": BRAND_LOGO_BASE_URL + "Migrol.svg",
-        "Monoprix": BRAND_LOGO_BASE_URL + "Monoprix.svg",
-        "Netto": BRAND_LOGO_BASE_URL + "Netto-FR.svg",
-        "Proxy": BRAND_LOGO_BASE_URL + "Proxi.svg",
-        "PROXI SUPER": BRAND_LOGO_BASE_URL + "Proxi.svg",
-        "Renault": BRAND_LOGO_BASE_URL + "Renault.svg",
-        "Roady": BRAND_LOGO_BASE_URL + "Roady-white.svg",
-        "ROMPETROL": BRAND_LOGO_BASE_URL + "Rompetrol.svg",
-        "Shell": BRAND_LOGO_BASE_URL + "Shell.svg",
-        "Simply Market": BRAND_LOGO_BASE_URL + "Auchan.svg",
-        "SPAR": BRAND_LOGO_BASE_URL + "Spar.svg",
-        "SPAR STATION": BRAND_LOGO_BASE_URL + "Spar.svg",
-        "Supermarchés Spar": BRAND_LOGO_BASE_URL + "Spar.svg",
-        "Système U": BRAND_LOGO_BASE_URL + "Hyper-U.svg",
-        "Super U": BRAND_LOGO_BASE_URL + "Hyper-U.svg",
-        "Station U": BRAND_LOGO_BASE_URL + "Hyper-U.svg",
-        "Total": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
-        "Total Access": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
-        "Total Contact": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
-        "TotalEnergies": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
-        "TotalEnergies Access": BRAND_LOGO_BASE_URL + "TotalEnergies.svg",
-        "Elan": BRAND_LOGO_BASE_URL + "ELAN-FR.svg",
-        "Weldom": BRAND_LOGO_BASE_URL + "Weldom.svg",
-        "Supermarché Match": BRAND_LOGO_BASE_URL + "Match.svg",
-        "VITO": BRAND_LOGO_BASE_URL + "Vito.svg",
-    }
-    return brand_logos.get(brand, "")
+    return _BRAND_LOGOS.get(brand, "")
 
 
 def normalize_string(string: str | None) -> str:
