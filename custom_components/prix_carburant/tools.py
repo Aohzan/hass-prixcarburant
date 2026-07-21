@@ -196,17 +196,15 @@ class PrixCarburantTool:
             raise last_exception
         return {}
 
-    async def init_stations_from_list(
-        self, stations_ids: list[int], latitude: float, longitude: float
-    ) -> None:
-        """Get data from station list ID."""
-        _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
-        if not stations_ids:
-            self._stations_data = {}
-            return
+    async def _fetch_stations_by_ids(
+        self, station_ids: list, latitude: float, longitude: float
+    ) -> tuple[dict, list[str]]:
+        """Fetch station data for the given IDs, returning (data, missing_ids)."""
+        if not station_ids:
+            return {}, []
 
-        ids_list = ",".join(str(sid) for sid in stations_ids)
-        query_limit = min(len(stations_ids), 100)
+        ids_list = ",".join(str(sid) for sid in station_ids)
+        query_limit = min(len(station_ids), 100)
         response = await self.request_api(
             {
                 "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
@@ -216,12 +214,9 @@ class PrixCarburantTool:
         )
 
         api_station_ids = {str(r["id"]) for r in response.get("results", [])}
-        for sid in stations_ids:
-            if str(sid) not in api_station_ids:
-                _LOGGER.warning(
-                    "Station %s not found in the API, it may have closed or its ID has changed",
-                    sid,
-                )
+        missing_ids = [
+            str(sid) for sid in station_ids if str(sid) not in api_station_ids
+        ]
 
         data: dict = {}
         for result in response.get("results", []):
@@ -231,6 +226,25 @@ class PrixCarburantTool:
                     user_latitude=latitude,
                     user_longitude=longitude,
                 )
+            )
+        return data, missing_ids
+
+    async def init_stations_from_list(
+        self, stations_ids: list[int], latitude: float, longitude: float
+    ) -> None:
+        """Get data from station list ID."""
+        _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
+        if not stations_ids:
+            self._stations_data = {}
+            return
+
+        data, missing_ids = await self._fetch_stations_by_ids(
+            stations_ids, latitude, longitude
+        )
+        for sid in missing_ids:
+            _LOGGER.warning(
+                "Station %s not found in the API, it may have closed or its ID has changed",
+                sid,
             )
         self._stations_data = data
 
@@ -278,10 +292,7 @@ class PrixCarburantTool:
             return data
 
         offsets_limits = [
-            (
-                offset,
-                100 if offset < stations_count - 100 else stations_count - offset,
-            )
+            (offset, min(100, stations_count - offset))
             for offset in range(0, stations_count, 100)
         ]
         results = await asyncio.gather(
@@ -307,29 +318,13 @@ class PrixCarburantTool:
             )
             return
 
-        ids_list = ",".join(str(sid) for sid in new_ids)
-        query_limit = min(len(new_ids), 100)
-        response = await self.request_api(
-            {
-                "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
-                "where": f"id IN ({ids_list})",
-                "limit": query_limit,
-            }
+        data, missing_ids = await self._fetch_stations_by_ids(
+            new_ids, latitude, longitude
         )
+        for sid in missing_ids:
+            _LOGGER.error("Station %s not found in API", sid)
 
-        api_station_ids = {str(r["id"]) for r in response.get("results", [])}
-        for sid in new_ids:
-            if str(sid) not in api_station_ids:
-                _LOGGER.error("Station %s not found in API", sid)
-
-        for result in response.get("results", []):
-            self._stations_data.update(
-                self._build_station_data(
-                    result,
-                    user_latitude=latitude,
-                    user_longitude=longitude,
-                )
-            )
+        self._stations_data.update(data)
 
         _LOGGER.info(
             "Manual stations added. Total stations: %s", len(self._stations_data)
@@ -484,10 +479,7 @@ class PrixCarburantTool:
                     ATTR_CITY,
                 ):
                     if attr_value := local_station_data.get(attr_key):
-                        if str(attr_value).isupper() or str(attr_value).islower():
-                            data[station["id"]][attr_key] = attr_value.title()
-                        else:
-                            data[station["id"]][attr_key] = attr_value
+                        data[station["id"]][attr_key] = normalize_string(attr_value)
                 # allow overriding GPS coordinates (decimal degrees)
                 if (override_lat := local_station_data.get("latitude")) is not None:
                     data[station["id"]][ATTR_LATITUDE] = float(override_lat)
