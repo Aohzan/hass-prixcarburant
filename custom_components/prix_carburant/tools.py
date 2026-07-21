@@ -201,42 +201,37 @@ class PrixCarburantTool:
     ) -> None:
         """Get data from station list ID."""
         _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
+        if not stations_ids:
+            self._stations_data = {}
+            return
 
-        async def _fetch_station(station_id: int) -> dict:
-            _LOGGER.debug("Search station ID %s", station_id)
-            async with self._semaphore:
-                response = await self.request_api(
-                    {
-                        "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
-                        "where": f"id={station_id}",
-                        "limit": 1,
-                    }
-                )
-            if response["total_count"] == 0:
+        ids_list = ",".join(str(sid) for sid in stations_ids)
+        query_limit = min(len(stations_ids), 100)
+        response = await self.request_api(
+            {
+                "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
+                "where": f"id IN ({ids_list})",
+                "limit": query_limit,
+            }
+        )
+
+        api_station_ids = {str(r["id"]) for r in response.get("results", [])}
+        for sid in stations_ids:
+            if str(sid) not in api_station_ids:
                 _LOGGER.warning(
                     "Station %s not found in the API, it may have closed or its ID has changed",
-                    station_id,
+                    sid,
                 )
-                return {}
-            if response["total_count"] > 1:
-                _LOGGER.error(
-                    "Multiple stations (%s) returned for ID %s, expected 1",
-                    response["total_count"],
-                    station_id,
-                )
-                return {}
-            return self._build_station_data(
-                response["results"][0],
-                user_latitude=latitude,
-                user_longitude=longitude,
-            )
 
-        results = await asyncio.gather(
-            *[_fetch_station(sid) for sid in stations_ids],
-        )
         data: dict = {}
-        for result in results:
-            data.update(result)
+        for result in response.get("results", []):
+            data.update(
+                self._build_station_data(
+                    result,
+                    user_latitude=latitude,
+                    user_longitude=longitude,
+                )
+            )
         self._stations_data = data
 
     async def init_stations_from_location(
@@ -303,37 +298,38 @@ class PrixCarburantTool:
         """Add manual stations to existing stations data without overwriting."""
         _LOGGER.debug("Adding %s manual stations", len(manual_station_ids))
 
-        async def _fetch_station(station_id: int) -> dict:
-            if str(station_id) in self._stations_data:
-                _LOGGER.debug("Station %s already exists, skipping", station_id)
-                return {}
-            _LOGGER.debug("Adding manual station ID %s", station_id)
-            async with self._semaphore:
-                response = await self.request_api(
-                    {
-                        "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
-                        "where": f"id={station_id}",
-                        "limit": 1,
-                    }
-                )
-            if response["total_count"] != 1:
-                _LOGGER.error(
-                    "Station %s not found in API (returned %s results)",
-                    station_id,
-                    response["total_count"],
-                )
-                return {}
-            return self._build_station_data(
-                response["results"][0],
-                user_latitude=latitude,
-                user_longitude=longitude,
+        new_ids = [
+            sid for sid in manual_station_ids if str(sid) not in self._stations_data
+        ]
+        if not new_ids:
+            _LOGGER.info(
+                "Manual stations added. Total stations: %s", len(self._stations_data)
             )
+            return
 
-        results = await asyncio.gather(
-            *[_fetch_station(sid) for sid in manual_station_ids],
+        ids_list = ",".join(str(sid) for sid in new_ids)
+        query_limit = min(len(new_ids), 100)
+        response = await self.request_api(
+            {
+                "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
+                "where": f"id IN ({ids_list})",
+                "limit": query_limit,
+            }
         )
-        for result in results:
-            self._stations_data.update(result)
+
+        api_station_ids = {str(r["id"]) for r in response.get("results", [])}
+        for sid in new_ids:
+            if str(sid) not in api_station_ids:
+                _LOGGER.error("Station %s not found in API", sid)
+
+        for result in response.get("results", []):
+            self._stations_data.update(
+                self._build_station_data(
+                    result,
+                    user_latitude=latitude,
+                    user_longitude=longitude,
+                )
+            )
 
         _LOGGER.info(
             "Manual stations added. Total stations: %s", len(self._stations_data)
@@ -347,63 +343,51 @@ class PrixCarburantTool:
             for suffix in ("prix", "maj", "rupture_debut", "rupture_type")
             for fuel in FUELS
         )
-
-        async def _fetch_prices(
-            station_id_: str, station_data: dict
-        ) -> tuple[str, dict | None]:
-            station_id = str(station_id_)
-            _LOGGER.debug(
-                "Update fuel prices for station id %s: %s",
-                station_id,
-                station_data[ATTR_NAME],
-            )
-            try:
-                async with self._semaphore:
-                    response = await self.request_api(
-                        {
-                            "select": query_select,
-                            "where": f"id={station_id}",
-                            "limit": 1,
-                        }
-                    )
-            except (
-                PrixCarburantToolCannotConnectError,
-                PrixCarburantToolRequestError,
-            ):
-                _LOGGER.exception("Failed to update prices for station %s", station_id)
-                return station_id_, None
-            if response["total_count"] != 1:
-                _LOGGER.debug(
-                    "Station %s returned %s result(s), expected 1",
-                    station_id,
-                    response["total_count"],
-                )
-                return station_id_, None
-            return station_id_, response["results"][0]
-
-        results = await asyncio.gather(
-            *[_fetch_prices(sid, sdata) for sid, sdata in self._stations_data.items()],
-        )
-
-        failed_stations: list[str] = []
         total_stations = len(self._stations_data)
-        for station_id_, new_prices in results:
-            if new_prices is None:
+        if total_stations == 0:
+            return
+
+        station_ids = list(self._stations_data.keys())
+        ids_list = ",".join(str(sid) for sid in station_ids)
+        where_clause = f"id IN ({ids_list})"
+        query_limit = min(total_stations, 100)
+
+        try:
+            response = await self.request_api(
+                {
+                    "select": query_select,
+                    "where": where_clause,
+                    "limit": query_limit,
+                }
+            )
+        except (
+            PrixCarburantToolCannotConnectError,
+            PrixCarburantToolRequestError,
+        ):
+            _LOGGER.exception("Failed to update prices from API")
+            return
+
+        api_station_ids = {str(r["id"]) for r in response.get("results", [])}
+        failed_stations: list[str] = []
+
+        for station_id_ in station_ids:
+            if station_id_ not in api_station_ids:
                 failed_stations.append(station_id_)
                 continue
             station_data = self._stations_data[station_id_]
+            result = next(r for r in response["results"] if str(r["id"]) == station_id_)
             for fuel in FUELS:
                 fuel_key = fuel.lower()
                 if (
-                    new_prices.get(f"{fuel_key}_prix")
-                    or new_prices.get(f"{fuel_key}_rupture_type") == "temporaire"
+                    result.get(f"{fuel_key}_prix")
+                    or result.get(f"{fuel_key}_rupture_type") == "temporaire"
                 ):
                     station_data[ATTR_FUELS].update(
                         {
                             fuel: {
-                                ATTR_UPDATED_DATE: new_prices.get(f"{fuel_key}_maj"),
-                                ATTR_PRICE: new_prices.get(f"{fuel_key}_prix"),
-                                ATTR_SHORTAGE_SINCE: new_prices.get(
+                                ATTR_UPDATED_DATE: result.get(f"{fuel_key}_maj"),
+                                ATTR_PRICE: result.get(f"{fuel_key}_prix"),
+                                ATTR_SHORTAGE_SINCE: result.get(
                                     f"{fuel_key}_rupture_debut"
                                 ),
                             }
