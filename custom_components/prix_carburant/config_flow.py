@@ -117,6 +117,14 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
         """Initialize options flow."""
         self._stations_to_remove: list[str] = []
 
+    def _get_manual_stations(self) -> list[int]:
+        """Get manual stations list from config entry data/options."""
+        return list(
+            self.config_entry.data.get(CONF_MANUAL_STATIONS)
+            or self.config_entry.options.get(CONF_MANUAL_STATIONS)
+            or []
+        )
+
     async def async_step_init(
         self,
         user_input: dict[str, Any] | None = None,  # noqa: ARG002
@@ -231,11 +239,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                 errors["station_id"] = "invalid_station_id"
             else:
                 # Check if already exists in manual stations
-                manual_stations = list(
-                    self.config_entry.data.get(CONF_MANUAL_STATIONS)
-                    or self.config_entry.options.get(CONF_MANUAL_STATIONS)
-                    or []
-                )
+                manual_stations = self._get_manual_stations()
 
                 if station_id in manual_stations:
                     errors["station_id"] = "station_already_exists"
@@ -330,12 +334,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                     self._remove_station_entities(entity_reg, station_id)
                     self._remove_station_device(device_reg, station_id)
 
-                # Get current manual stations list from both data and options
-                manual_stations = list(
-                    self.config_entry.data.get(CONF_MANUAL_STATIONS)
-                    or self.config_entry.options.get(CONF_MANUAL_STATIONS)
-                    or []
-                )
+                manual_stations = self._get_manual_stations()
 
                 # Remove selected stations from manual list
                 for station_id in stations_to_remove:
@@ -366,12 +365,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
         if not stations:
             return self.async_abort(reason="no_stations")
 
-        # Get manual stations list from both data and options
-        manual_stations = (
-            self.config_entry.data.get(CONF_MANUAL_STATIONS)
-            or self.config_entry.options.get(CONF_MANUAL_STATIONS)
-            or []
-        )
+        manual_stations = self._get_manual_stations()
 
         # Build station list - only manual stations
         station_options = {}
@@ -407,18 +401,15 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
     async def _validate_station_id(self, station_id: int) -> tuple[bool, str]:
         """Validate station ID by checking API."""
-        api_ssl_check = True
         try:
             websession = async_get_clientsession(self.hass)
-            tool = await self.hass.async_add_executor_job(
-                PrixCarburantTool,
+            tool = PrixCarburantTool(
                 self.hass.config.time_zone,
                 60,
-                api_ssl_check,
-                websession,
+                api_ssl_check=True,
+                session=websession,
             )
 
-            # Try to fetch station from API
             response = await tool.request_api(
                 {
                     "select": "id",

@@ -106,6 +106,7 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
     _attr_icon = "mdi:gas-station"
     _attr_state_class = SensorStateClass.MEASUREMENT
     _attr_native_unit_of_measurement = "€/l"
+    _attr_suggested_display_precision = 3
 
     def __init__(
         self, station_id: str, station_info: dict, fuel: str, entry_data: dict
