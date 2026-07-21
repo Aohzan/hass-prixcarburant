@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.26.3](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.2...3.26.3) (2026-07-21)
+
+### Bug Fixes
+
+* enhance error handling and validation in config flow ([8fab865](https://github.com/Aohzan/hass-prixcarburant/commit/8fab865e9d3d67531b0ea81a82461488bfdff7f2))
+* improve station lookup error handling in PrixCarburantTool ([85c58e4](https://github.com/Aohzan/hass-prixcarburant/commit/85c58e408b762e470893cc5d1109f3e726454bed))
+* optimize station data retrieval and error handling in PrixCarburantTool ([515a185](https://github.com/Aohzan/hass-prixcarburant/commit/515a185829c99b1aefe6f638560ceb81335d21ba))
+
 ## [3.26.2](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.1...3.26.2) (2026-06-16)
 
 ### Bug Fixes
