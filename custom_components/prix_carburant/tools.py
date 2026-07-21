@@ -217,9 +217,17 @@ class PrixCarburantTool:
                     "limit": 1,
                 }
             )
-            if response["total_count"] != 1:
+            if response["total_count"] == 0:
+                _LOGGER.warning(
+                    "Station %s not found in the API, it may have closed or its ID has changed",
+                    station_id,
+                )
+                continue
+            if response["total_count"] > 1:
                 _LOGGER.error(
-                    "%s stations returned, must be 1", response["total_count"]
+                    "Multiple stations (%s) returned for ID %s, expected 1",
+                    response["total_count"],
+                    station_id,
                 )
                 continue
             data.update(
