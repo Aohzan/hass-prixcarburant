@@ -35,7 +35,11 @@ from .const import (
     DOMAIN,
     FUELS,
 )
-from .tools import PrixCarburantTool
+from .tools import (
+    PrixCarburantTool,
+    PrixCarburantToolCannotConnectError,
+    PrixCarburantToolRequestError,
+)
 
 
 def _build_schema(data: Mapping[str, Any], options: Mapping[str, Any]) -> vol.Schema:
@@ -44,7 +48,9 @@ def _build_schema(data: Mapping[str, Any], options: Mapping[str, Any]) -> vol.Sc
 
     # For initial setup, only show max distance and fuel selection
     schema = {
-        vol.Required(CONF_MAX_KM, default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM)): int
+        vol.Required(
+            CONF_MAX_KM, default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM)
+        ): vol.All(int, vol.Range(min=1))
     }
 
     for fuel in FUELS:
@@ -165,7 +171,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                 vol.Required(
                     CONF_MAX_KM,
                     default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM),
-                ): int,
+                ): vol.All(int, vol.Range(min=1)),
             }
         )
 
@@ -420,7 +426,11 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                     "limit": 1,
                 }
             )
-        except ClientError:
+        except (
+            ClientError,
+            PrixCarburantToolCannotConnectError,
+            PrixCarburantToolRequestError,
+        ):
             return False, "station_not_found"
         else:
             if response["total_count"] == 1:
