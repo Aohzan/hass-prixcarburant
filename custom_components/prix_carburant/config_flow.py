@@ -248,7 +248,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                     coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][
                         "coordinator"
                     ]
-                    if str(station_id) in coordinator.data:
+                    if station_id in coordinator.data:
                         errors["station_id"] = "station_already_exists"
                     else:
                         # Validate station exists in API

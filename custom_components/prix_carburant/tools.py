@@ -299,7 +299,7 @@ class PrixCarburantTool:
         _LOGGER.debug("Adding %s manual stations", len(manual_station_ids))
 
         new_ids = [
-            sid for sid in manual_station_ids if str(sid) not in self._stations_data
+            sid for sid in manual_station_ids if int(sid) not in self._stations_data
         ]
         if not new_ids:
             _LOGGER.info(
@@ -338,7 +338,7 @@ class PrixCarburantTool:
     async def update_stations_prices(self) -> None:
         """Update prices of specified stations."""
         _LOGGER.debug("Call %s API to retrieve fuel prices", PRIX_CARBURANT_API_URL)
-        query_select = ",".join(
+        query_select = "id," + ",".join(
             f"{fuel.lower()}_{suffix}"
             for suffix in ("prix", "maj", "rupture_debut", "rupture_type")
             for fuel in FUELS
@@ -367,15 +367,15 @@ class PrixCarburantTool:
             _LOGGER.exception("Failed to update prices from API")
             return
 
-        api_station_ids = {str(r["id"]) for r in response.get("results", [])}
+        api_station_ids = {r["id"] for r in response.get("results", [])}
         failed_stations: list[str] = []
 
         for station_id_ in station_ids:
             if station_id_ not in api_station_ids:
-                failed_stations.append(station_id_)
+                failed_stations.append(str(station_id_))
                 continue
             station_data = self._stations_data[station_id_]
-            result = next(r for r in response["results"] if str(r["id"]) == station_id_)
+            result = next(r for r in response["results"] if r["id"] == station_id_)
             for fuel in FUELS:
                 fuel_key = fuel.lower()
                 if (

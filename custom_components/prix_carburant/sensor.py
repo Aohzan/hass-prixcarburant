@@ -109,7 +109,7 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
     _attr_suggested_display_precision = 3
 
     def __init__(
-        self, station_id: str, station_info: dict, fuel: str, entry_data: dict
+        self, station_id: int, station_info: dict, fuel: str, entry_data: dict
     ) -> None:
         """Initialize the sensor."""
         super().__init__(entry_data["coordinator"])
