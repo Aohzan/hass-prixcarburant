@@ -35676,8 +35676,8 @@
     "brand": "Carrefour"
   },
   "93100011": {
-    "name": "BP MONTREUIL ARISTIDE BRIAND 8 à Huit",
-    "brand": "BP"
+    "name": "ESSO MONTREUIL ARISTIDE BRIAND Carrefour Express",
+    "brand": "Esso"
   },
   "93100013": {
     "name": "RELAIS PARC MONTREAU",
@@ -35690,6 +35690,10 @@
   "93100015": {
     "name": "RELAIS DE L'AMITIE",
     "brand": "Total Access"
+  },
+  "93100017": {
+    "name": "ESSO MONTREUIL NOUVELLE FRANCE",
+    "brand": "Esso"
   },
   "93110005": {
     "name": "RELAIS DES SOUDOUX",
@@ -36098,8 +36102,8 @@
     "brand": "Avia"
   },
   "94120010": {
-    "name": "BP FONTENAY SOUS BOIS VAL DE FONTENAY",
-    "brand": "BP"
+    "name": "ESSO FONTENAY SOUS BOIS VAL DE FONTENAY",
+    "brand": "Esso"
   },
   "94130002": {
     "name": "ETOILE DE NOGENT SARL",
