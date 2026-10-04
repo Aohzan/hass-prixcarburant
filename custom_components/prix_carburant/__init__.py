@@ -18,7 +18,7 @@ from homeassistant.core import (
     ServiceResponse,
     SupportsResponse,
 )
-from homeassistant.exceptions import HomeAssistantError
+from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
@@ -36,7 +36,7 @@ from .const import (
     DOMAIN,
     PLATFORMS,
 )
-from .tools import PrixCarburantTool
+from .tools import PrixCarburantTool, PrixCarburantToolCannotConnectError
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -60,37 +60,43 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     display_entity_pictures = config.get(CONF_DISPLAY_ENTITY_PICTURES, True)
     update_interval = int(config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
 
-    # yaml configuration
-    if CONF_STATIONS in config:
-        _LOGGER.info("Init stations data from yaml list")
-        await tool.init_stations_from_list(
-            stations_ids=config[CONF_STATIONS],
-            latitude=hass.config.latitude,
-            longitude=hass.config.longitude,
-        )
-    # ui configuration
-    else:
-        _LOGGER.info(
-            "Init stations list near Home-Assistant location (%s km around %s %s)",
-            config[CONF_MAX_KM],
-            hass.config.latitude,
-            hass.config.longitude,
-        )
-        await tool.init_stations_from_location(
-            latitude=hass.config.latitude,
-            longitude=hass.config.longitude,
-            distance=config[CONF_MAX_KM],
-        )
-        _LOGGER.info("%s stations found", str(len(tool.stations)))
-
-        # Add manual stations if any
-        if config.get(CONF_MANUAL_STATIONS):
-            _LOGGER.info("Adding %s manual stations", len(config[CONF_MANUAL_STATIONS]))
-            await tool.add_manual_stations(
-                manual_station_ids=config[CONF_MANUAL_STATIONS],
+    try:
+        # yaml configuration
+        if CONF_STATIONS in config:
+            _LOGGER.info("Init stations data from yaml list")
+            await tool.init_stations_from_list(
+                stations_ids=config[CONF_STATIONS],
                 latitude=hass.config.latitude,
                 longitude=hass.config.longitude,
             )
+        # ui configuration
+        else:
+            _LOGGER.info(
+                "Init stations list near Home-Assistant location (%s km around %s %s)",
+                config[CONF_MAX_KM],
+                hass.config.latitude,
+                hass.config.longitude,
+            )
+            await tool.init_stations_from_location(
+                latitude=hass.config.latitude,
+                longitude=hass.config.longitude,
+                distance=config[CONF_MAX_KM],
+            )
+            _LOGGER.info("%s stations found", str(len(tool.stations)))
+
+            # Add manual stations if any
+            if config.get(CONF_MANUAL_STATIONS):
+                _LOGGER.info(
+                    "Adding %s manual stations", len(config[CONF_MANUAL_STATIONS])
+                )
+                await tool.add_manual_stations(
+                    manual_station_ids=config[CONF_MANUAL_STATIONS],
+                    latitude=hass.config.latitude,
+                    longitude=hass.config.longitude,
+                )
+    except PrixCarburantToolCannotConnectError as err:
+        msg = f"Unable to retrieve stations from the Prix Carburant API: {err}"
+        raise ConfigEntryNotReady(msg) from err
 
     async def async_update_data() -> dict:
         """Fetch data from API."""
