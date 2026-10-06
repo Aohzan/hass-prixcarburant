@@ -7,6 +7,7 @@ import io
 import json
 import logging
 from asyncio import sleep, timeout
+from datetime import UTC, datetime
 from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 from socket import gaierror
@@ -20,6 +21,7 @@ from .const import (
     ATTR_CITY,
     ATTR_DISTANCE,
     ATTR_FUELS,
+    ATTR_LAST_API_UPDATE,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
     ATTR_SHORTAGE_SINCE,
@@ -364,12 +366,14 @@ class PrixCarburantTool:
 
         api_station_ids = {r["id"] for r in response.get("results", [])}
         failed_stations: list[str] = []
+        last_api_update = datetime.now(tz=UTC).isoformat(timespec="seconds")
 
         for station_id_ in station_ids:
             if station_id_ not in api_station_ids:
                 failed_stations.append(str(station_id_))
                 continue
             station_data = self._stations_data[station_id_]
+            station_data[ATTR_LAST_API_UPDATE] = last_api_update
             result = next(r for r in response["results"] if r["id"] == station_id_)
             for fuel in FUELS:
                 fuel_key = fuel.lower()

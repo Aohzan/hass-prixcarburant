@@ -29,6 +29,7 @@ ATTR_UPDATED_DATE: Final = "updated_date"
 ATTR_DAYS_SINCE_LAST_UPDATE: Final = "days_since_last_update"
 ATTR_PRICE: Final = "price"
 ATTR_SHORTAGE_SINCE: Final = "shortage_since"
+ATTR_LAST_API_UPDATE: Final = "last_api_update"
 
 ATTR_GAZOLE: Final = "Gazole"
 ATTR_SP95: Final = "SP95"

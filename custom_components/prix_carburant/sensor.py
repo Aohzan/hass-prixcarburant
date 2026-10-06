@@ -32,6 +32,7 @@ from .const import (
     ATTR_DISTANCE,
     ATTR_FUEL_TYPE,
     ATTR_FUELS,
+    ATTR_LAST_API_UPDATE,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
     ATTR_SHORTAGE_SINCE,
@@ -168,6 +169,7 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
             ATTR_SHORTAGE_SINCE: self.station_info[ATTR_FUELS][self.fuel].get(
                 ATTR_SHORTAGE_SINCE
             ),
+            ATTR_LAST_API_UPDATE: self.station_info.get(ATTR_LAST_API_UPDATE),
         }
 
     async def async_added_to_hass(self) -> None:
@@ -179,6 +181,9 @@ class PrixCarburant(CoordinatorEntity, RestoreSensor):
     @property
     def native_value(self) -> float | None:
         """Return the current price."""
+        self._attr_extra_state_attributes[ATTR_LAST_API_UPDATE] = self.coordinator.data[
+            self.station_id
+        ].get(ATTR_LAST_API_UPDATE)
         if fuel := self.coordinator.data[self.station_id][ATTR_FUELS].get(self.fuel):
             # Update date in attributes
             self._attr_extra_state_attributes |= {
