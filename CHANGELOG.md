@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.26.5](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.4...3.26.5) (2026-10-07)
+
+### Bug Fixes
+
+* retry setup when the API is unreachable ([ee67f64](https://github.com/Aohzan/hass-prixcarburant/commit/ee67f6445be8959fa7b705c544592820427aa856))
+
 ## [3.26.4](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.3...3.26.4) (2026-07-21)
 
 ### Bug Fixes
