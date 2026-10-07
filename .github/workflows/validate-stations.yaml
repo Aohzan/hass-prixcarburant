@@ -51,7 +51,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
 
-      # Those steps will auto-approve and auto-merge the PR if it only modifies the stations_name.json file
+      # Those steps will auto-approve and merge the PR if it only modifies the stations_name.json file
       - name: Auto-approve PR
         if: steps.check-pr-files.outputs.only_stations == 'true'
         uses: hmarr/auto-approve-action@v4
@@ -59,7 +59,7 @@ jobs:
           review-message: "Stations data automated approved PR"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Enable auto-merge
+      - name: Merge PR once other checks pass
         if: steps.check-pr-files.outputs.only_stations == 'true'
         run: |
           echo "Waiting for other checks to complete..."
@@ -68,7 +68,8 @@ jobs:
             NOT_OK=$(gh pr checks "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json name,state \
               --jq '[.[] | select(.name != "validate-stations") | select(.state != "SUCCESS" and .state != "SKIPPED" and .state != "NEUTRAL")] | length' || true)
             if [[ "$NOT_OK" == "0" ]]; then
-              gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --auto --squash \
+              # Direct merge: auto-merge cannot be enabled as master has no required status checks
+              gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --squash \
                 --match-head-commit "$HEAD_SHA" \
                 --subject "chore: update stations data (#$PR_NUMBER)"
               exit 0
