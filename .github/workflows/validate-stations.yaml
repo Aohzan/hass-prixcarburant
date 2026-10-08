@@ -14,60 +14,64 @@ jobs:
       statuses: write
 
     steps:
-      - name: Checkout repository
+      # Only the base branch (trusted code) is checked out: code from the PR is never executed,
+      # the PR stations_name.json file is only read as data by the base validation script.
+      - name: Checkout base repository
         uses: actions/checkout@v7
         with:
-          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - name: Set up Python
         uses: actions/setup-python@v7
         with:
           python-version: "3.14"
 
-      - name: Make validation script executable
-        run: chmod +x scripts/validate_stations.py
+      - name: Fetch stations_name.json from the PR
+        run: |
+          git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+          git show "$HEAD_SHA:custom_components/prix_carburant/stations_name.json" > "$RUNNER_TEMP/stations_name.json"
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Validate stations_name.json
-        id: validate-json
-        run: |
-          echo "Validating stations_name.json file..."
-          python scripts/validate_stations.py custom_components/prix_carburant/stations_name.json
-          if [ $? -eq 0 ]; then
-            echo "JSON is valid"
-            echo "valid=true" >> $GITHUB_OUTPUT
-          else
-            echo "JSON is invalid"
-            echo "valid=false" >> $GITHUB_OUTPUT
-            exit 1
-          fi
+        run: python scripts/validate_stations.py "$RUNNER_TEMP/stations_name.json"
 
       - name: Check if PR only modifies stations_name.json
         id: check-pr-files
-        if: steps.validate-json.outputs.valid == 'true'
-        uses: dorny/paths-filter@v4
-        with:
-          filters: |
-            stations_file:
-              - 'custom_components/prix_carburant/stations_name.json'
-            custom_components:
-              - 'custom_components/prix_carburant/*.py'
+        run: |
+          changed_files=$(gh api --paginate "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files" --jq '.[].filename' | sort -u)
+          echo "Changed files:"
+          echo "$changed_files"
+          if [[ "$changed_files" == "custom_components/prix_carburant/stations_name.json" ]]; then
+            echo "only_stations=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "only_stations=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
 
-      # Those actions will auto-approve and auto-merge the PR if it only modifies the stations_name.json file
+      # Those steps will auto-approve and merge the PR if it only modifies the stations_name.json file
       - name: Auto-approve PR
-        if: steps.check-pr-files.outputs.stations_file == 'true' && steps.check-pr-files.outputs.custom_components == 'false'
+        if: steps.check-pr-files.outputs.only_stations == 'true'
         uses: hmarr/auto-approve-action@v4
         with:
           review-message: "Stations data automated approved PR"
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Enable auto-merge
-        if: steps.check-pr-files.outputs.stations_file == 'true' && steps.check-pr-files.outputs.custom_components == 'false'
+      - name: Merge PR once other checks pass
+        if: steps.check-pr-files.outputs.only_stations == 'true'
         run: |
           echo "Waiting for other checks to complete..."
           for i in {1..120}; do
-            STATUS=$(gh pr checks ${{ github.event.pull_request.number }} --json name,state --jq '[.[] | select(.name != "validate-stations")] | all(.state == "SUCCESS")')
-            if [[ "$STATUS" == "true" ]]; then
-              gh pr merge "${{ github.event.pull_request.number }}" --auto --squash --subject "chore: update stations data (#${{ github.event.pull_request.number }})"
+            # Skipped checks (e.g. Dependabot auto-merge) must not block the merge
+            NOT_OK=$(gh pr checks "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json name,state \
+              --jq '[.[] | select(.name != "validate-stations") | select(.state != "SUCCESS" and .state != "SKIPPED" and .state != "NEUTRAL")] | length' || true)
+            if [[ "$NOT_OK" == "0" ]]; then
+              # Direct merge: auto-merge cannot be enabled as master has no required status checks
+              gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --squash \
+                --match-head-commit "$HEAD_SHA" \
+                --subject "chore: update stations data (#$PR_NUMBER)"
               exit 0
             fi
             sleep 10
@@ -76,3 +80,5 @@ jobs:
           exit 1
         env:
           GH_TOKEN: ${{ secrets.PAT_GITHUB }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
