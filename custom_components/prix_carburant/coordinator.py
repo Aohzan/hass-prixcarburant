@@ -97,7 +97,7 @@ class PrixCarburantCoordinator(DataUpdateCoordinator[dict[int, dict[str, Any]]])
             hass.config.time_zone,
             60,
             self.config.get(CONF_API_SSL_CHECK, True),
-            async_get_clientsession(hass),
+            session=async_get_clientsession(hass),
         )
 
     async def _async_setup(self) -> None:

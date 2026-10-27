@@ -108,7 +108,8 @@ class PrixCarburantTool:
         time_zone: str = "Europe/Paris",
         request_timeout: int = 30,
         api_ssl_check: bool = True,
-        session: ClientSession | None = None,
+        *,
+        session: ClientSession,
     ) -> None:
         """Init tool."""
         self._user_time_zone = time_zone
@@ -127,7 +128,7 @@ class PrixCarburantTool:
         _LOGGER.debug("Loading OSM stations CSV from: %s", STATIONS_NAME_OSM_URL)
         try:
             async with timeout(self._request_timeout):
-                response = await self._session.get(STATIONS_NAME_OSM_URL)  # type: ignore[union-attr]
+                response = await self._session.get(STATIONS_NAME_OSM_URL)
                 response.raise_for_status()
                 raw = await response.read()
             osm_stations_data = await asyncio.to_thread(_parse_stations_bz2_csv, raw)
@@ -145,7 +146,7 @@ class PrixCarburantTool:
         _LOGGER.debug("Loading custom stations from: %s", STATIONS_NAME_URL)
         try:
             async with timeout(self._request_timeout):
-                response = await self._session.get(STATIONS_NAME_URL)  # type: ignore[union-attr]
+                response = await self._session.get(STATIONS_NAME_URL)
                 response.raise_for_status()
                 raw = await response.read()
             custom_stations_data: dict[str, dict] = await asyncio.to_thread(
@@ -187,7 +188,7 @@ class PrixCarburantTool:
             try:
                 async with (
                     timeout(self._request_timeout),
-                    self._session.request(  # type: ignore[union-attr]
+                    self._session.request(
                         method="GET",
                         url=PRIX_CARBURANT_API_URL,
                         params=params,
