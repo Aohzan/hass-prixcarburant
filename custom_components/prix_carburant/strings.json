@@ -70,7 +70,8 @@
       "invalid_station_id": "Invalid station ID format. Please enter a valid number.",
       "station_not_found": "Station not found in the API. Please verify the ID.",
       "station_already_exists": "This station is already in your list.",
-      "cannot_connect": "Unable to connect to the Prix Carburant API, try again later."
+      "cannot_connect": "Unable to connect to the Prix Carburant API, try again later.",
+      "rate_limit": "Too many requests to the Prix Carburant API, try again later."
     },
     "abort": {
       "no_stations": "No stations found. Please add stations first."

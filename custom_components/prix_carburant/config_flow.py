@@ -41,6 +41,7 @@ from .coordinator import (
 from .tools import (
     PrixCarburantTool,
     PrixCarburantToolCannotConnectError,
+    PrixCarburantToolRateLimitError,
     PrixCarburantToolRequestError,
 )
 
@@ -382,6 +383,8 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
             )
         except ClientError, PrixCarburantToolCannotConnectError:
             return False, "cannot_connect"
+        except PrixCarburantToolRateLimitError:
+            return False, "rate_limit"
         except PrixCarburantToolRequestError:
             return False, "station_not_found"
         else:

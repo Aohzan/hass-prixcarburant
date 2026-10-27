@@ -70,7 +70,8 @@
       "invalid_station_id": "Format d'identifiant de station invalide. Veuillez entrer un nombre valide.",
       "station_not_found": "Station non trouvée dans l'API. Veuillez vérifier l'identifiant.",
       "station_already_exists": "Cette station est déjà dans votre liste.",
-      "cannot_connect": "Impossible de se connecter à l'API Prix Carburant, réessayez plus tard."
+      "cannot_connect": "Impossible de se connecter à l'API Prix Carburant, réessayez plus tard.",
+      "rate_limit": "Trop de requêtes vers l'API Prix Carburant, réessayez plus tard."
     },
     "abort": {
       "no_stations": "Aucune station trouvée. Veuillez d'abord ajouter des stations."

@@ -232,6 +232,7 @@ async def test_options_add_station_errors(
     [
         (HTTPStatus.OK, ClientError(), "cannot_connect"),
         (HTTPStatus.BAD_REQUEST, None, "station_not_found"),
+        (HTTPStatus.TOO_MANY_REQUESTS, None, "rate_limit"),
     ],
 )
 async def test_options_add_station_not_loaded(
