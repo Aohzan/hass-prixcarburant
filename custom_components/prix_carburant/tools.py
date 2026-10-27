@@ -322,7 +322,11 @@ class PrixCarburantTool:
             new_ids, latitude, longitude
         )
         for sid in missing_ids:
-            _LOGGER.error("Station %s not found in API", sid)
+            _LOGGER.warning(
+                "Manual station %s not found in the API, it may have closed or its ID "
+                "has changed. Remove it from the integration options",
+                sid,
+            )
 
         self._stations_data.update(data)
 
