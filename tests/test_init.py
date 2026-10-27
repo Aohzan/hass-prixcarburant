@@ -384,7 +384,7 @@ async def test_migrate_yaml_entry(
         # Options set in the UI before the YAML configuration
         options={CONF_MAX_KM: 15, CONF_MANUAL_STATIONS: [MANUAL_STATION_ID]},
         version=1,
-        minor_version=2,
+        minor_version=1,
     )
     entry.add_to_hass(hass)
     # Entity customized by the user with the previous version
@@ -400,7 +400,7 @@ async def test_migrate_yaml_entry(
     await hass.async_block_till_done()
 
     assert entry.state is ConfigEntryState.LOADED
-    assert entry.minor_version == 4
+    assert entry.minor_version == 2
     assert entry.data == {CONF_MAX_KM: 0}
     assert entry.options == {
         CONF_MANUAL_STATIONS: [MANUAL_STATION_ID, 99900002, 9999999]
@@ -504,7 +504,7 @@ async def test_migrate_button_unique_id(
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
 
-    assert entry.minor_version == 4
+    assert entry.minor_version == 2
     migrated = entity_registry.async_get(button.entity_id)
     assert migrated.unique_id == f"{entry.entry_id}_refresh"
     assert hass.states.get(button.entity_id) is not None
@@ -521,7 +521,7 @@ async def test_migrate_device_identifiers(
         unique_id=DOMAIN,
         data=ENTRY_DATA,
         version=1,
-        minor_version=3,
+        minor_version=1,
     )
     entry.add_to_hass(hass)
     # Identifier of the previous versions, the station ID as an integer
@@ -532,7 +532,7 @@ async def test_migrate_device_identifiers(
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
 
-    assert entry.minor_version == 4
+    assert entry.minor_version == 2
     assert [
         migrated.id
         for migrated in device_registry.async_get_devices(

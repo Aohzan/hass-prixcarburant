@@ -139,6 +139,8 @@ async def async_migrate_entry(
         return False
 
     if entry.minor_version < 2:
+        # Entries of the versions before 2026.10
+
         # The unique ID of the refresh button wasn't scoped to the entry
         @callback
         def migrate_unique_id(entity_entry: er.RegistryEntry) -> dict | None:
@@ -147,19 +149,7 @@ async def async_migrate_entry(
             return None
 
         await er.async_migrate_entries(hass, entry.entry_id, migrate_unique_id)
-        hass.config_entries.async_update_entry(entry, minor_version=2)
 
-    if entry.minor_version < 3:
-        # The stations of an entry imported from YAML become manual stations
-        if CONF_STATIONS in entry.data:
-            data, options = convert_yaml_config(entry.data, entry.options)
-            hass.config_entries.async_update_entry(
-                entry, data=data, options=options, minor_version=3
-            )
-        else:
-            hass.config_entries.async_update_entry(entry, minor_version=3)
-
-    if entry.minor_version < 4:
         # The station devices were registered with an integer identifier, the
         # device registry expects strings
         device_registry = dr.async_get(hass)
@@ -174,7 +164,14 @@ async def async_migrate_entry(
                 device_registry.async_update_device(
                     device.id, new_identifiers=identifiers
                 )
-        hass.config_entries.async_update_entry(entry, minor_version=4)
+
+        # The stations of an entry imported from YAML become manual stations
+        data, options = entry.data, entry.options
+        if CONF_STATIONS in data:
+            data, options = convert_yaml_config(data, options)
+        hass.config_entries.async_update_entry(
+            entry, data=data, options=options, minor_version=2
+        )
 
     return True
 
