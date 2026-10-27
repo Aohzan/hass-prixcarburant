@@ -180,6 +180,11 @@ class PrixCarburantSensor(CoordinatorEntity[PrixCarburantCoordinator], RestoreSe
             self._attr_native_value = last_sensor_data.native_value
 
     @callback
+    def async_entity_id_changed(self, old_entity_id: str) -> None:
+        """Keep the entity on an entity ID change, the price is kept."""
+        super().async_entity_id_changed(old_entity_id)
+
+    @callback
     def _handle_coordinator_update(self) -> None:
         """Update the price and its attributes from the coordinator."""
         self._update_from_data()
