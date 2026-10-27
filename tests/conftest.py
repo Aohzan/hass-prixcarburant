@@ -102,6 +102,8 @@ class FakeApi:
         self.status = HTTPStatus.OK
         self.headers: dict[str, str] = {}
         self.exc: Exception | None = None
+        # Statuses of the next responses, before answering normally
+        self.next_statuses: list[HTTPStatus] = []
 
     async def __call__(
         self, method: str, url: URL, data: Any
@@ -111,6 +113,13 @@ class FakeApi:
         self.requests.append(params)
         if self.exc is not None:
             raise self.exc
+        if self.next_statuses:
+            return AiohttpClientMockResponse(
+                method,
+                url,
+                status=self.next_statuses.pop(0),
+                json={"error_code": "ServerError", "message": "Error"},
+            )
         if self.status != HTTPStatus.OK:
             return AiohttpClientMockResponse(
                 method, url, status=self.status, headers=self.headers, json={}

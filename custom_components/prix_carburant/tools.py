@@ -42,6 +42,7 @@ STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant
 BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/"
 HTTP_OK = 200
 HTTP_TOO_MANY_REQUESTS = 429
+HTTP_INTERNAL_SERVER_ERROR = 500
 _DELETE_TAG = "DELETE TAG"
 _MAX_CONCURRENT_API_REQUESTS = 5
 # Maximum number of records returned by one API request
@@ -207,6 +208,8 @@ class PrixCarburantTool:
             except ClientError, gaierror:
                 msg = "Error occurred while communicating with the Prix Carburant API."
                 last_exception = PrixCarburantToolCannotConnectError(msg)
+            except PrixCarburantToolCannotConnectError as err:
+                last_exception = err
             except PrixCarburantToolRequestError:
                 raise
 
@@ -524,8 +527,13 @@ class PrixCarburantTool:
 
 
 def _raise_api_request_error(status: int, body: object) -> None:
-    """Raise a PrixCarburantToolRequestError with a formatted message."""
+    """Raise the error of a failed API request with a formatted message.
+
+    The server errors are transient, even with a JSON body: they can be retried.
+    """
     msg = f"API request error {status}: {body}"
+    if status >= HTTP_INTERNAL_SERVER_ERROR:
+        raise PrixCarburantToolCannotConnectError(msg)
     raise PrixCarburantToolRequestError(msg)
 
 

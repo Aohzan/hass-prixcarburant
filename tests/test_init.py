@@ -70,6 +70,28 @@ async def test_setup_api_error(
     await _setup(hass, mock_config_entry)
 
     assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
+    # Only the server errors are retried
+    assert len(mock_api.requests) == (3 if status >= 500 else 1)
+
+
+async def test_server_error_retried(
+    hass: HomeAssistant,
+    freezer: FrozenDateTimeFactory,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+) -> None:
+    """Test a server error with a JSON body is retried during the update."""
+    await _setup(hass, mock_config_entry)
+    requests = len(mock_api.requests)
+
+    mock_api.next_statuses = [HTTPStatus.SERVICE_UNAVAILABLE]
+    mock_api.stations[99900001]["gazole_prix"] = 1.7
+    freezer.tick(timedelta(hours=4, minutes=1))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+
+    assert hass.states.get(GAZOLE_ENTITY_ID).state == "1.7"
+    assert len(mock_api.requests) == requests + 2
 
 
 async def test_setup_cannot_connect(
