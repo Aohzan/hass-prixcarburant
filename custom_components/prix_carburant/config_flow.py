@@ -15,7 +15,7 @@ from homeassistant.config_entries import (
     ConfigFlowResult,
     OptionsFlow,
 )
-from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL
 from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
@@ -358,27 +358,29 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
             return self.async_create_entry(title="", data={})
 
-        # Get all stations from coordinator
-        coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id]["coordinator"]
-        stations = coordinator.data
-
-        if not stations:
-            return self.async_abort(reason="no_stations")
-
         manual_stations = self._get_manual_stations()
 
-        # Build station list - only manual stations
-        station_options = {}
-        for station_id, station_data in stations.items():
-            station_id_int = int(station_id)
-            if station_id_int in manual_stations:
-                station_name = station_data.get("name", f"Station {station_id}")
-                # Use string keys for cv.multi_select
-                station_options[str(station_id_int)] = station_name
-
         # If no manual stations, abort
-        if not station_options:
+        if not manual_stations:
             return self.async_abort(reason="no_stations")
+
+        # Get all stations from coordinator
+        coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id]["coordinator"]
+        stations = coordinator.data or {}
+
+        # Build station list from manual stations, including those unknown to the API
+        # (closed station or wrong ID) so they can still be removed
+        station_options = {}
+        for station_id_int in manual_stations:
+            station_data = stations.get(station_id_int)
+            if station_data is None:
+                station_name = f"Station {station_id_int} (not found in API)"
+            elif station_data.get(ATTR_NAME, "undefined") != "undefined":
+                station_name = station_data[ATTR_NAME]
+            else:
+                station_name = f"Station {station_id_int}"
+            # Use string keys for cv.multi_select
+            station_options[str(station_id_int)] = station_name
 
         schema = vol.Schema(
             {
