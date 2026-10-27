@@ -23,7 +23,8 @@
     "error": {
       "invalid_station_id": "Ungültiges Format der Tankstellen-ID. Bitte eine gültige Nummer eingeben.",
       "station_not_found": "Tankstelle nicht über die API gefunden. Bitte die ID überprüfen.",
-      "station_already_exists": "Diese Tankstelle ist bereits in der Liste."
+      "station_already_exists": "Diese Tankstelle ist bereits in der Liste.",
+      "cannot_connect": "Verbindung zur Prix Carburant API nicht möglich, bitte später erneut versuchen."
     },
     "step": {
       "init": {

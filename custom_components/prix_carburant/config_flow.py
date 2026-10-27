@@ -126,6 +126,13 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
         config = dict(self.config_entry.data) | dict(self.config_entry.options)
         return list(config.get(CONF_MANUAL_STATIONS) or [])
 
+    def _get_loaded_stations(self) -> dict:
+        """Get the stations of the coordinator, empty if the entry isn't loaded."""
+        entry_data = self.hass.data.get(DOMAIN, {}).get(self.config_entry.entry_id)
+        if entry_data is None:
+            return {}
+        return entry_data["coordinator"].data or {}
+
     async def async_step_init(
         self,
         user_input: dict[str, Any] | None = None,
@@ -234,10 +241,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
                     errors["station_id"] = "station_already_exists"
                 else:
                     # Check if station exists in coordinator (auto-discovered)
-                    coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][
-                        "coordinator"
-                    ]
-                    if station_id in coordinator.data:
+                    if station_id in self._get_loaded_stations():
                         errors["station_id"] = "station_already_exists"
                     else:
                         # Validate station exists in API
@@ -332,8 +336,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
             return self.async_abort(reason="no_stations")
 
         # Get all stations from coordinator
-        coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id]["coordinator"]
-        stations = coordinator.data or {}
+        stations = self._get_loaded_stations()
 
         # Build station list from manual stations, including those unknown to the API
         # (closed station or wrong ID) so they can still be removed
@@ -375,7 +378,9 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
             tool = PrixCarburantTool(
                 self.hass.config.time_zone,
                 60,
-                api_ssl_check=True,
+                api_ssl_check=(
+                    dict(self.config_entry.data) | dict(self.config_entry.options)
+                ).get(CONF_API_SSL_CHECK, True),
                 session=websession,
             )
 
@@ -386,11 +391,9 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
                     "limit": 1,
                 }
             )
-        except (
-            ClientError,
-            PrixCarburantToolCannotConnectError,
-            PrixCarburantToolRequestError,
-        ):
+        except ClientError, PrixCarburantToolCannotConnectError:
+            return False, "cannot_connect"
+        except PrixCarburantToolRequestError:
             return False, "station_not_found"
         else:
             if response["total_count"] == 1:

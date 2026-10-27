@@ -66,7 +66,8 @@
     "error": {
       "invalid_station_id": "Format d'identifiant de station invalide. Veuillez entrer un nombre valide.",
       "station_not_found": "Station non trouvée dans l'API. Veuillez vérifier l'identifiant.",
-      "station_already_exists": "Cette station est déjà dans votre liste."
+      "station_already_exists": "Cette station est déjà dans votre liste.",
+      "cannot_connect": "Impossible de se connecter à l'API Prix Carburant, réessayez plus tard."
     },
     "abort": {
       "yaml_configuration": "Intégration configurée depuis configuration.yaml. La gestion des stations n'est pas disponible.",
