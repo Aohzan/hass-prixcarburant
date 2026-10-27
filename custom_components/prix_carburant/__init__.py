@@ -22,11 +22,16 @@ from .const import (
     ATTR_DISTANCE,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
+    CONF_STATIONS,
     DOMAIN,
     FUELS,
     PLATFORMS,
 )
-from .coordinator import PrixCarburantConfigEntry, PrixCarburantCoordinator
+from .coordinator import (
+    PrixCarburantConfigEntry,
+    PrixCarburantCoordinator,
+    convert_yaml_config,
+)
 from .tools import PrixCarburantToolCannotConnectError, PrixCarburantToolRequestError
 
 _LOGGER = logging.getLogger(__name__)
@@ -129,6 +134,16 @@ async def async_migrate_entry(
 
         await er.async_migrate_entries(hass, entry.entry_id, migrate_unique_id)
         hass.config_entries.async_update_entry(entry, minor_version=2)
+
+    if entry.minor_version < 3:
+        # The stations of an entry imported from YAML become manual stations
+        if CONF_STATIONS in entry.data:
+            data, options = convert_yaml_config(entry.data, entry.options)
+            hass.config_entries.async_update_entry(
+                entry, data=data, options=options, minor_version=3
+            )
+        else:
+            hass.config_entries.async_update_entry(entry, minor_version=3)
 
     return True
 

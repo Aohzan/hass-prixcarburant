@@ -70,7 +70,6 @@
       "cannot_connect": "Impossible de se connecter à l'API Prix Carburant, réessayez plus tard."
     },
     "abort": {
-      "yaml_configuration": "Intégration configurée depuis configuration.yaml. La gestion des stations n'est pas disponible.",
       "no_stations": "Aucune station trouvée. Veuillez d'abord ajouter des stations."
     }
   },
@@ -129,7 +128,7 @@
   "issues": {
     "deprecated_yaml": {
       "title": "La configuration YAML de Prix Carburant est obsolète",
-      "description": "La configuration de Prix Carburant avec la plateforme de capteurs `prix_carburant` dans configuration.yaml est obsolète et sera supprimée dans une prochaine version. Vos stations sont encore importées à chaque démarrage.\n\nPour configurer l'intégration depuis l'interface : supprimez la plateforme de configuration.yaml, redémarrez Home Assistant, supprimez l'intégration Prix Carburant et ajoutez-la à nouveau. Définissez la distance maximum à 0 pour n'utiliser que vos propres stations, puis ajoutez-les depuis les options de l'intégration."
+      "description": "La configuration de Prix Carburant avec la plateforme de capteurs `prix_carburant` dans configuration.yaml est obsolète et sera supprimée dans une prochaine version. Vos stations ont été déplacées dans les options de l'intégration, comme stations ajoutées manuellement, et la découverte automatique a été désactivée (distance maximum à 0) : vos entités et leurs réglages sont conservés.\n\nLes modifications faites dans configuration.yaml ne sont plus prises en compte. Supprimez la plateforme `prix_carburant` de configuration.yaml et redémarrez Home Assistant, puis gérez vos stations depuis les options de l'intégration."
     }
   }
 }

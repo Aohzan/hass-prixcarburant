@@ -62,23 +62,31 @@ async def test_user_single_instance(
 
 
 async def test_import(hass: HomeAssistant, mock_api: FakeApi) -> None:
-    """Test the YAML configuration creates an entry, then updates it."""
-    data = {"platform": DOMAIN, CONF_STATIONS: [99900001]}
+    """Test the YAML configuration is imported once, as manual stations."""
+    data = {
+        "platform": DOMAIN,
+        CONF_STATIONS: ["99900001", 99900002, "abc", 99900001],
+        CONF_DISPLAY_ENTITY_PICTURES: False,
+    }
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": SOURCE_IMPORT}, data=data
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["data"] == data
+    assert result["title"] == DEFAULT_NAME
+    assert result["data"] == {CONF_MAX_KM: 0, CONF_DISPLAY_ENTITY_PICTURES: False}
+    assert result["options"] == {CONF_MANUAL_STATIONS: [99900001, 99900002]}
+    assert result["result"].unique_id == DOMAIN
 
+    # The next imports don't change the entry
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={"source": SOURCE_IMPORT},
-        data=data | {CONF_STATIONS: [99900002]},
+        data=data | {CONF_STATIONS: [99900003]},
     )
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "already_configured"
     (entry,) = hass.config_entries.async_entries(DOMAIN)
-    assert entry.data[CONF_STATIONS] == [99900002]
+    assert entry.options == {CONF_MANUAL_STATIONS: [99900001, 99900002]}
 
 
 async def _setup(hass: HomeAssistant, entry: MockConfigEntry) -> None:
@@ -95,17 +103,6 @@ async def _options_step(hass: HomeAssistant, entry: MockConfigEntry, step: str):
     return await hass.config_entries.options.async_configure(
         result["flow_id"], {"next_step_id": step}
     )
-
-
-async def test_options_yaml(hass: HomeAssistant, mock_api: FakeApi) -> None:
-    """Test the options of an entry imported from YAML aren't available."""
-    entry = MockConfigEntry(
-        domain=DOMAIN, data={CONF_STATIONS: [99900001]}, minor_version=2
-    )
-    entry.add_to_hass(hass)
-    result = await hass.config_entries.options.async_init(entry.entry_id)
-    assert result["type"] is FlowResultType.ABORT
-    assert result["reason"] == "yaml_configuration"
 
 
 async def test_options_general(

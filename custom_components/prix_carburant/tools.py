@@ -275,25 +275,6 @@ class PrixCarburantTool:
             )
         return data, missing_ids
 
-    async def init_stations_from_list(
-        self, stations_ids: list[int], latitude: float, longitude: float
-    ) -> None:
-        """Get data from station list ID."""
-        _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
-        if not stations_ids:
-            self._stations_data = {}
-            return
-
-        data, missing_ids = await self._fetch_stations_by_ids(
-            stations_ids, latitude, longitude
-        )
-        for sid in missing_ids:
-            _LOGGER.warning(
-                "Station %s not found in the API, it may have closed or its ID has changed",
-                sid,
-            )
-        self._stations_data = data
-
     async def init_stations_from_location(
         self,
         latitude: float,

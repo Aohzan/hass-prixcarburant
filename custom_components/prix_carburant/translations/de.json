@@ -17,7 +17,6 @@
   },
   "options": {
     "abort": {
-      "yaml_configuration": "Integration bereits in configuration.yaml konfiguriert. Tankstellenverwaltung nicht möglich.",
       "no_stations": "Keine Tankstellen gefunden. Bitte zuerst Tankstellen zufügen."
     },
     "error": {
@@ -129,7 +128,7 @@
   "issues": {
     "deprecated_yaml": {
       "title": "Die YAML-Konfiguration von Prix Carburant ist veraltet",
-      "description": "Die Konfiguration von Prix Carburant über die Sensor-Plattform `prix_carburant` in configuration.yaml ist veraltet und wird in einer zukünftigen Version entfernt. Deine Tankstellen werden weiterhin bei jedem Start importiert.\n\nUm die Integration über die Benutzeroberfläche zu konfigurieren: entferne die Plattform aus configuration.yaml, starte Home Assistant neu, lösche die Prix Carburant Integration und füge sie erneut hinzu. Setze die maximale Entfernung auf 0, um nur deine eigenen Tankstellen zu verwenden, und füge sie dann in den Optionen der Integration hinzu."
+      "description": "Die Konfiguration von Prix Carburant über die Sensor-Plattform `prix_carburant` in configuration.yaml ist veraltet und wird in einer zukünftigen Version entfernt. Deine Tankstellen wurden als manuell hinzugefügte Tankstellen in die Optionen der Integration übernommen und die automatische Tankstellensuche wurde deaktiviert (maximale Entfernung 0): deine Entitäten und ihre Einstellungen bleiben erhalten.\n\nÄnderungen in configuration.yaml werden nicht mehr übernommen. Entferne die Plattform `prix_carburant` aus configuration.yaml, starte Home Assistant neu und verwalte deine Tankstellen dann in den Optionen der Integration."
     }
   }
 }

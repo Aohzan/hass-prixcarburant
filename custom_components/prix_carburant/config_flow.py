@@ -27,14 +27,17 @@ from .const import (
     CONF_FUELS,
     CONF_MANUAL_STATIONS,
     CONF_MAX_KM,
-    CONF_STATIONS,
     DEFAULT_MAX_KM,
     DEFAULT_NAME,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     FUELS,
 )
-from .coordinator import PrixCarburantConfigEntry, get_entry_config
+from .coordinator import (
+    PrixCarburantConfigEntry,
+    convert_yaml_config,
+    get_entry_config,
+)
 from .tools import (
     PrixCarburantTool,
     PrixCarburantToolCannotConnectError,
@@ -70,17 +73,15 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for Prix Carburant."""
 
     VERSION = 1
-    MINOR_VERSION = 2
+    MINOR_VERSION = 3
 
     async def async_step_import(self, import_info: dict[str, Any]) -> ConfigFlowResult:
-        """Import a config entry from YAML config."""
-        entry = await self.async_set_unique_id(DOMAIN)
+        """Import the YAML configuration once, its stations become manual stations."""
+        await self.async_set_unique_id(DOMAIN)
+        self._abort_if_unique_id_configured()
 
-        if entry:
-            self.hass.config_entries.async_update_entry(entry, data=import_info)
-            self._abort_if_unique_id_configured()
-
-        return self.async_create_entry(title=DEFAULT_NAME, data=import_info)
+        data, options = convert_yaml_config(import_info, {})
+        return self.async_create_entry(title=DEFAULT_NAME, data=data, options=options)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -132,10 +133,6 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
         user_input: dict[str, Any] | None = None,
     ) -> ConfigFlowResult:
         """Manage the options - show main menu."""
-        # Check if configured via YAML
-        if CONF_STATIONS in self.config_entry.data:
-            return self.async_abort(reason="yaml_configuration")
-
         return self.async_show_menu(
             step_id="init",
             menu_options=[

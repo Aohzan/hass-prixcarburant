@@ -200,18 +200,92 @@ async def test_manual_stations_only(hass: HomeAssistant, mock_api: FakeApi) -> N
     )
 
 
-async def test_yaml_stations(hass: HomeAssistant, mock_api: FakeApi) -> None:
-    """Test an entry imported from YAML uses its list of stations."""
+async def test_migrate_yaml_entry(
+    hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
+    mock_api: FakeApi,
+) -> None:
+    """Test the stations of an entry imported from YAML become manual stations."""
     entry = MockConfigEntry(
         domain=DOMAIN,
         unique_id=DOMAIN,
-        data={"platform": DOMAIN, CONF_STATIONS: [99900002, 9999999]},
+        data={"platform": DOMAIN, CONF_STATIONS: [99900002, "9999999"]},
+        # Options set in the UI before the YAML configuration
+        options={CONF_MAX_KM: 15, CONF_MANUAL_STATIONS: [MANUAL_STATION_ID]},
         version=1,
         minor_version=2,
     )
-    await _setup(hass, entry)
+    entry.add_to_hass(hass)
+    # Entity customized by the user with the previous version
+    customized = entity_registry.async_get_or_create(
+        "sensor",
+        DOMAIN,
+        f"{DOMAIN}_99900002_Gazole",
+        config_entry=entry,
+        suggested_object_id="my_gazole",
+    )
+    entity_registry.async_update_entity(customized.entity_id, name="My gazole")
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
 
-    assert list(entry.runtime_data.data) == [99900002]
+    assert entry.state is ConfigEntryState.LOADED
+    assert entry.minor_version == 3
+    assert entry.data == {CONF_MAX_KM: 0}
+    assert entry.options == {
+        CONF_MANUAL_STATIONS: [MANUAL_STATION_ID, 99900002, 9999999]
+    }
+    assert set(entry.runtime_data.data) == {MANUAL_STATION_ID, 99900002}
+    assert not any(
+        request["where"].startswith("distance") for request in mock_api.requests
+    )
+    # The customized entity is kept, without duplicate
+    assert entity_registry.async_get(customized.entity_id).name == "My gazole"
+    assert hass.states.get("sensor.my_gazole").state == "1.649"
+    assert [
+        entity_entry.entity_id
+        for entity_entry in er.async_entries_for_config_entry(
+            entity_registry, entry.entry_id
+        )
+        if entity_entry.unique_id == f"{DOMAIN}_99900002_Gazole"
+    ] == ["sensor.my_gazole"]
+
+
+async def test_upgrade_keeps_entity_ids(
+    hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+) -> None:
+    """Test the entities registered by the previous version are kept."""
+    mock_config_entry.add_to_hass(hass)
+    # Entity IDs of the previous version, named "<station> <fuel>", or renamed
+    previous = {
+        f"{DOMAIN}_99900001_Gazole": "relais_de_la_gare_gazole",
+        f"{DOMAIN}_99900002_Gazole": "station_carrefour_la_jolla_gazole",
+        f"{DOMAIN}_99900003_GPLc": "renamed_by_user",
+    }
+    for unique_id, object_id in previous.items():
+        entity_registry.async_get_or_create(
+            "sensor",
+            DOMAIN,
+            unique_id,
+            config_entry=mock_config_entry,
+            suggested_object_id=object_id,
+        )
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    for unique_id, object_id in previous.items():
+        assert (
+            entity_registry.async_get_entity_id("sensor", DOMAIN, unique_id)
+            == f"sensor.{object_id}"
+        )
+        assert hass.states.get(f"sensor.{object_id}") is not None
+    assert not [
+        entity_id
+        for entity_id in hass.states.async_entity_ids()
+        if entity_id.endswith("_2")
+    ]
 
 
 async def test_yaml_import(
@@ -229,7 +303,7 @@ async def test_yaml_import(
 
     entries = hass.config_entries.async_entries(DOMAIN)
     assert len(entries) == 1
-    assert entries[0].data[CONF_STATIONS] == [99900001]
+    assert entries[0].options == {CONF_MANUAL_STATIONS: [99900001]}
     assert issue_registry.async_get_issue(DOMAIN, "deprecated_yaml")
     assert hass.states.get(GAZOLE_ENTITY_ID).state == "1.659"
 
@@ -259,7 +333,7 @@ async def test_migrate_button_unique_id(
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
 
-    assert entry.minor_version == 2
+    assert entry.minor_version == 3
     migrated = entity_registry.async_get(button.entity_id)
     assert migrated.unique_id == f"{entry.entry_id}_refresh"
     assert hass.states.get(button.entity_id) is not None
