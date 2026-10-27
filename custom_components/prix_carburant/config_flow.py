@@ -4,7 +4,7 @@ from collections.abc import Mapping
 from typing import Any
 
 from aiohttp import ClientError
-import voluptuous as vol
+import probatio
 
 from homeassistant.config_entries import (
     ConfigEntryState,
@@ -46,28 +46,30 @@ from .tools import (
 )
 
 
-def _build_schema(data: Mapping[str, Any], options: Mapping[str, Any]) -> vol.Schema:
+def _build_schema(
+    data: Mapping[str, Any], options: Mapping[str, Any]
+) -> probatio.Schema:
     """Build schema according to config/options."""
     config: dict[str, Any] = dict(data) | dict(options)
 
     # For initial setup, only show max distance and fuel selection
     schema = {
-        vol.Required(
+        probatio.Required(
             CONF_MAX_KM, default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM)
-        ): vol.All(int, vol.Range(min=0))
+        ): probatio.All(int, probatio.Range(min=0))
     }
 
     for fuel in FUELS:
         fuel_key = f"{CONF_FUELS}_{fuel}"
         schema.update(
             {
-                vol.Required(
+                probatio.Required(
                     fuel_key,
                     default=config.get(fuel_key, True),
                 ): bool
             }
         )
-    return vol.Schema(schema)
+    return probatio.Schema(schema)
 
 
 class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
@@ -154,24 +156,24 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
 
         config = get_entry_config(self.config_entry)
 
-        schema = vol.Schema(
+        schema = probatio.Schema(
             {
-                vol.Required(
+                probatio.Required(
                     CONF_SCAN_INTERVAL,
                     default=config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                ): vol.All(vol.Coerce(int), vol.Range(min=1)),
-                vol.Required(
+                ): probatio.All(probatio.Coerce(int), probatio.Range(min=1)),
+                probatio.Required(
                     CONF_API_SSL_CHECK,
                     default=config.get(CONF_API_SSL_CHECK, True),
                 ): bool,
-                vol.Required(
+                probatio.Required(
                     CONF_DISPLAY_ENTITY_PICTURES,
                     default=config.get(CONF_DISPLAY_ENTITY_PICTURES, True),
                 ): bool,
-                vol.Required(
+                probatio.Required(
                     CONF_MAX_KM,
                     default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM),
-                ): vol.All(int, vol.Range(min=0)),
+                ): probatio.All(int, probatio.Range(min=0)),
             }
         )
 
@@ -197,7 +199,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
         for fuel in FUELS:
             fuel_key = f"{CONF_FUELS}_{fuel}"
             schema[
-                vol.Required(
+                probatio.Required(
                     fuel_key,
                     default=config.get(fuel_key, True),
                 )
@@ -205,7 +207,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
 
         return self.async_show_form(
             step_id="fuels_select",
-            data_schema=vol.Schema(schema),
+            data_schema=probatio.Schema(schema),
             errors=errors,
         )
 
@@ -250,9 +252,9 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
                                 | {CONF_MANUAL_STATIONS: manual_stations}
                             )
 
-        schema = vol.Schema(
+        schema = probatio.Schema(
             {
-                vol.Required("station_id"): str,
+                probatio.Required("station_id"): str,
             }
         )
 
@@ -342,9 +344,9 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
             # Use string keys for cv.multi_select
             station_options[str(station_id_int)] = station_name
 
-        schema = vol.Schema(
+        schema = probatio.Schema(
             {
-                vol.Optional("stations_to_remove", default=[]): cv.multi_select(
+                probatio.Optional("stations_to_remove", default=[]): cv.multi_select(
                     station_options
                 ),
             }

@@ -18,10 +18,10 @@ permissions:
 
 jobs:
   ci:
-    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v2
+    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v3
 
   validate:
-    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v2
+    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v3
 
   release:
     needs: [ci, validate]
@@ -30,7 +30,7 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v2
+    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v3
     secrets:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
 
@@ -46,6 +46,6 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
-    uses: Aohzan/.github/.github/workflows/dependabot-merge.yaml@v2
+    uses: Aohzan/.github/.github/workflows/dependabot-merge.yaml@v3
     secrets:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}

@@ -7,4 +7,5 @@ cd "$(dirname "$0")/.."
 
 uv run ruff format .
 uv run ruff check . --fix
+uv run ty check
 uv run python scripts/check_translations.py

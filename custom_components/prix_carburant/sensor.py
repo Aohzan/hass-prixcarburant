@@ -4,7 +4,7 @@ from datetime import UTC, datetime
 import logging
 from typing import Any
 
-import voluptuous as vol
+import probatio
 
 from homeassistant.components.sensor import (
     PLATFORM_SCHEMA_BASE,
@@ -51,7 +51,7 @@ PARALLEL_UPDATES = 0
 # Validation of the yaml configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA_BASE.extend(
     {
-        vol.Optional(CONF_STATIONS, default=[]): cv.ensure_list,
+        probatio.Optional(CONF_STATIONS, default=[]): cv.ensure_list,
     }
 )
 

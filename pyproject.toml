@@ -11,6 +11,7 @@ dev = [
     "prek>=0.5.7",
     "pytest-homeassistant-custom-component>=0.13.375",
     "ruff>=0.17.3",
+    "ty>=0.0.92",
 ]
 
 [tool.uv]
@@ -31,6 +32,16 @@ ignore = ["D202", "D203", "D213", "E501", "RUF012", "TRY003"]
 force-sort-within-sections = true
 known-first-party = ["homeassistant"]
 combine-as-imports = true
+
+[tool.ty.src]
+# The integration and its scripts: the tests mostly handle mocks
+include = ["custom_components", "scripts"]
+
+[tool.ty.rules]
+# Home Assistant entities override the cached properties of their base classes
+# with properties, and narrow the type of entity_description
+invalid-mutable-override = "ignore"
+invalid-property-type-override = "ignore"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

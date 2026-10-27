@@ -2,7 +2,7 @@
 
 import logging
 
-import voluptuous as vol
+import probatio
 
 from homeassistant.const import ATTR_ENTITY_ID, ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 from homeassistant.core import (
@@ -49,11 +49,13 @@ def _fuel_case(value: str) -> str:
     return _FUELS_BY_LOWER_NAME.get(value.lower(), value)
 
 
-SERVICE_FIND_NEAREST_STATIONS_SCHEMA = vol.Schema(
+SERVICE_FIND_NEAREST_STATIONS_SCHEMA = probatio.Schema(
     {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_FUEL): vol.All(cv.string, _fuel_case, vol.In(FUELS)),
-        vol.Required(ATTR_DISTANCE): cv.positive_int,
+        probatio.Required(ATTR_ENTITY_ID): cv.entity_id,
+        probatio.Required(ATTR_FUEL): probatio.All(
+            cv.string, _fuel_case, probatio.In(FUELS)
+        ),
+        probatio.Required(ATTR_DISTANCE): cv.positive_int,
     }
 )
 
