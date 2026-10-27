@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v1
+
+  validate:
+    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v1
+
+  release:
+    needs: [ci, validate]
+    if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v1
+    secrets:
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}

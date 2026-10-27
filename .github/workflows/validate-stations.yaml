@@ -1,7 +1,9 @@
 name: Validate Stations JSON
 
+# pull_request_target to approve and merge the PRs from forks: only the base
+# branch is checked out, the stations_name.json of the PR is read as data.
 on:
-  pull_request_target:
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     paths:
       - "custom_components/prix_carburant/stations_name.json"
 
