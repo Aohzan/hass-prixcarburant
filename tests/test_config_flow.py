@@ -20,7 +20,7 @@ from custom_components.prix_carburant.tools import PrixCarburantTool
 from homeassistant.config_entries import SOURCE_IMPORT, SOURCE_USER
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
-from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 from .conftest import ENTRY_DATA, MANUAL_STATION_ID, FakeApi
@@ -131,6 +131,20 @@ async def test_options_general(
     }
     # Reloaded with the new options
     assert mock_config_entry.runtime_data.config[CONF_SCAN_INTERVAL] == 6
+
+
+async def test_options_general_scan_interval(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry
+) -> None:
+    """Test the time between two updates is at least one hour."""
+    mock_config_entry.add_to_hass(hass)
+
+    result = await _options_step(hass, mock_config_entry, "general_options")
+    with pytest.raises(InvalidData):
+        await hass.config_entries.options.async_configure(
+            result["flow_id"], OPTIONS | {CONF_SCAN_INTERVAL: 0}
+        )
+    assert mock_config_entry.options == {}
 
 
 async def test_options_fuels(

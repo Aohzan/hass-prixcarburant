@@ -158,7 +158,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
                 vol.Required(
                     CONF_SCAN_INTERVAL,
                     default=config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                ): int,
+                ): vol.All(vol.Coerce(int), vol.Range(min=1)),
                 vol.Required(
                     CONF_API_SSL_CHECK,
                     default=config.get(CONF_API_SSL_CHECK, True),
