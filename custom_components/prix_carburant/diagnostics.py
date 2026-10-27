@@ -3,13 +3,15 @@
 from typing import Any
 
 from homeassistant.components.diagnostics import async_redact_data
+from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE
 from homeassistant.core import HomeAssistant
 
-from .const import ATTR_DISTANCE
+from .const import ATTR_ADDRESS, ATTR_DISTANCE
 from .coordinator import PrixCarburantConfigEntry
 
-# The distances to the stations would reveal the location of Home Assistant
-TO_REDACT = {ATTR_DISTANCE}
+# The stations are around Home Assistant: their position and the distances to
+# them would reveal its location
+TO_REDACT = {ATTR_ADDRESS, ATTR_DISTANCE, ATTR_LATITUDE, ATTR_LONGITUDE}
 
 
 async def async_get_config_entry_diagnostics(

@@ -25,6 +25,8 @@ Search `Prix Carburant` in Integration.
 
 ### From configuration.yaml
 
+Deprecated: the stations are imported once as manual stations of the integration (maximum distance 0), then managed from its options. Remove the platform from configuration.yaml after the import.
+
 ```yaml
 sensor:
   - platform: prix_carburant

@@ -42,6 +42,8 @@ Ajoutez une nouvelle intégration, recherchez `Prix Carburant` et remplissez les
 
 ### via configuration.yml
 
+Obsolète : les stations sont importées une seule fois comme stations manuelles de l'intégration (distance maximum à 0), puis se gèrent depuis ses options. Supprimez la plateforme de configuration.yaml après l'import.
+
 Récupérer l'ID des stations voulues sur <https://www.prix-carburants.gouv.fr/>. Pour cela chercher la station, cliquer sur le logo station sur la carte, passer le curseur sur `Voir plan` et noter le numéro qui apparait en bas de votre navigateur. Exemple avec Firefox :
 
 ![Récupération d'ID avec Firefox](readme_firefoxid.png)

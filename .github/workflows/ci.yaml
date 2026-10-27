@@ -18,10 +18,10 @@ permissions:
 
 jobs:
   ci:
-    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v1
+    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v2
 
   validate:
-    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v1
+    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v2
 
   release:
     needs: [ci, validate]
@@ -30,6 +30,22 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v1
+    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v2
+    secrets:
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+  # Dependabot updates are merged only once the checks passed
+  dependabot:
+    needs: [ci, validate]
+    # Opened and last updated by Dependabot, from a branch of the repository
+    if: >-
+      github.event_name == 'pull_request'
+      && github.event.pull_request.user.login == 'dependabot[bot]'
+      && github.actor == 'dependabot[bot]'
+      && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: Aohzan/.github/.github/workflows/dependabot-merge.yaml@v2
     secrets:
       RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}

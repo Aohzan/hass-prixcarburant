@@ -3,6 +3,8 @@ updates:
   # No runtime requirement (manifest.json): only development dependencies
   - package-ecosystem: uv
     directory: /
+    # Only uv.lock: the lower bounds of pyproject.toml are the oldest supported versions
+    versioning-strategy: lockfile-only
     schedule:
       interval: weekly
     cooldown:

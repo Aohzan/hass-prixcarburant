@@ -20,7 +20,7 @@ from custom_components.prix_carburant.tools import PrixCarburantTool
 from homeassistant.config_entries import SOURCE_IMPORT, SOURCE_USER
 from homeassistant.const import CONF_SCAN_INTERVAL
 from homeassistant.core import HomeAssistant
-from homeassistant.data_entry_flow import FlowResultType
+from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 from .conftest import ENTRY_DATA, MANUAL_STATION_ID, FakeApi
@@ -59,26 +59,36 @@ async def test_user_single_instance(
     )
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "single_instance_allowed"
+    # Translated by Home Assistant
+    assert result["translation_domain"] == "homeassistant"
 
 
 async def test_import(hass: HomeAssistant, mock_api: FakeApi) -> None:
-    """Test the YAML configuration creates an entry, then updates it."""
-    data = {"platform": DOMAIN, CONF_STATIONS: [99900001]}
+    """Test the YAML configuration is imported once, as manual stations."""
+    data = {
+        "platform": DOMAIN,
+        CONF_STATIONS: ["99900001", 99900002, "abc", 99900001],
+        CONF_DISPLAY_ENTITY_PICTURES: False,
+    }
     result = await hass.config_entries.flow.async_init(
         DOMAIN, context={"source": SOURCE_IMPORT}, data=data
     )
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["data"] == data
+    assert result["title"] == DEFAULT_NAME
+    assert result["data"] == {CONF_MAX_KM: 0, CONF_DISPLAY_ENTITY_PICTURES: False}
+    assert result["options"] == {CONF_MANUAL_STATIONS: [99900001, 99900002]}
+    assert result["result"].unique_id == DOMAIN
 
+    # The next imports don't change the entry
     result = await hass.config_entries.flow.async_init(
         DOMAIN,
         context={"source": SOURCE_IMPORT},
-        data=data | {CONF_STATIONS: [99900002]},
+        data=data | {CONF_STATIONS: [99900003]},
     )
     assert result["type"] is FlowResultType.ABORT
-    assert result["reason"] == "already_configured"
+    assert result["reason"] == "single_instance_allowed"
     (entry,) = hass.config_entries.async_entries(DOMAIN)
-    assert entry.data[CONF_STATIONS] == [99900002]
+    assert entry.options == {CONF_MANUAL_STATIONS: [99900001, 99900002]}
 
 
 async def _setup(hass: HomeAssistant, entry: MockConfigEntry) -> None:
@@ -95,17 +105,6 @@ async def _options_step(hass: HomeAssistant, entry: MockConfigEntry, step: str):
     return await hass.config_entries.options.async_configure(
         result["flow_id"], {"next_step_id": step}
     )
-
-
-async def test_options_yaml(hass: HomeAssistant, mock_api: FakeApi) -> None:
-    """Test the options of an entry imported from YAML aren't available."""
-    entry = MockConfigEntry(
-        domain=DOMAIN, data={CONF_STATIONS: [99900001]}, minor_version=2
-    )
-    entry.add_to_hass(hass)
-    result = await hass.config_entries.options.async_init(entry.entry_id)
-    assert result["type"] is FlowResultType.ABORT
-    assert result["reason"] == "yaml_configuration"
 
 
 async def test_options_general(
@@ -132,6 +131,20 @@ async def test_options_general(
     }
     # Reloaded with the new options
     assert mock_config_entry.runtime_data.config[CONF_SCAN_INTERVAL] == 6
+
+
+async def test_options_general_scan_interval(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry
+) -> None:
+    """Test the time between two updates is at least one hour."""
+    mock_config_entry.add_to_hass(hass)
+
+    result = await _options_step(hass, mock_config_entry, "general_options")
+    with pytest.raises(InvalidData):
+        await hass.config_entries.options.async_configure(
+            result["flow_id"], OPTIONS | {CONF_SCAN_INTERVAL: 0}
+        )
+    assert mock_config_entry.options == {}
 
 
 async def test_options_fuels(
@@ -219,6 +232,7 @@ async def test_options_add_station_errors(
     [
         (HTTPStatus.OK, ClientError(), "cannot_connect"),
         (HTTPStatus.BAD_REQUEST, None, "station_not_found"),
+        (HTTPStatus.TOO_MANY_REQUESTS, None, "rate_limit"),
     ],
 )
 async def test_options_add_station_not_loaded(

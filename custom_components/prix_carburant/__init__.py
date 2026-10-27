@@ -22,11 +22,16 @@ from .const import (
     ATTR_DISTANCE,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
+    CONF_STATIONS,
     DOMAIN,
     FUELS,
     PLATFORMS,
 )
-from .coordinator import PrixCarburantConfigEntry, PrixCarburantCoordinator
+from .coordinator import (
+    PrixCarburantConfigEntry,
+    PrixCarburantCoordinator,
+    convert_yaml_config,
+)
 from .tools import PrixCarburantToolCannotConnectError, PrixCarburantToolRequestError
 
 _LOGGER = logging.getLogger(__name__)
@@ -36,10 +41,18 @@ CONFIG_SCHEMA = cv.platform_only_config_schema(DOMAIN)
 
 SERVICE_FIND_NEAREST_STATIONS = "find_nearest_stations"
 ATTR_FUEL = "fuel"
+_FUELS_BY_LOWER_NAME = {fuel.lower(): fuel for fuel in FUELS}
+
+
+def _fuel_case(value: str) -> str:
+    """Return the name of the fuel whatever its case, like the previous versions."""
+    return _FUELS_BY_LOWER_NAME.get(value.lower(), value)
+
+
 SERVICE_FIND_NEAREST_STATIONS_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_FUEL): vol.In(FUELS),
+        vol.Required(ATTR_FUEL): vol.All(cv.string, _fuel_case, vol.In(FUELS)),
         vol.Required(ATTR_DISTANCE): cv.positive_int,
     }
 )
@@ -129,6 +142,16 @@ async def async_migrate_entry(
 
         await er.async_migrate_entries(hass, entry.entry_id, migrate_unique_id)
         hass.config_entries.async_update_entry(entry, minor_version=2)
+
+    if entry.minor_version < 3:
+        # The stations of an entry imported from YAML become manual stations
+        if CONF_STATIONS in entry.data:
+            data, options = convert_yaml_config(entry.data, entry.options)
+            hass.config_entries.async_update_entry(
+                entry, data=data, options=options, minor_version=3
+            )
+        else:
+            hass.config_entries.async_update_entry(entry, minor_version=3)
 
     return True
 

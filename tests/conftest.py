@@ -102,6 +102,10 @@ class FakeApi:
         self.status = HTTPStatus.OK
         self.headers: dict[str, str] = {}
         self.exc: Exception | None = None
+        # Statuses of the next responses, before answering normally
+        self.next_statuses: list[HTTPStatus] = []
+        # Stations whose requests fail with a server error
+        self.failing_ids: set[int] = set()
 
     async def __call__(
         self, method: str, url: URL, data: Any
@@ -111,6 +115,13 @@ class FakeApi:
         self.requests.append(params)
         if self.exc is not None:
             raise self.exc
+        if self.next_statuses:
+            return AiohttpClientMockResponse(
+                method,
+                url,
+                status=self.next_statuses.pop(0),
+                json={"error_code": "ServerError", "message": "Error"},
+            )
         if self.status != HTTPStatus.OK:
             return AiohttpClientMockResponse(
                 method, url, status=self.status, headers=self.headers, json={}
@@ -120,6 +131,10 @@ class FakeApi:
         all_stations = self.stations | self.manual_stations
         if match := re.fullmatch(r"id IN \((.*)\)", where):
             ids = [int(sid) for sid in match[1].split(",")]
+            if self.failing_ids.intersection(ids):
+                return AiohttpClientMockResponse(
+                    method, url, status=HTTPStatus.BAD_GATEWAY, json={}
+                )
             records = [
                 {"id": sid} | all_stations[sid] for sid in ids if sid in all_stations
             ]
@@ -170,7 +185,7 @@ def mock_config_entry() -> MockConfigEntry:
         unique_id=DOMAIN,
         data=ENTRY_DATA,
         version=1,
-        minor_version=2,
+        minor_version=3,
     )
 
 
