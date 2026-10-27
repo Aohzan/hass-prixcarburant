@@ -31,6 +31,10 @@ from .tools import (
 
 _LOGGER = logging.getLogger(__name__)
 
+# Seconds before retrying an update failed because of a transient error, instead
+# of waiting for the next update hours later with the sensors unavailable
+RETRY_AFTER = 15 * 60
+
 type PrixCarburantConfigEntry = ConfigEntry[PrixCarburantCoordinator]
 
 
@@ -143,12 +147,16 @@ class PrixCarburantCoordinator(DataUpdateCoordinator[dict[int, dict[str, Any]]])
             raise UpdateFailed(
                 translation_domain=DOMAIN,
                 translation_key="rate_limit",
-                retry_after=err.retry_after,
+                retry_after=RETRY_AFTER if err.retry_after is None else err.retry_after,
             ) from err
-        except (
-            PrixCarburantToolCannotConnectError,
-            PrixCarburantToolRequestError,
-        ) as err:
+        except PrixCarburantToolCannotConnectError as err:
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="update_failed",
+                translation_placeholders={"error": str(err)},
+                retry_after=RETRY_AFTER,
+            ) from err
+        except PrixCarburantToolRequestError as err:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
                 translation_key="update_failed",

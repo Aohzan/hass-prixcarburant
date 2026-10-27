@@ -135,24 +135,69 @@ async def test_local_station_names(
     assert hass.states.get("sensor.station_99900001_gazole") is not None
 
 
+@pytest.mark.parametrize(
+    ("exc", "status"),
+    [
+        (ClientError(), HTTPStatus.OK),
+        (None, HTTPStatus.SERVICE_UNAVAILABLE),
+        # Rate limit without delay
+        (None, HTTPStatus.TOO_MANY_REQUESTS),
+    ],
+)
 async def test_update_failed(
     hass: HomeAssistant,
     freezer: FrozenDateTimeFactory,
     mock_config_entry: MockConfigEntry,
     mock_api: FakeApi,
+    exc: Exception | None,
+    status: HTTPStatus,
 ) -> None:
-    """Test the sensors are unavailable when the prices can't be updated."""
+    """Test a transient error is retried after 15 minutes."""
     await _setup(hass, mock_config_entry)
     assert hass.states.get(GAZOLE_ENTITY_ID).state == "1.659"
 
-    mock_api.exc = ClientError()
+    mock_api.exc = exc
+    mock_api.status = status
     freezer.tick(timedelta(hours=4, minutes=1))
     async_fire_time_changed(hass)
     await hass.async_block_till_done(wait_background_tasks=True)
     assert hass.states.get(GAZOLE_ENTITY_ID).state == STATE_UNAVAILABLE
 
     mock_api.exc = None
+    mock_api.status = HTTPStatus.OK
+    freezer.tick(timedelta(minutes=14))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+    assert hass.states.get(GAZOLE_ENTITY_ID).state == STATE_UNAVAILABLE
+
+    freezer.tick(timedelta(minutes=2))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+    assert hass.states.get(GAZOLE_ENTITY_ID).state == "1.659"
+
+
+async def test_update_request_error(
+    hass: HomeAssistant,
+    freezer: FrozenDateTimeFactory,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+) -> None:
+    """Test a request error waits for the next update."""
+    await _setup(hass, mock_config_entry)
+
+    mock_api.status = HTTPStatus.BAD_REQUEST
     freezer.tick(timedelta(hours=4, minutes=1))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+    assert hass.states.get(GAZOLE_ENTITY_ID).state == STATE_UNAVAILABLE
+
+    mock_api.status = HTTPStatus.OK
+    freezer.tick(timedelta(minutes=16))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+    assert hass.states.get(GAZOLE_ENTITY_ID).state == STATE_UNAVAILABLE
+
+    freezer.tick(timedelta(hours=4))
     async_fire_time_changed(hass)
     await hass.async_block_till_done(wait_background_tasks=True)
     assert hass.states.get(GAZOLE_ENTITY_ID).state == "1.659"
