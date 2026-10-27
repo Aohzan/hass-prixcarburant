@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.26.6](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.5...3.26.6) (2026-10-27)
+
+### Bug Fixes
+
+* allow removing manual stations unknown to the API ([#293](https://github.com/Aohzan/hass-prixcarburant/issues/293)) ([d5fb6a6](https://github.com/Aohzan/hass-prixcarburant/commit/d5fb6a65af41479609eb64dca8a0920a5430ba4b)), closes [#292](https://github.com/Aohzan/hass-prixcarburant/issues/292)
+
 ## [3.26.5](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.4...3.26.5) (2026-10-07)
 
 ### Bug Fixes
