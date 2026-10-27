@@ -41,10 +41,18 @@ CONFIG_SCHEMA = cv.platform_only_config_schema(DOMAIN)
 
 SERVICE_FIND_NEAREST_STATIONS = "find_nearest_stations"
 ATTR_FUEL = "fuel"
+_FUELS_BY_LOWER_NAME = {fuel.lower(): fuel for fuel in FUELS}
+
+
+def _fuel_case(value: str) -> str:
+    """Return the name of the fuel whatever its case, like the previous versions."""
+    return _FUELS_BY_LOWER_NAME.get(value.lower(), value)
+
+
 SERVICE_FIND_NEAREST_STATIONS_SCHEMA = vol.Schema(
     {
         vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_FUEL): vol.In(FUELS),
+        vol.Required(ATTR_FUEL): vol.All(cv.string, _fuel_case, vol.In(FUELS)),
         vol.Required(ATTR_DISTANCE): cv.positive_int,
     }
 )

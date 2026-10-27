@@ -13,6 +13,7 @@ from pytest_homeassistant_custom_component.common import (
 from pytest_homeassistant_custom_component.test_util.aiohttp import (
     AiohttpClientMocker,
 )
+import voluptuous as vol
 
 from custom_components.prix_carburant.const import (
     CONF_MANUAL_STATIONS,
@@ -515,8 +516,13 @@ async def test_migrate_from_future_version(
     assert entry.state is ConfigEntryState.MIGRATION_ERROR
 
 
+# The fuel was case insensitive in the previous versions
+@pytest.mark.parametrize("fuel", ["Gazole", "gazole", "GAZOLE"])
 async def test_find_nearest_stations(
-    hass: HomeAssistant, mock_config_entry: MockConfigEntry, mock_api: FakeApi
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+    fuel: str,
 ) -> None:
     """Test the cheapest stations near an entity are returned."""
     await _setup(hass, mock_config_entry)
@@ -527,7 +533,7 @@ async def test_find_nearest_stations(
     response = await hass.services.async_call(
         DOMAIN,
         "find_nearest_stations",
-        {ATTR_ENTITY_ID: "person.me", "fuel": "Gazole", "distance": 10},
+        {ATTR_ENTITY_ID: "person.me", "fuel": fuel, "distance": 10},
         blocking=True,
         return_response=True,
     )
@@ -590,3 +596,12 @@ async def test_find_nearest_stations_errors(
     with pytest.raises(HomeAssistantError) as err:
         await call("person.me")
     assert err.value.translation_key == "cannot_connect"
+
+    with pytest.raises(vol.Invalid):
+        await hass.services.async_call(
+            DOMAIN,
+            "find_nearest_stations",
+            service_data | {ATTR_ENTITY_ID: "person.me", "fuel": "Kerosene"},
+            blocking=True,
+            return_response=True,
+        )
