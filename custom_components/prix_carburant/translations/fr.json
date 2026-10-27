@@ -92,5 +92,13 @@
         }
       }
     }
+  },
+  "exceptions": {
+    "rate_limit": {
+      "message": "La limite de requêtes de l'API Prix Carburant est atteinte"
+    },
+    "update_failed": {
+      "message": "Impossible de mettre à jour les prix depuis l'API Prix Carburant : {error}"
+    }
   }
 }

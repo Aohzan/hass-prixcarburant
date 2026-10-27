@@ -20,7 +20,7 @@ from homeassistant.core import (
 )
 from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import (
     ATTR_ADDRESS,
@@ -36,7 +36,12 @@ from .const import (
     DOMAIN,
     PLATFORMS,
 )
-from .tools import PrixCarburantTool, PrixCarburantToolCannotConnectError
+from .tools import (
+    PrixCarburantTool,
+    PrixCarburantToolCannotConnectError,
+    PrixCarburantToolRateLimitError,
+    PrixCarburantToolRequestError,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -101,7 +106,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     async def async_update_data() -> dict:
         """Fetch data from API."""
         _LOGGER.info("Update stations prices")
-        await tool.update_stations_prices()
+        try:
+            await tool.update_stations_prices()
+        except PrixCarburantToolRateLimitError as err:
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="rate_limit",
+                retry_after=err.retry_after,
+            ) from err
+        except (
+            PrixCarburantToolCannotConnectError,
+            PrixCarburantToolRequestError,
+        ) as err:
+            raise UpdateFailed(
+                translation_domain=DOMAIN,
+                translation_key="update_failed",
+                translation_placeholders={"error": str(err)},
+            ) from err
         return tool.stations
 
     coordinator = DataUpdateCoordinator(

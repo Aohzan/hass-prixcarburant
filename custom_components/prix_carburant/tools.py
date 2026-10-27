@@ -3,7 +3,9 @@
 import asyncio
 from asyncio import sleep, timeout
 import bz2
+from collections.abc import Mapping
 import csv
+from datetime import UTC, datetime
 import io
 import json
 import logging
@@ -39,6 +41,7 @@ STATIONS_NAME_FILE = "stations_name.json"
 STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/custom_components/prix_carburant/stations_name.json"
 BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/"
 HTTP_OK = 200
+HTTP_TOO_MANY_REQUESTS = 429
 _DELETE_TAG = "DELETE TAG"
 _MAX_CONCURRENT_API_REQUESTS = 5
 # Maximum number of records returned by one API request
@@ -162,17 +165,22 @@ class PrixCarburantTool:
         last_exception: Exception | None = None
         for attempt in range(1, retries + 1):
             try:
-                async with timeout(self._request_timeout):
-                    response = await self._session.request(  # type: ignore[union-attr]
+                async with (
+                    timeout(self._request_timeout),
+                    self._session.request(  # type: ignore[union-attr]
                         method="GET",
                         url=PRIX_CARBURANT_API_URL,
                         params=params,
                         ssl=self._api_ssl_check,
-                    )
+                    ) as response,
+                ):
+                    if response.status == HTTP_TOO_MANY_REQUESTS:
+                        raise PrixCarburantToolRateLimitError(
+                            _retry_after(response.headers)
+                        )
                     content = await response.json()
 
                     if response.status == HTTP_OK and "results" in content:
-                        response.close()
                         return content
 
                     _raise_api_request_error(response.status, content)
@@ -370,19 +378,10 @@ class PrixCarburantTool:
 
         station_ids = list(self._stations_data.keys())
 
-        try:
-            results = {
-                result["id"]: result
-                for result in await self._request_stations_by_ids(
-                    query_select, station_ids
-                )
-            }
-        except (
-            PrixCarburantToolCannotConnectError,
-            PrixCarburantToolRequestError,
-        ):
-            _LOGGER.exception("Failed to update prices from API")
-            return
+        results = {
+            result["id"]: result
+            for result in await self._request_stations_by_ids(query_select, station_ids)
+        }
 
         failed_stations: list[str] = []
 
@@ -533,6 +532,24 @@ def _raise_api_request_error(status: int, body: object) -> None:
     raise PrixCarburantToolRequestError(msg)
 
 
+def _retry_after(headers: Mapping[str, str]) -> float | None:
+    """Return the seconds to wait before the next request, None if unknown.
+
+    The API sends the time its quota resets in X-RateLimit-Reset.
+    """
+    try:
+        if (retry_after := headers.get("Retry-After")) is not None:
+            return float(retry_after)
+        if (reset := headers.get("X-RateLimit-Reset")) is not None:
+            reset_time = datetime.fromisoformat(reset)
+            if reset_time.tzinfo is None:
+                reset_time = reset_time.replace(tzinfo=UTC)
+            return max(0.0, (reset_time - datetime.now(UTC)).total_seconds())
+    except ValueError:
+        return None
+    return None
+
+
 def _get_distance(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
     """Get distance from 2 locations."""
     earth_radius = 6371
@@ -640,3 +657,12 @@ class PrixCarburantToolCannotConnectError(Exception):
 
 class PrixCarburantToolRequestError(Exception):
     """Exception to indicate an error with an API request."""
+
+
+class PrixCarburantToolRateLimitError(PrixCarburantToolRequestError):
+    """Exception to indicate the API rejected a request because of its rate limit."""
+
+    def __init__(self, retry_after: float | None) -> None:
+        """Initialize the exception with the delay requested by the API."""
+        super().__init__(f"API rate limit reached, retry after {retry_after}s")
+        self.retry_after = retry_after

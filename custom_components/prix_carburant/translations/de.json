@@ -92,5 +92,13 @@
         }
       }
     }
+  },
+  "exceptions": {
+    "rate_limit": {
+      "message": "Das Anfragelimit der Prix Carburant API ist erreicht"
+    },
+    "update_failed": {
+      "message": "Die Preise konnten nicht von der Prix Carburant API aktualisiert werden: {error}"
+    }
   }
 }
