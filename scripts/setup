@@ -1,18 +1,11 @@
 #!/usr/bin/env bash
+# Set up the development environment: dependencies, git hooks and the Home
+# Assistant configuration in config/.
 
 set -e
 
 cd "$(dirname "$0")/.."
 
-# Install Python dependencies
-python3 -m pip install --requirement requirements.txt
-
-pre-commit install
-
-# Create config dir if not present
-if [[ ! -d "${PWD}/config" ]]; then
-    mkdir -p "${PWD}/config"
-    hass --config "${PWD}/config" --script ensure_config
-fi
-
-echo "Setup complete!"
+uv sync
+uv run prek install
+uv run hass --script ensure_config -c config

@@ -2,19 +2,37 @@ repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-      - id: check-yaml
       - id: check-added-large-files
+        # The lock of Home Assistant and its dependencies
+        exclude: ^uv\.lock$
       - id: check-json
       - id: check-toml
+      - id: check-yaml
+      - id: end-of-file-fixer
       - id: mixed-line-ending
-
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.9
+      - id: trailing-whitespace
+  # Run with the ruff version locked in uv.lock
+  - repo: local
     hooks:
-      - id: ruff
-        args: [--fix]
-        exclude: ^scripts/validate_stations\.py$
+      - id: ruff-check
+        name: ruff check
+        entry: uv run ruff check --fix
+        language: system
+        types_or: [python, pyi]
       - id: ruff-format
-        exclude: ^scripts/validate_stations\.py$
+        name: ruff format
+        entry: uv run ruff format
+        language: system
+        types_or: [python, pyi]
+      - id: ty
+        name: ty check
+        entry: uv run ty check
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+      - id: translations
+        name: translations
+        entry: uv run python scripts/check_translations.py
+        language: system
+        files: (strings|translations/.*)\.json$
+        pass_filenames: false

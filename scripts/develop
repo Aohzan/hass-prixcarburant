@@ -1,20 +1,15 @@
 #!/usr/bin/env bash
+# Start Home Assistant in debug mode with the integration of the repo.
 
 set -e
 
 cd "$(dirname "$0")/.."
 
-# Create config dir if not present
-if [[ ! -d "${PWD}/config" ]]; then
-    mkdir -p "${PWD}/config"
-    hass --config "${PWD}/config" --script ensure_config
+if [[ ! -d .venv ]]; then
+  scripts/setup
 fi
 
-# Set the path to custom_components
-## This let's us have the structure we want <root>/custom_components/integration_blueprint
-## while at the same time have Home Assistant configuration inside <root>/config
-## without resulting to symlinks.
-export PYTHONPATH="${PYTHONPATH}:${PWD}/custom_components"
-
-# Start Home Assistant
-hass --config "${PWD}/config" --debug
+# custom_components is a namespace package: Home Assistant finds the
+# integration of the repo through PYTHONPATH, no copy or link in config/
+export PYTHONPATH="${PWD}${PYTHONPATH:+:${PYTHONPATH}}"
+uv run hass -c config --debug

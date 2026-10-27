@@ -4,8 +4,8 @@ import bz2
 import csv
 import io
 import logging
-import sys
 from pathlib import Path
+import sys
 from urllib.request import urlopen
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -25,7 +25,7 @@ def main() -> None:
     """Download and filter the OSM stations CSV."""
     logger.info("Downloading %s ...", OSM_CSV_URL)
     try:
-        with urlopen(OSM_CSV_URL, timeout=30) as response:  # noqa: S310
+        with urlopen(OSM_CSV_URL, timeout=30) as response:
             raw = response.read()
     except OSError:
         logger.exception("Failed to download OSM CSV")

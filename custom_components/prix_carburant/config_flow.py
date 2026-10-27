@@ -1,25 +1,24 @@
 """Config flow to configure the Prix Carburant integration."""
 
-from __future__ import annotations
+from collections.abc import Mapping
+from typing import Any
 
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from collections.abc import Mapping
-
-import voluptuous as vol
 from aiohttp import ClientError
+import probatio
+
 from homeassistant.config_entries import (
-    ConfigEntry,
+    ConfigEntryState,
     ConfigFlow,
     ConfigFlowResult,
-    OptionsFlow,
+    OptionsFlowWithReload,
 )
 from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL
 from homeassistant.core import callback
-from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import (
+    config_validation as cv,
+    device_registry as dr,
+    entity_registry as er,
+)
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
@@ -28,58 +27,65 @@ from .const import (
     CONF_FUELS,
     CONF_MANUAL_STATIONS,
     CONF_MAX_KM,
-    CONF_STATIONS,
     DEFAULT_MAX_KM,
     DEFAULT_NAME,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
     FUELS,
 )
+from .coordinator import (
+    PrixCarburantConfigEntry,
+    convert_yaml_config,
+    get_entry_config,
+)
 from .tools import (
     PrixCarburantTool,
     PrixCarburantToolCannotConnectError,
+    PrixCarburantToolRateLimitError,
     PrixCarburantToolRequestError,
+    StationData,
 )
 
 
-def _build_schema(data: Mapping[str, Any], options: Mapping[str, Any]) -> vol.Schema:
+def _build_schema(
+    data: Mapping[str, Any], options: Mapping[str, Any]
+) -> probatio.Schema:
     """Build schema according to config/options."""
     config: dict[str, Any] = dict(data) | dict(options)
 
     # For initial setup, only show max distance and fuel selection
     schema = {
-        vol.Required(
+        probatio.Required(
             CONF_MAX_KM, default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM)
-        ): vol.All(int, vol.Range(min=1))
+        ): probatio.All(int, probatio.Range(min=0))
     }
 
     for fuel in FUELS:
         fuel_key = f"{CONF_FUELS}_{fuel}"
         schema.update(
             {
-                vol.Required(
+                probatio.Required(
                     fuel_key,
                     default=config.get(fuel_key, True),
                 ): bool
             }
         )
-    return vol.Schema(schema)
+    return probatio.Schema(schema)
 
 
 class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for Prix Carburant."""
 
     VERSION = 1
+    MINOR_VERSION = 2
 
     async def async_step_import(self, import_info: dict[str, Any]) -> ConfigFlowResult:
-        """Import a config entry from YAML config."""
-        entry = await self.async_set_unique_id(DOMAIN)
+        """Import the YAML configuration once, its stations become manual stations."""
+        await self.async_set_unique_id(DOMAIN)
+        self._abort_if_unique_id_configured()
 
-        if entry:
-            self.hass.config_entries.async_update_entry(entry, data=import_info)
-            self._abort_if_unique_id_configured()
-
-        return self.async_create_entry(title=DEFAULT_NAME, data=import_info)
+        data, options = convert_yaml_config(import_info, {})
+        return self.async_create_entry(title=DEFAULT_NAME, data=data, options=options)
 
     async def async_step_user(
         self, user_input: dict[str, Any] | None = None
@@ -104,36 +110,31 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry: ConfigEntry,  # noqa: ARG004
-    ) -> OptionsFlow:
+        config_entry: PrixCarburantConfigEntry,
+    ) -> PrixCarburantOptionsFlowHandler:
         """Define the config flow to handle options."""
         return PrixCarburantOptionsFlowHandler()
 
 
-class PrixCarburantOptionsFlowHandler(OptionsFlow):
+class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
     """Handle a PrixCarburant options flow."""
-
-    def __init__(self) -> None:
-        """Initialize options flow."""
-        self._stations_to_remove: list[str] = []
 
     def _get_manual_stations(self) -> list[int]:
         """Get manual stations list from config entry data/options."""
-        return list(
-            self.config_entry.data.get(CONF_MANUAL_STATIONS)
-            or self.config_entry.options.get(CONF_MANUAL_STATIONS)
-            or []
-        )
+        return list(get_entry_config(self.config_entry).get(CONF_MANUAL_STATIONS) or [])
+
+    def _get_loaded_stations(self) -> dict[int, StationData]:
+        """Get the stations of the coordinator, empty if the entry isn't loaded."""
+        entry: PrixCarburantConfigEntry = self.config_entry
+        if entry.state is not ConfigEntryState.LOADED:
+            return {}
+        return entry.runtime_data.data or {}
 
     async def async_step_init(
         self,
-        user_input: dict[str, Any] | None = None,  # noqa: ARG002
+        user_input: dict[str, Any] | None = None,
     ) -> ConfigFlowResult:
         """Manage the options - show main menu."""
-        # Check if configured via YAML
-        if CONF_STATIONS in self.config_entry.data:
-            return self.async_abort(reason="yaml_configuration")
-
         return self.async_show_menu(
             step_id="init",
             menu_options=[
@@ -152,34 +153,28 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
         if user_input is not None:
             # Merge with existing options
-            new_options = dict(self.config_entry.options)
-            new_options.update(user_input)
+            return self.async_create_entry(data=self.config_entry.options | user_input)
 
-            self.hass.async_create_task(
-                self.hass.config_entries.async_reload(self.config_entry.entry_id)
-            )
-            return self.async_create_entry(title="", data=new_options)
+        config = get_entry_config(self.config_entry)
 
-        config = dict(self.config_entry.data) | dict(self.config_entry.options)
-
-        schema = vol.Schema(
+        schema = probatio.Schema(
             {
-                vol.Required(
+                probatio.Required(
                     CONF_SCAN_INTERVAL,
                     default=config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL),
-                ): int,
-                vol.Required(
+                ): probatio.All(probatio.Coerce(int), probatio.Range(min=1)),
+                probatio.Required(
                     CONF_API_SSL_CHECK,
                     default=config.get(CONF_API_SSL_CHECK, True),
                 ): bool,
-                vol.Required(
+                probatio.Required(
                     CONF_DISPLAY_ENTITY_PICTURES,
                     default=config.get(CONF_DISPLAY_ENTITY_PICTURES, True),
                 ): bool,
-                vol.Required(
+                probatio.Required(
                     CONF_MAX_KM,
                     default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM),
-                ): vol.All(int, vol.Range(min=1)),
+                ): probatio.All(int, probatio.Range(min=0)),
             }
         )
 
@@ -197,21 +192,15 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
         if user_input is not None:
             # Merge with existing options
-            new_options = dict(self.config_entry.options)
-            new_options.update(user_input)
+            return self.async_create_entry(data=self.config_entry.options | user_input)
 
-            self.hass.async_create_task(
-                self.hass.config_entries.async_reload(self.config_entry.entry_id)
-            )
-            return self.async_create_entry(title="", data=new_options)
-
-        config = dict(self.config_entry.data) | dict(self.config_entry.options)
+        config = get_entry_config(self.config_entry)
 
         schema = {}
         for fuel in FUELS:
             fuel_key = f"{CONF_FUELS}_{fuel}"
             schema[
-                vol.Required(
+                probatio.Required(
                     fuel_key,
                     default=config.get(fuel_key, True),
                 )
@@ -219,7 +208,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
         return self.async_show_form(
             step_id="fuels_select",
-            data_schema=vol.Schema(schema),
+            data_schema=probatio.Schema(schema),
             errors=errors,
         )
 
@@ -245,10 +234,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                     errors["station_id"] = "station_already_exists"
                 else:
                     # Check if station exists in coordinator (auto-discovered)
-                    coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id][
-                        "coordinator"
-                    ]
-                    if station_id in coordinator.data:
+                    if station_id in self._get_loaded_stations():
                         errors["station_id"] = "station_already_exists"
                     else:
                         # Validate station exists in API
@@ -262,27 +248,14 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                             # Add to manual stations
                             manual_stations.append(station_id)
 
-                            # Update both options and data to ensure persistence
-                            new_options = dict(self.config_entry.options)
-                            new_options[CONF_MANUAL_STATIONS] = manual_stations
-
-                            new_data = dict(self.config_entry.data)
-                            new_data[CONF_MANUAL_STATIONS] = manual_stations
-
-                            self.hass.config_entries.async_update_entry(
-                                self.config_entry, data=new_data, options=new_options
-                            )
-                            self.hass.async_create_task(
-                                self.hass.config_entries.async_reload(
-                                    self.config_entry.entry_id
-                                )
+                            return self.async_create_entry(
+                                data=self.config_entry.options
+                                | {CONF_MANUAL_STATIONS: manual_stations}
                             )
 
-                            return self.async_create_entry(title="", data={})
-
-        schema = vol.Schema(
+        schema = probatio.Schema(
             {
-                vol.Required("station_id"): str,
+                probatio.Required("station_id"): str,
             }
         )
 
@@ -342,21 +315,12 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                     if station_id_int in manual_stations:
                         manual_stations.remove(station_id_int)
 
-                # Update both options and data to ensure persistence
-                new_options = dict(self.config_entry.options)
-                new_options[CONF_MANUAL_STATIONS] = manual_stations
-
-                new_data = dict(self.config_entry.data)
-                new_data[CONF_MANUAL_STATIONS] = manual_stations
-
-                self.hass.config_entries.async_update_entry(
-                    self.config_entry, data=new_data, options=new_options
-                )
-                self.hass.async_create_task(
-                    self.hass.config_entries.async_reload(self.config_entry.entry_id)
+                return self.async_create_entry(
+                    data=self.config_entry.options
+                    | {CONF_MANUAL_STATIONS: manual_stations}
                 )
 
-            return self.async_create_entry(title="", data={})
+            return self.async_create_entry(data=dict(self.config_entry.options))
 
         manual_stations = self._get_manual_stations()
 
@@ -365,8 +329,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
             return self.async_abort(reason="no_stations")
 
         # Get all stations from coordinator
-        coordinator = self.hass.data[DOMAIN][self.config_entry.entry_id]["coordinator"]
-        stations = coordinator.data or {}
+        stations = self._get_loaded_stations()
 
         # Build station list from manual stations, including those unknown to the API
         # (closed station or wrong ID) so they can still be removed
@@ -382,9 +345,9 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
             # Use string keys for cv.multi_select
             station_options[str(station_id_int)] = station_name
 
-        schema = vol.Schema(
+        schema = probatio.Schema(
             {
-                vol.Optional("stations_to_remove", default=[]): cv.multi_select(
+                probatio.Optional("stations_to_remove", default=[]): cv.multi_select(
                     station_options
                 ),
             }
@@ -408,7 +371,9 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
             tool = PrixCarburantTool(
                 self.hass.config.time_zone,
                 60,
-                api_ssl_check=True,
+                api_ssl_check=get_entry_config(self.config_entry).get(
+                    CONF_API_SSL_CHECK, True
+                ),
                 session=websession,
             )
 
@@ -419,11 +384,11 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                     "limit": 1,
                 }
             )
-        except (
-            ClientError,
-            PrixCarburantToolCannotConnectError,
-            PrixCarburantToolRequestError,
-        ):
+        except ClientError, PrixCarburantToolCannotConnectError:
+            return False, "cannot_connect"
+        except PrixCarburantToolRateLimitError:
+            return False, "rate_limit"
+        except PrixCarburantToolRequestError:
             return False, "station_not_found"
         else:
             if response["total_count"] == 1:

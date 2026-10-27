@@ -11,7 +11,13 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
+      # Full history: clean_stations_json.py reads the commits of stations_name.json.
+      # The credentials are kept to push the updated data, with RELEASE_TOKEN when
+      # set: the ruleset of master only lets an admin push without the checks.
+      - uses: actions/checkout@v7 # zizmor: ignore[artipacked]
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Download and decompress stations CSV
         run: python3 scripts/update_osm_stations.py

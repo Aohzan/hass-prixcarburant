@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  # Pull request branches run through the pull_request event only
+  push:
+    branches: [master]
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: Aohzan/.github/.github/workflows/ha-ci.yaml@v3
+
+  validate:
+    uses: Aohzan/.github/.github/workflows/ha-validate.yaml@v3
+
+  release:
+    needs: [ci, validate]
+    if: github.event_name == 'push' && github.ref_name == github.event.repository.default_branch
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+    uses: Aohzan/.github/.github/workflows/ha-release.yaml@v3
+    secrets:
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+
+  # Dependabot updates are merged only once the checks passed
+  dependabot:
+    needs: [ci, validate]
+    # Opened and last updated by Dependabot, from a branch of the repository
+    if: >-
+      github.event_name == 'pull_request'
+      && github.event.pull_request.user.login == 'dependabot[bot]'
+      && github.actor == 'dependabot[bot]'
+      && github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: write
+      pull-requests: write
+    uses: Aohzan/.github/.github/workflows/dependabot-merge.yaml@v3
+    secrets:
+      RELEASE_TOKEN: ${{ secrets.RELEASE_TOKEN }}

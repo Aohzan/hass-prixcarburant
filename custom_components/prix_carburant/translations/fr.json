@@ -15,7 +15,7 @@
       }
     },
     "abort": {
-      "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]"
+      "already_configured": "L'intégration est déjà configurée."
     }
   },
   "options": {
@@ -69,10 +69,11 @@
     "error": {
       "invalid_station_id": "Format d'identifiant de station invalide. Veuillez entrer un nombre valide.",
       "station_not_found": "Station non trouvée dans l'API. Veuillez vérifier l'identifiant.",
-      "station_already_exists": "Cette station est déjà dans votre liste."
+      "station_already_exists": "Cette station est déjà dans votre liste.",
+      "cannot_connect": "Impossible de se connecter à l'API Prix Carburant, réessayez plus tard.",
+      "rate_limit": "Trop de requêtes vers l'API Prix Carburant, réessayez plus tard."
     },
     "abort": {
-      "yaml_configuration": "Intégration configurée depuis configuration.yaml. La gestion des stations n'est pas disponible.",
       "no_stations": "Aucune station trouvée. Veuillez d'abord ajouter des stations."
     }
   },
@@ -94,6 +95,44 @@
           "description": "Distance maximum entre les stations et l'entité"
         }
       }
+    }
+  },
+  "exceptions": {
+    "rate_limit": {
+      "message": "La limite de requêtes de l'API Prix Carburant est atteinte"
+    },
+    "update_failed": {
+      "message": "Impossible de mettre à jour les prix depuis l'API Prix Carburant : {error}"
+    },
+    "cannot_connect": {
+      "message": "Impossible de joindre l'API Prix Carburant : {error}"
+    },
+    "not_loaded": {
+      "message": "L'intégration Prix Carburant n'est pas chargée"
+    },
+    "entity_not_found": {
+      "message": "L'entité {entity_id} est introuvable"
+    },
+    "no_coordinates": {
+      "message": "L'entité {entity_id} n'a pas d'attributs latitude et longitude"
+    }
+  },
+  "entity": {
+    "button": {
+      "refresh": {
+        "name": "Actualiser les prix"
+      }
+    },
+    "sensor": {
+      "fuel_price": {
+        "name": "{fuel}"
+      }
+    }
+  },
+  "issues": {
+    "deprecated_yaml": {
+      "title": "La configuration YAML de Prix Carburant est obsolète",
+      "description": "La configuration de Prix Carburant avec la plateforme de capteurs `prix_carburant` dans configuration.yaml est obsolète et sera supprimée dans une prochaine version. Vos stations ont été déplacées dans les options de l'intégration, comme stations ajoutées manuellement, et la découverte automatique a été désactivée (distance maximum à 0) : vos entités et leurs réglages sont conservés.\n\nLes modifications faites dans configuration.yaml ne sont plus prises en compte. Supprimez la plateforme `prix_carburant` de configuration.yaml et redémarrez Home Assistant, puis gérez vos stations depuis les options de l'intégration."
     }
   }
 }

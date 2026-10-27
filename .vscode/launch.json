@@ -6,16 +6,31 @@
       "type": "debugpy",
       "request": "launch",
       "module": "homeassistant",
-      "justMyCode": false,
       "args": [
-        "--debug",
         "-c",
-        "config"
+        "config",
+        "--debug"
       ],
-      "console": "integratedTerminal",
+      "justMyCode": false,
+      "preLaunchTask": "Setup",
       "env": {
-        "PYTHONPATH": "${workspaceFolder}:${env:PYTHONPATH}"
-      }
+        "PYTHONPATH": "${workspaceFolder}"
+      },
+      "python": "${workspaceFolder}/.venv/bin/python",
+      "subProcess": false
+    },
+    {
+      "name": "Pytest: current file",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "pytest",
+      "args": [
+        "${file}",
+        "-x",
+        "--no-cov"
+      ],
+      "justMyCode": false,
+      "python": "${workspaceFolder}/.venv/bin/python"
     }
   ]
 }

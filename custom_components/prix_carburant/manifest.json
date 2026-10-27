@@ -7,8 +7,10 @@
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/Aohzan/hass-prixcarburant/",
+  "integration_type": "service",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/Aohzan/hass-prixcarburant/issues",
   "requirements": [],
+  "single_config_entry": true,
   "version": "3.26.6"
 }

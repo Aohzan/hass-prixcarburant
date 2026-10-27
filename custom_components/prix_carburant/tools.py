@@ -1,17 +1,21 @@
 """Tools for Prix Carburant."""
 
 import asyncio
+from asyncio import sleep, timeout
 import bz2
+from collections.abc import Awaitable, Mapping
 import csv
+from datetime import UTC, datetime
 import io
 import json
 import logging
-from asyncio import sleep, timeout
 from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 from socket import gaierror
+from typing import Any, NotRequired, TypedDict, cast
 
 from aiohttp import ClientError, ClientSession
+
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 
 from .const import (
@@ -38,8 +42,39 @@ STATIONS_NAME_FILE = "stations_name.json"
 STATIONS_NAME_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/custom_components/prix_carburant/stations_name.json"
 BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/"
 HTTP_OK = 200
+HTTP_TOO_MANY_REQUESTS = 429
+HTTP_INTERNAL_SERVER_ERROR = 500
 _DELETE_TAG = "DELETE TAG"
 _MAX_CONCURRENT_API_REQUESTS = 5
+# Minimum seconds to wait after a rate limit, the reset time can be in the past
+_MIN_RETRY_AFTER = 60.0
+# Maximum number of records returned by one API request
+_API_MAX_LIMIT = 100
+
+
+class FuelPrice(TypedDict):
+    """Price of a fuel in a station, None when the fuel is in shortage."""
+
+    updated_date: str | None
+    price: float | None
+    shortage_since: str | None
+
+
+class StationData(TypedDict):
+    """Information and fuel prices of a station, keyed by the ATTR_* constants."""
+
+    latitude: float
+    longitude: float
+    # Kilometers from the location given to the API, None without location
+    distance: float | None
+    address: str | None
+    postal_code: str | None
+    city: str | None
+    name: str
+    brand: str | None
+    fuels: dict[str, FuelPrice]
+    # Price of the fuel searched by find_nearest_station
+    price: NotRequired[float | None]
 
 
 def _parse_stations_csv(content: str) -> dict[str, dict]:
@@ -71,6 +106,25 @@ def _parse_stations_csv(content: str) -> dict[str, dict]:
     return result
 
 
+def _parse_stations_bz2_csv(raw: bytes) -> dict[str, dict]:
+    """Decompress and parse the OSM stations CSV."""
+    return _parse_stations_csv(bz2.decompress(raw).decode("UTF-8"))
+
+
+def _load_local_stations_csv() -> dict[str, dict]:
+    """Parse the OSM stations CSV shipped with the integration."""
+    return _parse_stations_csv(
+        (Path(__file__).parent / STATIONS_NAME_OSM_FILE).read_text(encoding="UTF-8")
+    )
+
+
+def _load_local_stations_json() -> dict[str, dict]:
+    """Load the custom stations names shipped with the integration."""
+    return json.loads(
+        (Path(__file__).parent / STATIONS_NAME_FILE).read_text(encoding="UTF-8")
+    )
+
+
 class PrixCarburantTool:
     """Prix Carburant class with stations information."""
 
@@ -78,28 +132,31 @@ class PrixCarburantTool:
         self,
         time_zone: str = "Europe/Paris",
         request_timeout: int = 30,
-        api_ssl_check: bool = True,  # noqa: FBT001, FBT002
-        session: ClientSession | None = None,
+        api_ssl_check: bool = True,
+        *,
+        session: ClientSession,
     ) -> None:
         """Init tool."""
         self._user_time_zone = time_zone
         self._api_ssl_check = api_ssl_check
         self._local_stations_data: dict[str, dict] = {}
-        self._stations_data: dict[str, dict] = {}
+        self._stations_data: dict[int, StationData] = {}
         self._request_timeout = request_timeout
         self._session = session
         self._semaphore = asyncio.Semaphore(_MAX_CONCURRENT_API_REQUESTS)
 
     async def async_initialize(self) -> None:
-        """Load stations name data from remote sources, falling back to local files."""
+        """Load stations name data from remote sources, falling back to local files.
+
+        The files are decompressed, read and parsed in the executor.
+        """
         _LOGGER.debug("Loading OSM stations CSV from: %s", STATIONS_NAME_OSM_URL)
         try:
             async with timeout(self._request_timeout):
-                response = await self._session.get(STATIONS_NAME_OSM_URL)  # type: ignore[union-attr]
+                response = await self._session.get(STATIONS_NAME_OSM_URL)
                 response.raise_for_status()
                 raw = await response.read()
-            csv_content = bz2.decompress(raw).decode("UTF-8")
-            osm_stations_data: dict[str, dict] = _parse_stations_csv(csv_content)
+            osm_stations_data = await asyncio.to_thread(_parse_stations_bz2_csv, raw)
             _LOGGER.debug(
                 "Successfully retrieved OSM CSV from: %s", STATIONS_NAME_OSM_URL
             )
@@ -109,19 +166,17 @@ class PrixCarburantTool:
                 err,
                 STATIONS_NAME_OSM_FILE,
             )
-            with (Path(__file__).parent / STATIONS_NAME_OSM_FILE).open(
-                encoding="UTF-8",
-            ) as file:
-                osm_stations_data = _parse_stations_csv(file.read())
+            osm_stations_data = await asyncio.to_thread(_load_local_stations_csv)
 
         _LOGGER.debug("Loading custom stations from: %s", STATIONS_NAME_URL)
         try:
             async with timeout(self._request_timeout):
-                response = await self._session.get(STATIONS_NAME_URL)  # type: ignore[union-attr]
+                response = await self._session.get(STATIONS_NAME_URL)
                 response.raise_for_status()
-                custom_stations_data: dict[str, dict] = await response.json(
-                    content_type=None
-                )
+                raw = await response.read()
+            custom_stations_data: dict[str, dict] = await asyncio.to_thread(
+                json.loads, raw
+            )
             _LOGGER.debug(
                 "Successfully retrieved custom data from: %s", STATIONS_NAME_URL
             )
@@ -131,15 +186,12 @@ class PrixCarburantTool:
                 err,
                 STATIONS_NAME_FILE,
             )
-            with (Path(__file__).parent / STATIONS_NAME_FILE).open(
-                encoding="UTF-8",
-            ) as file:
-                custom_stations_data = json.load(file)
+            custom_stations_data = await asyncio.to_thread(_load_local_stations_json)
 
         self._local_stations_data = {**osm_stations_data, **custom_stations_data}
 
     @property
-    def stations(self) -> dict:
+    def stations(self) -> dict[int, StationData]:
         """Return stations information."""
         return self._stations_data
 
@@ -159,17 +211,22 @@ class PrixCarburantTool:
         last_exception: Exception | None = None
         for attempt in range(1, retries + 1):
             try:
-                async with timeout(self._request_timeout):
-                    response = await self._session.request(  # type: ignore[union-attr]
+                async with (
+                    timeout(self._request_timeout),
+                    self._session.request(
                         method="GET",
                         url=PRIX_CARBURANT_API_URL,
                         params=params,
                         ssl=self._api_ssl_check,
-                    )
+                    ) as response,
+                ):
+                    if response.status == HTTP_TOO_MANY_REQUESTS:
+                        raise PrixCarburantToolRateLimitError(
+                            _retry_after(response.headers)
+                        )
                     content = await response.json()
 
                     if response.status == HTTP_OK and "results" in content:
-                        response.close()
                         return content
 
                     _raise_api_request_error(response.status, content)
@@ -180,6 +237,8 @@ class PrixCarburantTool:
             except ClientError, gaierror:
                 msg = "Error occurred while communicating with the Prix Carburant API."
                 last_exception = PrixCarburantToolCannotConnectError(msg)
+            except PrixCarburantToolCannotConnectError as err:
+                last_exception = err
             except PrixCarburantToolRequestError:
                 raise
 
@@ -196,30 +255,73 @@ class PrixCarburantTool:
             raise last_exception
         return {}
 
+    async def _request_stations_by_ids(
+        self, select: str, station_ids: list, allow_partial: bool = False
+    ) -> tuple[list[dict], list]:
+        """Return the API records of the stations, requested by batches.
+
+        With allow_partial, a failed batch doesn't fail the others: their records
+        are returned with the IDs of the stations of the failed batches, unless
+        every batch failed.
+        """
+
+        async def _fetch_batch(batch: list) -> list[dict]:
+            async with self._semaphore:
+                response = await self.request_api(
+                    {
+                        "select": select,
+                        "where": f"id IN ({','.join(str(sid) for sid in batch)})",
+                        "limit": len(batch),
+                    }
+                )
+            return response.get("results", [])
+
+        batches = [
+            station_ids[offset : offset + _API_MAX_LIMIT]
+            for offset in range(0, len(station_ids), _API_MAX_LIMIT)
+        ]
+        results = await _gather_requests(*(_fetch_batch(batch) for batch in batches))
+
+        records: list[dict] = []
+        failed_ids: list = []
+        errors: list[Exception] = []
+        for batch, result in zip(batches, results, strict=True):
+            if isinstance(result, Exception):
+                errors.append(result)
+                failed_ids.extend(batch)
+            else:
+                records.extend(result)
+        if errors and (not allow_partial or len(errors) == len(batches)):
+            raise _error_to_raise(errors)
+        if errors:
+            _LOGGER.warning(
+                "%s/%s request(s) to the API failed, %s station(s) skipped: %s",
+                len(errors),
+                len(batches),
+                len(failed_ids),
+                errors[0],
+            )
+        return records, failed_ids
+
     async def _fetch_stations_by_ids(
         self, station_ids: list, latitude: float, longitude: float
-    ) -> tuple[dict, list[str]]:
+    ) -> tuple[dict[int, StationData], list[str]]:
         """Fetch station data for the given IDs, returning (data, missing_ids)."""
         if not station_ids:
             return {}, []
 
-        ids_list = ",".join(str(sid) for sid in station_ids)
-        query_limit = min(len(station_ids), 100)
-        response = await self.request_api(
-            {
-                "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
-                "where": f"id IN ({ids_list})",
-                "limit": query_limit,
-            }
+        results, _ = await self._request_stations_by_ids(
+            "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
+            station_ids,
         )
 
-        api_station_ids = {str(r["id"]) for r in response.get("results", [])}
+        api_station_ids = {str(r["id"]) for r in results}
         missing_ids = [
             str(sid) for sid in station_ids if str(sid) not in api_station_ids
         ]
 
-        data: dict = {}
-        for result in response.get("results", []):
+        data: dict[int, StationData] = {}
+        for result in results:
             data.update(
                 self._build_station_data(
                     result,
@@ -228,25 +330,6 @@ class PrixCarburantTool:
                 )
             )
         return data, missing_ids
-
-    async def init_stations_from_list(
-        self, stations_ids: list[int], latitude: float, longitude: float
-    ) -> None:
-        """Get data from station list ID."""
-        _LOGGER.debug("Call %s API to retrieve station data", PRIX_CARBURANT_API_URL)
-        if not stations_ids:
-            self._stations_data = {}
-            return
-
-        data, missing_ids = await self._fetch_stations_by_ids(
-            stations_ids, latitude, longitude
-        )
-        for sid in missing_ids:
-            _LOGGER.warning(
-                "Station %s not found in the API, it may have closed or its ID has changed",
-                sid,
-            )
-        self._stations_data = data
 
     async def init_stations_from_location(
         self,
@@ -266,7 +349,9 @@ class PrixCarburantTool:
         stations_count = response_count["total_count"]
         _LOGGER.debug("%s stations returned by the API", stations_count)
 
-        async def _fetch_page(query_offset: int, query_limit: int) -> dict:
+        async def _fetch_page(
+            query_offset: int, query_limit: int
+        ) -> dict[int, StationData]:
             _LOGGER.debug(
                 "Query stations from %s to %s/%s",
                 query_offset,
@@ -282,7 +367,7 @@ class PrixCarburantTool:
                         "limit": query_limit,
                     }
                 )
-            data: dict = {}
+            data: dict[int, StationData] = {}
             for station in response["results"]:
                 data.update(
                     self._build_station_data(
@@ -295,12 +380,18 @@ class PrixCarburantTool:
             (offset, min(100, stations_count - offset))
             for offset in range(0, stations_count, 100)
         ]
-        results = await asyncio.gather(
-            *[_fetch_page(off, lim) for off, lim in offsets_limits],
+        results = await _gather_requests(
+            *(_fetch_page(off, lim) for off, lim in offsets_limits)
         )
-        data: dict = {}
+        data: dict[int, StationData] = {}
+        errors: list[Exception] = []
         for result in results:
-            data.update(result)
+            if isinstance(result, Exception):
+                errors.append(result)
+            else:
+                data.update(result)
+        if errors:
+            raise _error_to_raise(errors)
         self._stations_data = data
 
     async def add_manual_stations(
@@ -334,8 +425,12 @@ class PrixCarburantTool:
             "Manual stations added. Total stations: %s", len(self._stations_data)
         )
 
-    async def update_stations_prices(self) -> None:
-        """Update prices of specified stations."""
+    async def update_stations_prices(self, allow_partial: bool = False) -> None:
+        """Update prices of specified stations.
+
+        With allow_partial, the stations of a failed request keep their last
+        prices, unless every request failed.
+        """
         _LOGGER.debug("Call %s API to retrieve fuel prices", PRIX_CARBURANT_API_URL)
         query_select = "id," + ",".join(
             f"{fuel.lower()}_{suffix}"
@@ -347,51 +442,33 @@ class PrixCarburantTool:
             return
 
         station_ids = list(self._stations_data.keys())
-        ids_list = ",".join(str(sid) for sid in station_ids)
-        where_clause = f"id IN ({ids_list})"
-        query_limit = min(total_stations, 100)
 
-        try:
-            response = await self.request_api(
-                {
-                    "select": query_select,
-                    "where": where_clause,
-                    "limit": query_limit,
-                }
-            )
-        except (
-            PrixCarburantToolCannotConnectError,
-            PrixCarburantToolRequestError,
-        ):
-            _LOGGER.exception("Failed to update prices from API")
-            return
+        records, skipped_ids = await self._request_stations_by_ids(
+            query_select, station_ids, allow_partial=allow_partial
+        )
+        skipped = set(skipped_ids)
+        results = {result["id"]: result for result in records}
 
-        api_station_ids = {r["id"] for r in response.get("results", [])}
         failed_stations: list[str] = []
 
         for station_id_ in station_ids:
-            if station_id_ not in api_station_ids:
+            if station_id_ in skipped:
+                continue
+            if (result := results.get(station_id_)) is None:
                 failed_stations.append(str(station_id_))
                 continue
             station_data = self._stations_data[station_id_]
-            result = next(r for r in response["results"] if r["id"] == station_id_)
             for fuel in FUELS:
                 fuel_key = fuel.lower()
                 if (
                     result.get(f"{fuel_key}_prix")
                     or result.get(f"{fuel_key}_rupture_type") == "temporaire"
                 ):
-                    station_data[ATTR_FUELS].update(
-                        {
-                            fuel: {
-                                ATTR_UPDATED_DATE: result.get(f"{fuel_key}_maj"),
-                                ATTR_PRICE: result.get(f"{fuel_key}_prix"),
-                                ATTR_SHORTAGE_SINCE: result.get(
-                                    f"{fuel_key}_rupture_debut"
-                                ),
-                            }
-                        }
-                    )
+                    station_data[ATTR_FUELS][fuel] = {
+                        ATTR_UPDATED_DATE: result.get(f"{fuel_key}_maj"),
+                        ATTR_PRICE: result.get(f"{fuel_key}_prix"),
+                        ATTR_SHORTAGE_SINCE: result.get(f"{fuel_key}_rupture_debut"),
+                    }
                 else:
                     station_data[ATTR_FUELS].pop(fuel, None)
 
@@ -405,9 +482,9 @@ class PrixCarburantTool:
 
     async def find_nearest_station(
         self, longitude: float, latitude: float, fuel: str, distance: int = 10
-    ) -> dict:
+    ) -> dict[int, StationData]:
         """Return stations near the location where the fuel price is the lowest."""
-        data = {}
+        data: dict[int, StationData] = {}
         _LOGGER.debug(
             "Call %s API to retrieve nearest stations ordered by price",
             PRIX_CARBURANT_API_URL,
@@ -439,12 +516,12 @@ class PrixCarburantTool:
 
     def _build_station_data(
         self,
-        station: dict,
+        station: dict[str, Any],
         user_longitude: float | None = None,
         user_latitude: float | None = None,
         fuel_key: str | None = None,
-    ) -> dict:
-        data = {}
+    ) -> dict[int, StationData]:
+        data: dict[int, StationData] = {}
         try:
             latitude = float(station["latitude"]) / 100000
             longitude = float(station["longitude"]) / 100000
@@ -511,10 +588,58 @@ class PrixCarburantTool:
         return data
 
 
+async def _gather_requests[T](*requests: Awaitable[T]) -> list[T | Exception]:
+    """Wait for all the API requests, returning their errors instead of raising.
+
+    A failed request neither cancels the others nor leaves them running.
+    """
+    results = await asyncio.gather(*requests, return_exceptions=True)
+    for result in results:
+        if isinstance(result, BaseException) and not isinstance(
+            result,
+            (PrixCarburantToolCannotConnectError, PrixCarburantToolRequestError),
+        ):
+            raise result
+    return cast(list[T | Exception], results)
+
+
+def _error_to_raise(errors: list[Exception]) -> Exception:
+    """Return the error to raise for failed requests, a rate limit first."""
+    return next(
+        (err for err in errors if isinstance(err, PrixCarburantToolRateLimitError)),
+        errors[0],
+    )
+
+
 def _raise_api_request_error(status: int, body: object) -> None:
-    """Raise a PrixCarburantToolRequestError with a formatted message."""
+    """Raise the error of a failed API request with a formatted message.
+
+    The server errors are transient, even with a JSON body: they can be retried.
+    """
     msg = f"API request error {status}: {body}"
+    if status >= HTTP_INTERNAL_SERVER_ERROR:
+        raise PrixCarburantToolCannotConnectError(msg)
     raise PrixCarburantToolRequestError(msg)
+
+
+def _retry_after(headers: Mapping[str, str]) -> float | None:
+    """Return the seconds to wait before the next request, None if unknown.
+
+    The API sends the time its quota resets in X-RateLimit-Reset.
+    """
+    try:
+        if (retry_after := headers.get("Retry-After")) is not None:
+            return max(_MIN_RETRY_AFTER, float(retry_after))
+        if (reset := headers.get("X-RateLimit-Reset")) is not None:
+            reset_time = datetime.fromisoformat(reset)
+            if reset_time.tzinfo is None:
+                reset_time = reset_time.replace(tzinfo=UTC)
+            return max(
+                _MIN_RETRY_AFTER, (reset_time - datetime.now(UTC)).total_seconds()
+            )
+    except ValueError:
+        return None
+    return None
 
 
 def _get_distance(lon1: float, lat1: float, lon2: float, lat2: float) -> float:
@@ -604,7 +729,7 @@ _BRAND_LOGOS: dict[str, str] = {
 }
 
 
-def get_entity_picture(brand: str) -> str:
+def get_entity_picture(brand: str | None) -> str:
     """Get entity picture based on brand."""
     return _BRAND_LOGOS.get(brand, "")
 
@@ -624,3 +749,12 @@ class PrixCarburantToolCannotConnectError(Exception):
 
 class PrixCarburantToolRequestError(Exception):
     """Exception to indicate an error with an API request."""
+
+
+class PrixCarburantToolRateLimitError(PrixCarburantToolRequestError):
+    """Exception to indicate the API rejected a request because of its rate limit."""
+
+    def __init__(self, retry_after: float | None) -> None:
+        """Initialize the exception with the delay requested by the API."""
+        super().__init__(f"API rate limit reached, retry after {retry_after}s")
+        self.retry_after = retry_after

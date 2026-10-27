@@ -1,0 +1,87 @@
+# serializer version: 1
+# name: test_diagnostics
+  dict({
+    'data': dict({
+      '99900001': dict({
+        'address': '**REDACTED**',
+        'brand': 'Total Access',
+        'city': 'LA JOLLA',
+        'distance': '**REDACTED**',
+        'fuels': dict({
+          'E10': dict({
+            'price': 1.789,
+            'shortage_since': None,
+            'updated_date': '2026-10-25T09:30:00+02:00',
+          }),
+          'Gazole': dict({
+            'price': 1.659,
+            'shortage_since': None,
+            'updated_date': '2026-10-26T08:00:00+02:00',
+          }),
+          'SP98': dict({
+            'price': 1.899,
+            'shortage_since': None,
+            'updated_date': '2026-10-25T09:30:00+02:00',
+          }),
+        }),
+        'latitude': '**REDACTED**',
+        'longitude': '**REDACTED**',
+        'name': 'Relais de la Gare',
+        'postal_code': '92037',
+      }),
+      '99900002': dict({
+        'address': '**REDACTED**',
+        'brand': 'Carrefour',
+        'city': 'La Jolla',
+        'distance': '**REDACTED**',
+        'fuels': dict({
+          'E85': dict({
+            'price': None,
+            'shortage_since': '2026-10-20T10:00:00+02:00',
+            'updated_date': None,
+          }),
+          'Gazole': dict({
+            'price': 1.649,
+            'shortage_since': None,
+            'updated_date': '2026-10-27T07:00:00+02:00',
+          }),
+        }),
+        'latitude': '**REDACTED**',
+        'longitude': '**REDACTED**',
+        'name': 'undefined',
+        'postal_code': '92037',
+      }),
+      '99900003': dict({
+        'address': '**REDACTED**',
+        'brand': None,
+        'city': 'san diego',
+        'distance': '**REDACTED**',
+        'fuels': dict({
+          'GPLc': dict({
+            'price': 0.999,
+            'shortage_since': None,
+            'updated_date': '2026-10-01T12:00:00+02:00',
+          }),
+        }),
+        'latitude': '**REDACTED**',
+        'longitude': '**REDACTED**',
+        'name': 'undefined',
+        'postal_code': '92122',
+      }),
+    }),
+    'entry': dict({
+      'data': dict({
+        'fuels_E10': True,
+        'fuels_E85': True,
+        'fuels_GPLc': True,
+        'fuels_Gazole': True,
+        'fuels_SP95': True,
+        'fuels_SP98': False,
+        'max_km': 10,
+      }),
+      'options': dict({
+      }),
+    }),
+    'stations_count': 3,
+  })
+# ---

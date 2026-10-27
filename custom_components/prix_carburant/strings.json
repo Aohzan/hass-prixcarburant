@@ -4,8 +4,6 @@
       "user": {
         "description": "Get stations from your Home-Assistant location (check general settings to check it). Set maximum distance to 0 to disable automatic station discovery and add stations manually later in options.",
         "data": {
-          "scan_interval": "Time in hours between two data updates",
-          "display_entity_pictures": "Add brand logo to entity pictures",
           "max_km": "Maximum distance from home",
           "fuels_Gazole": "Show Gazole",
           "fuels_E10": "Show E10",
@@ -17,7 +15,7 @@
       }
     },
     "abort": {
-      "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]"
+      "already_configured": "The integration is already configured."
     }
   },
   "options": {
@@ -71,10 +69,11 @@
     "error": {
       "invalid_station_id": "Invalid station ID format. Please enter a valid number.",
       "station_not_found": "Station not found in the API. Please verify the ID.",
-      "station_already_exists": "This station is already in your list."
+      "station_already_exists": "This station is already in your list.",
+      "cannot_connect": "Unable to connect to the Prix Carburant API, try again later.",
+      "rate_limit": "Too many requests to the Prix Carburant API, try again later."
     },
     "abort": {
-      "yaml_configuration": "Integration configured in configuration.yaml. Station management is not available.",
       "no_stations": "No stations found. Please add stations first."
     }
   },
@@ -96,6 +95,44 @@
           "description": "Maximum distance between the stations and the entity"
         }
       }
+    }
+  },
+  "exceptions": {
+    "rate_limit": {
+      "message": "The Prix Carburant API rate limit is reached"
+    },
+    "update_failed": {
+      "message": "Unable to update the prices from the Prix Carburant API: {error}"
+    },
+    "cannot_connect": {
+      "message": "Unable to reach the Prix Carburant API: {error}"
+    },
+    "not_loaded": {
+      "message": "The Prix Carburant integration isn't loaded"
+    },
+    "entity_not_found": {
+      "message": "The entity {entity_id} was not found"
+    },
+    "no_coordinates": {
+      "message": "The entity {entity_id} has no latitude and longitude attributes"
+    }
+  },
+  "entity": {
+    "button": {
+      "refresh": {
+        "name": "Refresh prices"
+      }
+    },
+    "sensor": {
+      "fuel_price": {
+        "name": "{fuel}"
+      }
+    }
+  },
+  "issues": {
+    "deprecated_yaml": {
+      "title": "The Prix Carburant YAML configuration is deprecated",
+      "description": "Configuring Prix Carburant with the `prix_carburant` sensor platform in configuration.yaml is deprecated and will be removed in a future version. Your stations were moved to the options of the integration as manually added stations, and the automatic discovery was disabled (maximum distance of 0): your entities and their settings are kept.\n\nThe changes made in configuration.yaml are no longer applied. Remove the `prix_carburant` platform from configuration.yaml and restart Home Assistant, then manage your stations from the options of the integration."
     }
   }
 }

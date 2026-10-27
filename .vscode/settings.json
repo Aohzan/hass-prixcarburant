@@ -1,15 +1,10 @@
 {
-  "python.defaultInterpreterPath": "/usr/local/python/current/bin/python",
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
   "python.testing.pytestEnabled": true,
-  "python.testing.unittestEnabled": false,
   "python.testing.pytestArgs": [
-    "tests"
+    "tests",
+    "--no-cov"
   ],
-  "editor.formatOnSave": true,
-  "files.eol": "\n",
-  "editor.tabSize": 4,
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true,
   "[python]": {
     "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnSave": true,
@@ -17,22 +12,15 @@
       "source.organizeImports": "explicit"
     }
   },
-  "[yaml]": {
-    "editor.insertSpaces": true,
-    "editor.tabSize": 2,
-    "editor.autoIndent": "advanced"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "vscode.json-language-features"
-  },
-  "files.associations": {
-    "*.yaml": "home-assistant"
-  },
   "files.exclude": {
     "**/__pycache__": true,
-    "**/*.pyc": true,
-    ".pytest_cache": true,
-    ".ruff_cache": true
+    "**/.pytest_cache": true,
+    "**/.ruff_cache": true
   },
-  "python-envs.defaultEnvManager": "ms-python.python:system"
+  "files.watcherExclude": {
+    "**/.venv/**": true,
+    "**/config/**": true,
+    "**/.ruff_cache/**": true,
+    "**/.pytest_cache/**": true
+  }
 }
