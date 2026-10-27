@@ -77,7 +77,7 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for Prix Carburant."""
 
     VERSION = 1
-    MINOR_VERSION = 4
+    MINOR_VERSION = 2
 
     async def async_step_import(self, import_info: dict[str, Any]) -> ConfigFlowResult:
         """Import the YAML configuration once, its stations become manual stations."""
