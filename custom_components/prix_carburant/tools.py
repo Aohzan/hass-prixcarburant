@@ -41,6 +41,8 @@ BRAND_LOGO_BASE_URL = "https://raw.githubusercontent.com/Aohzan/hass-prixcarbura
 HTTP_OK = 200
 _DELETE_TAG = "DELETE TAG"
 _MAX_CONCURRENT_API_REQUESTS = 5
+# Maximum number of records returned by one API request
+_API_MAX_LIMIT = 100
 
 
 def _parse_stations_csv(content: str) -> dict[str, dict]:
@@ -197,6 +199,30 @@ class PrixCarburantTool:
             raise last_exception
         return {}
 
+    async def _request_stations_by_ids(
+        self, select: str, station_ids: list
+    ) -> list[dict]:
+        """Return the API records of the stations, requested by batches."""
+
+        async def _fetch_batch(batch: list) -> list[dict]:
+            async with self._semaphore:
+                response = await self.request_api(
+                    {
+                        "select": select,
+                        "where": f"id IN ({','.join(str(sid) for sid in batch)})",
+                        "limit": len(batch),
+                    }
+                )
+            return response.get("results", [])
+
+        results = await asyncio.gather(
+            *[
+                _fetch_batch(station_ids[offset : offset + _API_MAX_LIMIT])
+                for offset in range(0, len(station_ids), _API_MAX_LIMIT)
+            ]
+        )
+        return [record for records in results for record in records]
+
     async def _fetch_stations_by_ids(
         self, station_ids: list, latitude: float, longitude: float
     ) -> tuple[dict, list[str]]:
@@ -204,23 +230,18 @@ class PrixCarburantTool:
         if not station_ids:
             return {}, []
 
-        ids_list = ",".join(str(sid) for sid in station_ids)
-        query_limit = min(len(station_ids), 100)
-        response = await self.request_api(
-            {
-                "select": "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
-                "where": f"id IN ({ids_list})",
-                "limit": query_limit,
-            }
+        results = await self._request_stations_by_ids(
+            "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
+            station_ids,
         )
 
-        api_station_ids = {str(r["id"]) for r in response.get("results", [])}
+        api_station_ids = {str(r["id"]) for r in results}
         missing_ids = [
             str(sid) for sid in station_ids if str(sid) not in api_station_ids
         ]
 
         data: dict = {}
-        for result in response.get("results", []):
+        for result in results:
             data.update(
                 self._build_station_data(
                     result,
@@ -348,18 +369,14 @@ class PrixCarburantTool:
             return
 
         station_ids = list(self._stations_data.keys())
-        ids_list = ",".join(str(sid) for sid in station_ids)
-        where_clause = f"id IN ({ids_list})"
-        query_limit = min(total_stations, 100)
 
         try:
-            response = await self.request_api(
-                {
-                    "select": query_select,
-                    "where": where_clause,
-                    "limit": query_limit,
-                }
-            )
+            results = {
+                result["id"]: result
+                for result in await self._request_stations_by_ids(
+                    query_select, station_ids
+                )
+            }
         except (
             PrixCarburantToolCannotConnectError,
             PrixCarburantToolRequestError,
@@ -367,15 +384,13 @@ class PrixCarburantTool:
             _LOGGER.exception("Failed to update prices from API")
             return
 
-        api_station_ids = {r["id"] for r in response.get("results", [])}
         failed_stations: list[str] = []
 
         for station_id_ in station_ids:
-            if station_id_ not in api_station_ids:
+            if (result := results.get(station_id_)) is None:
                 failed_stations.append(str(station_id_))
                 continue
             station_data = self._stations_data[station_id_]
-            result = next(r for r in response["results"] if r["id"] == station_id_)
             for fuel in FUELS:
                 fuel_key = fuel.lower()
                 if (
