@@ -143,7 +143,7 @@ class PrixCarburantSensor(CoordinatorEntity[PrixCarburantCoordinator], RestoreSe
             self._attr_entity_picture = get_entity_picture(station_info[ATTR_BRAND])
 
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, station_id)},
+            identifiers={(DOMAIN, str(station_id))},
             manufacturer=station_info.get(ATTR_BRAND, "Station"),
             model=str(station_id),
             name=_station_name(station_id, station_info),

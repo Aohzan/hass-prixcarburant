@@ -13,7 +13,11 @@ from homeassistant.core import (
     callback,
 )
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-from homeassistant.helpers import config_validation as cv, entity_registry as er
+from homeassistant.helpers import (
+    config_validation as cv,
+    device_registry as dr,
+    entity_registry as er,
+)
 from homeassistant.helpers.typing import ConfigType
 
 from .const import (
@@ -154,6 +158,23 @@ async def async_migrate_entry(
             )
         else:
             hass.config_entries.async_update_entry(entry, minor_version=3)
+
+    if entry.minor_version < 4:
+        # The station devices were registered with an integer identifier, the
+        # device registry expects strings
+        device_registry = dr.async_get(hass)
+        for device in dr.async_entries_for_config_entry(
+            device_registry, entry.entry_id
+        ):
+            identifiers = {
+                (domain, str(identifier)) if domain == DOMAIN else (domain, identifier)
+                for domain, identifier in device.identifiers
+            }
+            if identifiers != device.identifiers:
+                device_registry.async_update_device(
+                    device.id, new_identifiers=identifiers
+                )
+        hass.config_entries.async_update_entry(entry, minor_version=4)
 
     return True
 

@@ -185,7 +185,7 @@ def mock_config_entry() -> MockConfigEntry:
         unique_id=DOMAIN,
         data=ENTRY_DATA,
         version=1,
-        minor_version=3,
+        minor_version=4,
     )
 
 
