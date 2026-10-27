@@ -4,8 +4,6 @@
       "user": {
         "description": "Get stations from your Home-Assistant location (check general settings to check it). Set maximum distance to 0 to disable automatic station discovery and add stations manually later in options.",
         "data": {
-          "scan_interval": "Time in hours between two data updates",
-          "display_entity_pictures": "Add brand logo to entity pictures",
           "max_km": "Maximum distance from home",
           "fuels_Gazole": "Show Gazole",
           "fuels_E10": "Show E10",
@@ -15,9 +13,6 @@
           "fuels_GPLc": "Show GPL"
         }
       }
-    },
-    "abort": {
-      "single_instance_allowed": "[%key:common::config_flow::abort::single_instance_allowed%]"
     }
   },
   "options": {

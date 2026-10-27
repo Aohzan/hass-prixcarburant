@@ -1,0 +1,47 @@
+[project]
+name = "prix-carburant"
+version = "0.1.0"
+description = "French fuel prices integration for Home Assistant"
+requires-python = ">=3.14.2"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "homeassistant>=2026.10.0",
+    "prek>=0.5.7",
+    "pytest-homeassistant-custom-component>=0.13.375",
+    "ruff>=0.17.3",
+]
+
+[tool.uv]
+package = false
+
+[tool.ruff]
+target-version = "py314"
+
+[tool.ruff.lint]
+select = [
+    "A", "ASYNC", "B", "C4", "D", "E", "F", "G", "I", "LOG", "PIE", "PT",
+    "PTH", "RET", "RUF", "SIM", "TRY", "UP", "W",
+]
+# RUF012: Home Assistant entities declare their _attr_ defaults as class attributes
+ignore = ["D202", "D203", "D213", "E501", "RUF012", "TRY003"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["homeassistant"]
+combine-as-imports = true
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.coverage.run]
+source = ["custom_components"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true

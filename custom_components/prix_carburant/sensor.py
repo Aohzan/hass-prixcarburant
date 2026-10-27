@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-import logging
 from datetime import UTC, datetime
+import logging
 from typing import TYPE_CHECKING
 
-import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
+
 from homeassistant.components.sensor import (
     PLATFORM_SCHEMA_BASE,
     RestoreSensor,
@@ -15,6 +15,7 @@ from homeassistant.components.sensor import (
 )
 from homeassistant.config_entries import SOURCE_IMPORT, ConfigEntry
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
+import homeassistant.helpers.config_validation as cv
 
 if TYPE_CHECKING:
     from homeassistant.core import HomeAssistant
@@ -57,8 +58,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA_BASE.extend(
 async def async_setup_platform(
     hass: HomeAssistant,
     config: ConfigType,
-    async_add_entities: AddEntitiesCallback,  # noqa: ARG001
-    discovery_info: DiscoveryInfoType | None = None,  # noqa: ARG001
+    async_add_entities: AddEntitiesCallback,
+    discovery_info: DiscoveryInfoType | None = None,
 ) -> None:
     """Set up the Prix Carburant sensor."""
     hass.async_create_task(

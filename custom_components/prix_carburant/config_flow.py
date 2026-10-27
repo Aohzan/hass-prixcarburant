@@ -7,8 +7,9 @@ from typing import TYPE_CHECKING, Any
 if TYPE_CHECKING:
     from collections.abc import Mapping
 
-import voluptuous as vol
 from aiohttp import ClientError
+import voluptuous as vol
+
 from homeassistant.config_entries import (
     ConfigEntry,
     ConfigFlow,
@@ -17,9 +18,11 @@ from homeassistant.config_entries import (
 )
 from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL
 from homeassistant.core import callback
-from homeassistant.helpers import config_validation as cv
-from homeassistant.helpers import device_registry as dr
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import (
+    config_validation as cv,
+    device_registry as dr,
+    entity_registry as er,
+)
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
@@ -104,7 +107,7 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry: ConfigEntry,  # noqa: ARG004
+        config_entry: ConfigEntry,
     ) -> OptionsFlow:
         """Define the config flow to handle options."""
         return PrixCarburantOptionsFlowHandler()
@@ -127,7 +130,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
     async def async_step_init(
         self,
-        user_input: dict[str, Any] | None = None,  # noqa: ARG002
+        user_input: dict[str, Any] | None = None,
     ) -> ConfigFlowResult:
         """Manage the options - show main menu."""
         # Check if configured via YAML

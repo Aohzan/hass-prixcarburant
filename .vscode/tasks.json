@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Setup",
+      "type": "shell",
+      "command": "test -d .venv || scripts/setup",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Home Assistant",
+      "type": "shell",
+      "command": "scripts/develop",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint",
+      "type": "shell",
+      "command": "scripts/lint",
+      "problemMatcher": []
+    }
+  ]
+}

@@ -3,8 +3,8 @@
 
 import json
 import logging
-import sys
 from pathlib import Path
+import sys
 
 _LOGGER = logging.getLogger(__name__)
 

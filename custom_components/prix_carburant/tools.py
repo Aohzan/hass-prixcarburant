@@ -1,17 +1,18 @@
 """Tools for Prix Carburant."""
 
 import asyncio
+from asyncio import sleep, timeout
 import bz2
 import csv
 import io
 import json
 import logging
-from asyncio import sleep, timeout
 from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 from socket import gaierror
 
 from aiohttp import ClientError, ClientSession
+
 from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 
 from .const import (
@@ -78,7 +79,7 @@ class PrixCarburantTool:
         self,
         time_zone: str = "Europe/Paris",
         request_timeout: int = 30,
-        api_ssl_check: bool = True,  # noqa: FBT001, FBT002
+        api_ssl_check: bool = True,
         session: ClientSession | None = None,
     ) -> None:
         """Init tool."""

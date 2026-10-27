@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Clean stations_name.json.
+"""Clean stations_name.json.
 
 Keeps entries that were manually overridden by users (targeted non-automated commits).
 Removes entries already present in the OSM CSV file that were not user-overridden.
@@ -16,10 +15,10 @@ between parent and child commits, so name/brand-only edits are correctly capture
 import csv
 import json
 import logging
+from pathlib import Path
 import re
 import subprocess
 import sys
-from pathlib import Path
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger(__name__)
@@ -37,8 +36,8 @@ MAX_BULK_CHANGES = 50
 
 def get_all_commits_for_file(filepath: str) -> list[tuple[str, str]]:
     """Return list of (hash, subject) for all commits touching the file."""
-    result = subprocess.run(  # noqa: S603
-        ["git", "log", "--format=%H\t%s", "--", filepath],  # noqa: S607
+    result = subprocess.run(
+        ["git", "log", "--format=%H\t%s", "--", filepath],
         capture_output=True,
         text=True,
         cwd=REPO_ROOT,
@@ -47,15 +46,15 @@ def get_all_commits_for_file(filepath: str) -> list[tuple[str, str]]:
     commits = []
     for line in result.stdout.strip().splitlines():
         parts = line.split("\t", 1)
-        if len(parts) == 2:  # noqa: PLR2004
+        if len(parts) == 2:
             commits.append((parts[0], parts[1]))
     return commits
 
 
 def get_json_at_commit(commit_hash: str, filepath: str) -> dict:
     """Return parsed JSON content of filepath at a given commit, or {} on error."""
-    result = subprocess.run(  # noqa: S603
-        ["git", "show", f"{commit_hash}:{filepath}"],  # noqa: S607
+    result = subprocess.run(
+        ["git", "show", f"{commit_hash}:{filepath}"],
         capture_output=True,
         text=True,
         cwd=REPO_ROOT,
@@ -70,8 +69,7 @@ def get_json_at_commit(commit_hash: str, filepath: str) -> dict:
 
 
 def get_ids_changed_in_commit(commit_hash: str, filepath: str) -> set[str]:
-    """
-    Return station IDs whose data changed between a commit's parent and itself.
+    """Return station IDs whose data changed between a commit's parent and itself.
 
     Compares full JSON content so name/brand-only edits are detected, not just
     additions of new station keys.
