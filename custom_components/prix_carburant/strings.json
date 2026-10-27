@@ -100,6 +100,36 @@
     },
     "update_failed": {
       "message": "Unable to update the prices from the Prix Carburant API: {error}"
+    },
+    "cannot_connect": {
+      "message": "Unable to reach the Prix Carburant API: {error}"
+    },
+    "not_loaded": {
+      "message": "The Prix Carburant integration isn't loaded"
+    },
+    "entity_not_found": {
+      "message": "The entity {entity_id} was not found"
+    },
+    "no_coordinates": {
+      "message": "The entity {entity_id} has no latitude and longitude attributes"
+    }
+  },
+  "entity": {
+    "button": {
+      "refresh": {
+        "name": "Refresh prices"
+      }
+    },
+    "sensor": {
+      "fuel_price": {
+        "name": "{fuel}"
+      }
+    }
+  },
+  "issues": {
+    "deprecated_yaml": {
+      "title": "The Prix Carburant YAML configuration is deprecated",
+      "description": "Configuring Prix Carburant with the `prix_carburant` sensor platform in configuration.yaml is deprecated and will be removed in a future version. Your stations are still imported at each start.\n\nTo configure the integration from the UI: remove the platform from configuration.yaml, restart Home Assistant, delete the Prix Carburant integration and add it again. Set the maximum distance to 0 to only use your own stations, then add them from the options of the integration."
     }
   }
 }

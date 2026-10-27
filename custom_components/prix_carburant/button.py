@@ -1,45 +1,55 @@
 """Prix Carburant button platform."""
 
-from __future__ import annotations
-
 import logging
-from typing import TYPE_CHECKING
 
 from homeassistant.components.button import ButtonDeviceClass, ButtonEntity
-
-if TYPE_CHECKING:
-    from homeassistant.config_entries import ConfigEntry
-    from homeassistant.core import HomeAssistant
-    from homeassistant.helpers.entity_platform import AddEntitiesCallback
-    from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
+from homeassistant.core import HomeAssistant
+from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
+from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
+from .coordinator import PrixCarburantConfigEntry, PrixCarburantCoordinator
 
 _LOGGER = logging.getLogger(__name__)
+
+PARALLEL_UPDATES = 1
 
 
 async def async_setup_entry(
     hass: HomeAssistant,
-    entry: ConfigEntry,
-    async_add_entities: AddEntitiesCallback,
+    entry: PrixCarburantConfigEntry,
+    async_add_entities: AddConfigEntryEntitiesCallback,
 ) -> None:
     """Set up the platform from config_entry."""
-    async_add_entities(
-        [RefreshPrixCarburantButton(hass.data[DOMAIN][entry.entry_id]["coordinator"])],
-        update_before_add=True,
-    )
+    async_add_entities([PrixCarburantRefreshButton(entry.runtime_data)])
 
 
-class RefreshPrixCarburantButton(ButtonEntity):
-    """Representation of a refresh button."""
+class PrixCarburantRefreshButton(
+    CoordinatorEntity[PrixCarburantCoordinator], ButtonEntity
+):
+    """Button refreshing the prices."""
 
-    def __init__(self, coordinator: DataUpdateCoordinator) -> None:
+    _attr_has_entity_name = True
+    _attr_translation_key = "refresh"
+    _attr_device_class = ButtonDeviceClass.UPDATE
+
+    def __init__(self, coordinator: PrixCarburantCoordinator) -> None:
         """Initialize the button."""
-        self.coordinator = coordinator
-        self._attr_device_class = ButtonDeviceClass.UPDATE
-        self._attr_name = "Prix Carburant - Refresh prices"
-        self._attr_icon = "mdi:refresh-circle"
-        self._attr_unique_id = f"{DOMAIN}_refresh_button"
+        super().__init__(coordinator)
+        entry = coordinator.config_entry
+        self._attr_unique_id = f"{entry.entry_id}_refresh"
+        self._attr_device_info = DeviceInfo(
+            identifiers={(DOMAIN, entry.entry_id)},
+            entry_type=DeviceEntryType.SERVICE,
+            name=entry.title,
+            configuration_url="https://www.prix-carburants.gouv.fr/",
+        )
+
+    @property
+    def available(self) -> bool:
+        """Return True: the prices can be refreshed after a failed update."""
+        return True
 
     async def async_press(self) -> None:
         """Press the button."""

@@ -1,170 +1,93 @@
 """Prix Carburant integration."""
 
-from datetime import timedelta
 import logging
-from typing import TYPE_CHECKING
 
-if TYPE_CHECKING:
-    from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (
-    ATTR_LATITUDE,
-    ATTR_LONGITUDE,
-    ATTR_NAME,
-    CONF_SCAN_INTERVAL,
-)
+import voluptuous as vol
+
+from homeassistant.const import ATTR_ENTITY_ID, ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 from homeassistant.core import (
     HomeAssistant,
     ServiceCall,
     ServiceResponse,
     SupportsResponse,
+    callback,
 )
-from homeassistant.exceptions import ConfigEntryNotReady, HomeAssistantError
-from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
+from homeassistant.helpers import config_validation as cv, entity_registry as er
+from homeassistant.helpers.typing import ConfigType
 
 from .const import (
     ATTR_ADDRESS,
     ATTR_CITY,
+    ATTR_DISTANCE,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
-    CONF_API_SSL_CHECK,
-    CONF_DISPLAY_ENTITY_PICTURES,
-    CONF_MANUAL_STATIONS,
-    CONF_MAX_KM,
-    CONF_STATIONS,
-    DEFAULT_SCAN_INTERVAL,
     DOMAIN,
+    FUELS,
     PLATFORMS,
 )
-from .tools import (
-    PrixCarburantTool,
-    PrixCarburantToolCannotConnectError,
-    PrixCarburantToolRateLimitError,
-    PrixCarburantToolRequestError,
-)
+from .coordinator import PrixCarburantConfigEntry, PrixCarburantCoordinator
+from .tools import PrixCarburantToolCannotConnectError, PrixCarburantToolRequestError
 
 _LOGGER = logging.getLogger(__name__)
 
+# The YAML configuration is a sensor platform, imported as a config entry
+CONFIG_SCHEMA = cv.platform_only_config_schema(DOMAIN)
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up from a config entry."""
-    hass.data.setdefault(DOMAIN, {})
+SERVICE_FIND_NEAREST_STATIONS = "find_nearest_stations"
+ATTR_FUEL = "fuel"
+SERVICE_FIND_NEAREST_STATIONS_SCHEMA = vol.Schema(
+    {
+        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
+        vol.Required(ATTR_FUEL): vol.In(FUELS),
+        vol.Required(ATTR_DISTANCE): cv.positive_int,
+    }
+)
 
-    config: dict = entry.data | entry.options
 
-    websession = async_get_clientsession(hass)
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Set up the Prix Carburant services."""
 
-    tool = PrixCarburantTool(
-        hass.config.time_zone,
-        60,
-        config.get(CONF_API_SSL_CHECK, True),
-        websession,
-    )
-    await tool.async_initialize()
-
-    display_entity_pictures = config.get(CONF_DISPLAY_ENTITY_PICTURES, True)
-    update_interval = int(config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
-
-    try:
-        # yaml configuration
-        if CONF_STATIONS in config:
-            _LOGGER.info("Init stations data from yaml list")
-            await tool.init_stations_from_list(
-                stations_ids=config[CONF_STATIONS],
-                latitude=hass.config.latitude,
-                longitude=hass.config.longitude,
+    async def find_nearest_stations(call: ServiceCall) -> ServiceResponse:
+        """Search in the range and return the matching items."""
+        entries: list[PrixCarburantConfigEntry] = (
+            hass.config_entries.async_loaded_entries(DOMAIN)
+        )
+        if not entries:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN, translation_key="not_loaded"
             )
-        # ui configuration
-        else:
-            # A maximum distance of 0 disables the discovery
-            if config[CONF_MAX_KM]:
-                _LOGGER.info(
-                    "Init stations list near Home-Assistant location (%s km around %s %s)",
-                    config[CONF_MAX_KM],
-                    hass.config.latitude,
-                    hass.config.longitude,
-                )
-                await tool.init_stations_from_location(
-                    latitude=hass.config.latitude,
-                    longitude=hass.config.longitude,
-                    distance=config[CONF_MAX_KM],
-                )
-                _LOGGER.info("%s stations found", str(len(tool.stations)))
-
-            # Add manual stations if any
-            if config.get(CONF_MANUAL_STATIONS):
-                _LOGGER.info(
-                    "Adding %s manual stations", len(config[CONF_MANUAL_STATIONS])
-                )
-                await tool.add_manual_stations(
-                    manual_station_ids=config[CONF_MANUAL_STATIONS],
-                    latitude=hass.config.latitude,
-                    longitude=hass.config.longitude,
-                )
-    except PrixCarburantToolCannotConnectError as err:
-        msg = f"Unable to retrieve stations from the Prix Carburant API: {err}"
-        raise ConfigEntryNotReady(msg) from err
-
-    async def async_update_data() -> dict:
-        """Fetch data from API."""
-        _LOGGER.info("Update stations prices")
-        try:
-            await tool.update_stations_prices()
-        except PrixCarburantToolRateLimitError as err:
-            raise UpdateFailed(
+        entity_id = call.data[ATTR_ENTITY_ID]
+        if (state := hass.states.get(entity_id)) is None:
+            raise ServiceValidationError(
                 translation_domain=DOMAIN,
-                translation_key="rate_limit",
-                retry_after=err.retry_after,
-            ) from err
+                translation_key="entity_not_found",
+                translation_placeholders={"entity_id": entity_id},
+            )
+        if ATTR_LONGITUDE not in state.attributes or (
+            ATTR_LATITUDE not in state.attributes
+        ):
+            raise ServiceValidationError(
+                translation_domain=DOMAIN,
+                translation_key="no_coordinates",
+                translation_placeholders={"entity_id": entity_id},
+            )
+        try:
+            stations = await entries[0].runtime_data.tool.find_nearest_station(
+                longitude=float(state.attributes[ATTR_LONGITUDE]),
+                latitude=float(state.attributes[ATTR_LATITUDE]),
+                fuel=call.data[ATTR_FUEL],
+                distance=call.data[ATTR_DISTANCE],
+            )
         except (
             PrixCarburantToolCannotConnectError,
             PrixCarburantToolRequestError,
         ) as err:
-            raise UpdateFailed(
+            raise HomeAssistantError(
                 translation_domain=DOMAIN,
-                translation_key="update_failed",
+                translation_key="cannot_connect",
                 translation_placeholders={"error": str(err)},
             ) from err
-        return tool.stations
-
-    coordinator = DataUpdateCoordinator(
-        hass,
-        _LOGGER,
-        name=DOMAIN,
-        update_method=async_update_data,
-        update_interval=timedelta(hours=update_interval),
-    )
-
-    await coordinator.async_config_entry_first_refresh()
-
-    hass.data[DOMAIN][entry.entry_id] = {
-        "tool": tool,
-        "coordinator": coordinator,
-        "options": {
-            CONF_DISPLAY_ENTITY_PICTURES: display_entity_pictures,
-        },
-    }
-
-    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-
-    async def find_nearest_stations(call: ServiceCall) -> ServiceResponse:
-        """Search in the range and return the matching items."""
-        fuel = call.data["fuel"]
-        distance = call.data["distance"]
-        entity_id = call.data["entity_id"]
-        entity = hass.states.get(entity_id)
-        if not entity:
-            msg = "The entity specified was not found"
-            raise HomeAssistantError(msg)
-        if "longitude" not in entity.attributes or "latitude" not in entity.attributes:
-            msg = f"No coordinate attributes found for the entity {entity_id}"
-            raise HomeAssistantError(msg)
-        stations = await tool.find_nearest_station(
-            longitude=float(entity.attributes["longitude"]),
-            latitude=float(entity.attributes["latitude"]),
-            fuel=fuel,
-            distance=distance,
-        )
         return {
             "stations": [
                 {
@@ -180,13 +103,50 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     hass.services.async_register(
         DOMAIN,
-        "find_nearest_stations",
+        SERVICE_FIND_NEAREST_STATIONS,
         find_nearest_stations,
+        schema=SERVICE_FIND_NEAREST_STATIONS_SCHEMA,
         supports_response=SupportsResponse.ONLY,
     )
     return True
 
 
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+async def async_migrate_entry(
+    hass: HomeAssistant, entry: PrixCarburantConfigEntry
+) -> bool:
+    """Migrate an old config entry."""
+    if entry.version > 1:
+        # Downgraded from a future version
+        return False
+
+    if entry.minor_version < 2:
+        # The unique ID of the refresh button wasn't scoped to the entry
+        @callback
+        def migrate_unique_id(entity_entry: er.RegistryEntry) -> dict | None:
+            if entity_entry.unique_id == f"{DOMAIN}_refresh_button":
+                return {"new_unique_id": f"{entry.entry_id}_refresh"}
+            return None
+
+        await er.async_migrate_entries(hass, entry.entry_id, migrate_unique_id)
+        hass.config_entries.async_update_entry(entry, minor_version=2)
+
+    return True
+
+
+async def async_setup_entry(
+    hass: HomeAssistant, entry: PrixCarburantConfigEntry
+) -> bool:
+    """Set up from a config entry."""
+    coordinator = PrixCarburantCoordinator(hass, entry)
+    await coordinator.async_config_entry_first_refresh()
+    entry.runtime_data = coordinator
+
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    return True
+
+
+async def async_unload_entry(
+    hass: HomeAssistant, entry: PrixCarburantConfigEntry
+) -> bool:
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)

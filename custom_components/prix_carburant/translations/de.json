@@ -100,6 +100,36 @@
     },
     "update_failed": {
       "message": "Die Preise konnten nicht von der Prix Carburant API aktualisiert werden: {error}"
+    },
+    "cannot_connect": {
+      "message": "Die Prix Carburant API ist nicht erreichbar: {error}"
+    },
+    "not_loaded": {
+      "message": "Die Prix Carburant Integration ist nicht geladen"
+    },
+    "entity_not_found": {
+      "message": "Die Entität {entity_id} wurde nicht gefunden"
+    },
+    "no_coordinates": {
+      "message": "Die Entität {entity_id} hat keine Breiten- und Längengrad-Attribute"
+    }
+  },
+  "entity": {
+    "button": {
+      "refresh": {
+        "name": "Preise aktualisieren"
+      }
+    },
+    "sensor": {
+      "fuel_price": {
+        "name": "{fuel}"
+      }
+    }
+  },
+  "issues": {
+    "deprecated_yaml": {
+      "title": "Die YAML-Konfiguration von Prix Carburant ist veraltet",
+      "description": "Die Konfiguration von Prix Carburant über die Sensor-Plattform `prix_carburant` in configuration.yaml ist veraltet und wird in einer zukünftigen Version entfernt. Deine Tankstellen werden weiterhin bei jedem Start importiert.\n\nUm die Integration über die Benutzeroberfläche zu konfigurieren: entferne die Plattform aus configuration.yaml, starte Home Assistant neu, lösche die Prix Carburant Integration und füge sie erneut hinzu. Setze die maximale Entfernung auf 0, um nur deine eigenen Tankstellen zu verwenden, und füge sie dann in den Optionen der Integration hinzu."
     }
   }
 }

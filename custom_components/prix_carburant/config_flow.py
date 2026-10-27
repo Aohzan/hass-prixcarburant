@@ -1,20 +1,15 @@
 """Config flow to configure the Prix Carburant integration."""
 
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Any
-
-if TYPE_CHECKING:
-    from collections.abc import Mapping
+from collections.abc import Mapping
+from typing import Any
 
 from aiohttp import ClientError
 import voluptuous as vol
 
 from homeassistant.config_entries import (
-    ConfigEntry,
+    ConfigEntryState,
     ConfigFlow,
     ConfigFlowResult,
-    OptionsFlow,
     OptionsFlowWithReload,
 )
 from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL
@@ -39,6 +34,7 @@ from .const import (
     DOMAIN,
     FUELS,
 )
+from .coordinator import PrixCarburantConfigEntry, get_entry_config
 from .tools import (
     PrixCarburantTool,
     PrixCarburantToolCannotConnectError,
@@ -74,6 +70,7 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
     """Config flow for Prix Carburant."""
 
     VERSION = 1
+    MINOR_VERSION = 2
 
     async def async_step_import(self, import_info: dict[str, Any]) -> ConfigFlowResult:
         """Import a config entry from YAML config."""
@@ -89,6 +86,8 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
         self, user_input: dict[str, Any] | None = None
     ) -> ConfigFlowResult:
         """Get configuration from the user."""
+        if self._async_current_entries(include_ignore=False):
+            return self.async_abort(reason="single_instance_allowed")
         errors: dict[str, str] = {}
         if user_input is None:
             return self.async_show_form(
@@ -108,8 +107,8 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(
-        config_entry: ConfigEntry,
-    ) -> OptionsFlow:
+        config_entry: PrixCarburantConfigEntry,
+    ) -> PrixCarburantOptionsFlowHandler:
         """Define the config flow to handle options."""
         return PrixCarburantOptionsFlowHandler()
 
@@ -117,21 +116,16 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
 class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
     """Handle a PrixCarburant options flow."""
 
-    def __init__(self) -> None:
-        """Initialize options flow."""
-        self._stations_to_remove: list[str] = []
-
     def _get_manual_stations(self) -> list[int]:
         """Get manual stations list from config entry data/options."""
-        config = dict(self.config_entry.data) | dict(self.config_entry.options)
-        return list(config.get(CONF_MANUAL_STATIONS) or [])
+        return list(get_entry_config(self.config_entry).get(CONF_MANUAL_STATIONS) or [])
 
     def _get_loaded_stations(self) -> dict:
         """Get the stations of the coordinator, empty if the entry isn't loaded."""
-        entry_data = self.hass.data.get(DOMAIN, {}).get(self.config_entry.entry_id)
-        if entry_data is None:
+        entry: PrixCarburantConfigEntry = self.config_entry
+        if entry.state is not ConfigEntryState.LOADED:
             return {}
-        return entry_data["coordinator"].data or {}
+        return entry.runtime_data.data or {}
 
     async def async_step_init(
         self,
@@ -162,7 +156,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
             # Merge with existing options
             return self.async_create_entry(data=self.config_entry.options | user_input)
 
-        config = dict(self.config_entry.data) | dict(self.config_entry.options)
+        config = get_entry_config(self.config_entry)
 
         schema = vol.Schema(
             {
@@ -201,7 +195,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
             # Merge with existing options
             return self.async_create_entry(data=self.config_entry.options | user_input)
 
-        config = dict(self.config_entry.data) | dict(self.config_entry.options)
+        config = get_entry_config(self.config_entry)
 
         schema = {}
         for fuel in FUELS:
@@ -378,9 +372,9 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
             tool = PrixCarburantTool(
                 self.hass.config.time_zone,
                 60,
-                api_ssl_check=(
-                    dict(self.config_entry.data) | dict(self.config_entry.options)
-                ).get(CONF_API_SSL_CHECK, True),
+                api_ssl_check=get_entry_config(self.config_entry).get(
+                    CONF_API_SSL_CHECK, True
+                ),
                 session=websession,
             )
 

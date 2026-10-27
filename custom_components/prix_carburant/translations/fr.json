@@ -100,6 +100,36 @@
     },
     "update_failed": {
       "message": "Impossible de mettre à jour les prix depuis l'API Prix Carburant : {error}"
+    },
+    "cannot_connect": {
+      "message": "Impossible de joindre l'API Prix Carburant : {error}"
+    },
+    "not_loaded": {
+      "message": "L'intégration Prix Carburant n'est pas chargée"
+    },
+    "entity_not_found": {
+      "message": "L'entité {entity_id} est introuvable"
+    },
+    "no_coordinates": {
+      "message": "L'entité {entity_id} n'a pas d'attributs latitude et longitude"
+    }
+  },
+  "entity": {
+    "button": {
+      "refresh": {
+        "name": "Actualiser les prix"
+      }
+    },
+    "sensor": {
+      "fuel_price": {
+        "name": "{fuel}"
+      }
+    }
+  },
+  "issues": {
+    "deprecated_yaml": {
+      "title": "La configuration YAML de Prix Carburant est obsolète",
+      "description": "La configuration de Prix Carburant avec la plateforme de capteurs `prix_carburant` dans configuration.yaml est obsolète et sera supprimée dans une prochaine version. Vos stations sont encore importées à chaque démarrage.\n\nPour configurer l'intégration depuis l'interface : supprimez la plateforme de configuration.yaml, redémarrez Home Assistant, supprimez l'intégration Prix Carburant et ajoutez-la à nouveau. Définissez la distance maximum à 0 pour n'utiliser que vos propres stations, puis ajoutez-les depuis les options de l'intégration."
     }
   }
 }

@@ -1,5 +1,19 @@
 {
+  "entity": {
+    "button": {
+      "refresh": {
+        "default": "mdi:refresh-circle"
+      }
+    },
+    "sensor": {
+      "fuel_price": {
+        "default": "mdi:gas-station"
+      }
+    }
+  },
   "services": {
-    "find_nearest_stations": "mdi:gas-station"
+    "find_nearest_stations": {
+      "service": "mdi:gas-station"
+    }
   }
 }
