@@ -77,6 +77,25 @@ def _parse_stations_csv(content: str) -> dict[str, dict]:
     return result
 
 
+def _parse_stations_bz2_csv(raw: bytes) -> dict[str, dict]:
+    """Decompress and parse the OSM stations CSV."""
+    return _parse_stations_csv(bz2.decompress(raw).decode("UTF-8"))
+
+
+def _load_local_stations_csv() -> dict[str, dict]:
+    """Parse the OSM stations CSV shipped with the integration."""
+    return _parse_stations_csv(
+        (Path(__file__).parent / STATIONS_NAME_OSM_FILE).read_text(encoding="UTF-8")
+    )
+
+
+def _load_local_stations_json() -> dict[str, dict]:
+    """Load the custom stations names shipped with the integration."""
+    return json.loads(
+        (Path(__file__).parent / STATIONS_NAME_FILE).read_text(encoding="UTF-8")
+    )
+
+
 class PrixCarburantTool:
     """Prix Carburant class with stations information."""
 
@@ -97,15 +116,17 @@ class PrixCarburantTool:
         self._semaphore = asyncio.Semaphore(_MAX_CONCURRENT_API_REQUESTS)
 
     async def async_initialize(self) -> None:
-        """Load stations name data from remote sources, falling back to local files."""
+        """Load stations name data from remote sources, falling back to local files.
+
+        The files are decompressed, read and parsed in the executor.
+        """
         _LOGGER.debug("Loading OSM stations CSV from: %s", STATIONS_NAME_OSM_URL)
         try:
             async with timeout(self._request_timeout):
                 response = await self._session.get(STATIONS_NAME_OSM_URL)  # type: ignore[union-attr]
                 response.raise_for_status()
                 raw = await response.read()
-            csv_content = bz2.decompress(raw).decode("UTF-8")
-            osm_stations_data: dict[str, dict] = _parse_stations_csv(csv_content)
+            osm_stations_data = await asyncio.to_thread(_parse_stations_bz2_csv, raw)
             _LOGGER.debug(
                 "Successfully retrieved OSM CSV from: %s", STATIONS_NAME_OSM_URL
             )
@@ -115,19 +136,17 @@ class PrixCarburantTool:
                 err,
                 STATIONS_NAME_OSM_FILE,
             )
-            with (Path(__file__).parent / STATIONS_NAME_OSM_FILE).open(
-                encoding="UTF-8",
-            ) as file:
-                osm_stations_data = _parse_stations_csv(file.read())
+            osm_stations_data = await asyncio.to_thread(_load_local_stations_csv)
 
         _LOGGER.debug("Loading custom stations from: %s", STATIONS_NAME_URL)
         try:
             async with timeout(self._request_timeout):
                 response = await self._session.get(STATIONS_NAME_URL)  # type: ignore[union-attr]
                 response.raise_for_status()
-                custom_stations_data: dict[str, dict] = await response.json(
-                    content_type=None
-                )
+                raw = await response.read()
+            custom_stations_data: dict[str, dict] = await asyncio.to_thread(
+                json.loads, raw
+            )
             _LOGGER.debug(
                 "Successfully retrieved custom data from: %s", STATIONS_NAME_URL
             )
@@ -137,10 +156,7 @@ class PrixCarburantTool:
                 err,
                 STATIONS_NAME_FILE,
             )
-            with (Path(__file__).parent / STATIONS_NAME_FILE).open(
-                encoding="UTF-8",
-            ) as file:
-                custom_stations_data = json.load(file)
+            custom_stations_data = await asyncio.to_thread(_load_local_stations_json)
 
         self._local_stations_data = {**osm_stations_data, **custom_stations_data}
 
