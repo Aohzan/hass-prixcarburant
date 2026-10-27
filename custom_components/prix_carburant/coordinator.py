@@ -27,6 +27,7 @@ from .tools import (
     PrixCarburantToolCannotConnectError,
     PrixCarburantToolRateLimitError,
     PrixCarburantToolRequestError,
+    StationData,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -73,7 +74,7 @@ def convert_yaml_config(
     return new_data, new_options
 
 
-class PrixCarburantCoordinator(DataUpdateCoordinator[dict[int, dict[str, Any]]]):
+class PrixCarburantCoordinator(DataUpdateCoordinator[dict[int, StationData]]):
     """Fetch the fuel prices of the stations."""
 
     config_entry: PrixCarburantConfigEntry
@@ -136,7 +137,7 @@ class PrixCarburantCoordinator(DataUpdateCoordinator[dict[int, dict[str, Any]]])
                 translation_placeholders={"error": str(err)},
             ) from err
 
-    async def _async_update_data(self) -> dict[int, dict[str, Any]]:
+    async def _async_update_data(self) -> dict[int, StationData]:
         """Fetch the prices of the stations."""
         _LOGGER.info("Update stations prices")
         try:

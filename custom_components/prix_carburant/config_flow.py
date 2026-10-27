@@ -43,6 +43,7 @@ from .tools import (
     PrixCarburantToolCannotConnectError,
     PrixCarburantToolRateLimitError,
     PrixCarburantToolRequestError,
+    StationData,
 )
 
 
@@ -122,7 +123,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
         """Get manual stations list from config entry data/options."""
         return list(get_entry_config(self.config_entry).get(CONF_MANUAL_STATIONS) or [])
 
-    def _get_loaded_stations(self) -> dict:
+    def _get_loaded_stations(self) -> dict[int, StationData]:
         """Get the stations of the coordinator, empty if the entry isn't loaded."""
         entry: PrixCarburantConfigEntry = self.config_entry
         if entry.state is not ConfigEntryState.LOADED:
