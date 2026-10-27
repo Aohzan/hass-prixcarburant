@@ -13,6 +13,9 @@
           "fuels_GPLc": "Afficher le GPL"
         }
       }
+    },
+    "abort": {
+      "already_configured": "L'intégration est déjà configurée."
     }
   },
   "options": {

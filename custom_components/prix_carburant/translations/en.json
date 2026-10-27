@@ -13,6 +13,9 @@
         },
         "description": "Get stations from your Home-Assistant location (check general settings to check it). Set maximum distance to 0 to disable automatic station discovery and add stations manually later in options."
       }
+    },
+    "abort": {
+      "already_configured": "The integration is already configured."
     }
   },
   "options": {

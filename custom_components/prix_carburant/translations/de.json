@@ -13,6 +13,9 @@
         },
         "description": "Tankstellen um die Home-Assistant-Position (Allgemeine Einstellungen zur Überprüfung) herum ermitteln. Die maximale Entfernung auf 0 setzen, um die automatische Tankstellensuche zu unterbinden und Tankstellen später in den Einstellungen manuell hinzuzufügen."
       }
+    },
+    "abort": {
+      "already_configured": "Die Integration ist bereits konfiguriert."
     }
   },
   "options": {

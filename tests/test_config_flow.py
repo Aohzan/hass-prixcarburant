@@ -59,6 +59,8 @@ async def test_user_single_instance(
     )
     assert result["type"] is FlowResultType.ABORT
     assert result["reason"] == "single_instance_allowed"
+    # Translated by Home Assistant
+    assert result["translation_domain"] == "homeassistant"
 
 
 async def test_import(hass: HomeAssistant, mock_api: FakeApi) -> None:
@@ -84,7 +86,7 @@ async def test_import(hass: HomeAssistant, mock_api: FakeApi) -> None:
         data=data | {CONF_STATIONS: [99900003]},
     )
     assert result["type"] is FlowResultType.ABORT
-    assert result["reason"] == "already_configured"
+    assert result["reason"] == "single_instance_allowed"
     (entry,) = hass.config_entries.async_entries(DOMAIN)
     assert entry.options == {CONF_MANUAL_STATIONS: [99900001, 99900002]}
 
