@@ -1,0 +1,407 @@
+# serializer version: 1
+# name: test_entities[button][button.prix_carburant_refresh_prices-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': None,
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'button',
+    'entity_category': None,
+    'entity_id': 'button.prix_carburant_refresh_prices',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Refresh prices',
+    'options': dict({
+    }),
+    'original_device_class': <ButtonDeviceClass.UPDATE: 'update'>,
+    'original_icon': None,
+    'original_name': 'Refresh prices',
+    'platform': 'prix_carburant',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'refresh',
+    'unique_id': '01K8ZQ5V7P2M4R6T8W0Y2A4C6E_refresh',
+    'unit_of_measurement': None,
+  })
+# ---
+# name: test_entities[button][button.prix_carburant_refresh_prices-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      <EntityStateAttribute.DEVICE_CLASS: 'device_class'>: 'update',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Prix Carburant Refresh prices',
+    }),
+    'context': <ANY>,
+    'entity_id': 'button.prix_carburant_refresh_prices',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'unknown',
+  })
+# ---
+# name: test_entities[sensor][sensor.relais_de_la_gare_e10-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.relais_de_la_gare_e10',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'E10',
+    'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'E10',
+    'platform': 'prix_carburant',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'fuel_price',
+    'unique_id': 'prix_carburant_99900001_E10',
+    'unit_of_measurement': '€/l',
+  })
+# ---
+# name: test_entities[sensor][sensor.relais_de_la_gare_e10-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'address': '1 Rue De La Gare',
+      'brand': 'Total Access',
+      'city': 'La Jolla',
+      'days_since_last_update': 2,
+      'distance': 0.08,
+      <EntityStateAttribute.ENTITY_PICTURE: 'entity_picture'>: 'https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/TotalEnergies.svg',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Relais de la Gare E10',
+      'fuel_type': 'E10',
+      'latitude': 32.874,
+      'longitude': -117.227,
+      'name': 'Relais de la Gare',
+      'postal_code': '92037',
+      'shortage_since': None,
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+      'station_id': '99900001',
+      <EntityStateAttribute.UNIT_OF_MEASUREMENT: 'unit_of_measurement'>: '€/l',
+      'updated_date': '2026-10-25T09:30:00+02:00',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.relais_de_la_gare_e10',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': '1.789',
+  })
+# ---
+# name: test_entities[sensor][sensor.relais_de_la_gare_gazole-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.relais_de_la_gare_gazole',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Gazole',
+    'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'Gazole',
+    'platform': 'prix_carburant',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'fuel_price',
+    'unique_id': 'prix_carburant_99900001_Gazole',
+    'unit_of_measurement': '€/l',
+  })
+# ---
+# name: test_entities[sensor][sensor.relais_de_la_gare_gazole-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'address': '1 Rue De La Gare',
+      'brand': 'Total Access',
+      'city': 'La Jolla',
+      'days_since_last_update': 1,
+      'distance': 0.08,
+      <EntityStateAttribute.ENTITY_PICTURE: 'entity_picture'>: 'https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/TotalEnergies.svg',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Relais de la Gare Gazole',
+      'fuel_type': 'Gazole',
+      'latitude': 32.874,
+      'longitude': -117.227,
+      'name': 'Relais de la Gare',
+      'postal_code': '92037',
+      'shortage_since': None,
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+      'station_id': '99900001',
+      <EntityStateAttribute.UNIT_OF_MEASUREMENT: 'unit_of_measurement'>: '€/l',
+      'updated_date': '2026-10-26T08:00:00+02:00',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.relais_de_la_gare_gazole',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': '1.659',
+  })
+# ---
+# name: test_entities[sensor][sensor.station_99900003_gplc-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.station_99900003_gplc',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'GPLc',
+    'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'GPLc',
+    'platform': 'prix_carburant',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'fuel_price',
+    'unique_id': 'prix_carburant_99900003_GPLc',
+    'unit_of_measurement': '€/l',
+  })
+# ---
+# name: test_entities[sensor][sensor.station_99900003_gplc-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'address': '3 Boulevard Nord',
+      'brand': None,
+      'city': 'San Diego',
+      'days_since_last_update': 26,
+      'distance': 2.96,
+      <EntityStateAttribute.ENTITY_PICTURE: 'entity_picture'>: '',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Station 99900003 GPLc',
+      'fuel_type': 'GPLc',
+      'latitude': 32.86,
+      'longitude': -117.2,
+      'name': 'Undefined',
+      'postal_code': '92122',
+      'shortage_since': None,
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+      'station_id': '99900003',
+      <EntityStateAttribute.UNIT_OF_MEASUREMENT: 'unit_of_measurement'>: '€/l',
+      'updated_date': '2026-10-01T12:00:00+02:00',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.station_99900003_gplc',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': '0.999',
+  })
+# ---
+# name: test_entities[sensor][sensor.station_carrefour_la_jolla_e85-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.station_carrefour_la_jolla_e85',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'E85',
+    'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'E85',
+    'platform': 'prix_carburant',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'fuel_price',
+    'unique_id': 'prix_carburant_99900002_E85',
+    'unit_of_measurement': '€/l',
+  })
+# ---
+# name: test_entities[sensor][sensor.station_carrefour_la_jolla_e85-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'address': 'Avenue du Port',
+      'brand': 'Carrefour',
+      'city': 'La Jolla',
+      'days_since_last_update': None,
+      'distance': 0.78,
+      <EntityStateAttribute.ENTITY_PICTURE: 'entity_picture'>: 'https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/Carrefour.svg',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Station Carrefour La Jolla E85',
+      'fuel_type': 'E85',
+      'latitude': 32.88,
+      'longitude': -117.23,
+      'name': 'Undefined',
+      'postal_code': '92037',
+      'shortage_since': '2026-10-20T10:00:00+02:00',
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+      'station_id': '99900002',
+      <EntityStateAttribute.UNIT_OF_MEASUREMENT: 'unit_of_measurement'>: '€/l',
+      'updated_date': None,
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.station_carrefour_la_jolla_e85',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': 'unknown',
+  })
+# ---
+# name: test_entities[sensor][sensor.station_carrefour_la_jolla_gazole-entry]
+  EntityRegistryEntrySnapshot({
+    'aliases': list([
+      None,
+    ]),
+    'area_id': None,
+    'capabilities': dict({
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+    }),
+    'config_entry_id': <ANY>,
+    'config_subentry_id': <ANY>,
+    'device_class': None,
+    'device_id': <ANY>,
+    'disabled_by': None,
+    'domain': 'sensor',
+    'entity_category': None,
+    'entity_id': 'sensor.station_carrefour_la_jolla_gazole',
+    'has_entity_name': True,
+    'hidden_by': None,
+    'icon': None,
+    'id': <ANY>,
+    'labels': set({
+    }),
+    'name': None,
+    'object_id_base': 'Gazole',
+    'options': dict({
+      'sensor': dict({
+        'suggested_display_precision': 3,
+      }),
+    }),
+    'original_device_class': None,
+    'original_icon': None,
+    'original_name': 'Gazole',
+    'platform': 'prix_carburant',
+    'previous_unique_id': None,
+    'suggested_object_id': None,
+    'supported_features': 0,
+    'translation_key': 'fuel_price',
+    'unique_id': 'prix_carburant_99900002_Gazole',
+    'unit_of_measurement': '€/l',
+  })
+# ---
+# name: test_entities[sensor][sensor.station_carrefour_la_jolla_gazole-state]
+  StateSnapshot({
+    'attributes': ReadOnlyDict({
+      'address': 'Avenue du Port',
+      'brand': 'Carrefour',
+      'city': 'La Jolla',
+      'days_since_last_update': 0,
+      'distance': 0.78,
+      <EntityStateAttribute.ENTITY_PICTURE: 'entity_picture'>: 'https://raw.githubusercontent.com/Aohzan/hass-prixcarburant/refs/heads/master/brand_logos/Carrefour.svg',
+      <EntityStateAttribute.FRIENDLY_NAME: 'friendly_name'>: 'Station Carrefour La Jolla Gazole',
+      'fuel_type': 'Gazole',
+      'latitude': 32.88,
+      'longitude': -117.23,
+      'name': 'Undefined',
+      'postal_code': '92037',
+      'shortage_since': None,
+      <SensorEntityCapabilityAttribute.STATE_CLASS: 'state_class'>: <SensorStateClass.MEASUREMENT: 'measurement'>,
+      'station_id': '99900002',
+      <EntityStateAttribute.UNIT_OF_MEASUREMENT: 'unit_of_measurement'>: '€/l',
+      'updated_date': '2026-10-27T07:00:00+02:00',
+    }),
+    'context': <ANY>,
+    'entity_id': 'sensor.station_carrefour_la_jolla_gazole',
+    'last_changed': <ANY>,
+    'last_reported': <ANY>,
+    'last_updated': <ANY>,
+    'state': '1.649',
+  })
+# ---
