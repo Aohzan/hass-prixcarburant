@@ -76,18 +76,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             )
         # ui configuration
         else:
-            _LOGGER.info(
-                "Init stations list near Home-Assistant location (%s km around %s %s)",
-                config[CONF_MAX_KM],
-                hass.config.latitude,
-                hass.config.longitude,
-            )
-            await tool.init_stations_from_location(
-                latitude=hass.config.latitude,
-                longitude=hass.config.longitude,
-                distance=config[CONF_MAX_KM],
-            )
-            _LOGGER.info("%s stations found", str(len(tool.stations)))
+            # A maximum distance of 0 disables the discovery
+            if config[CONF_MAX_KM]:
+                _LOGGER.info(
+                    "Init stations list near Home-Assistant location (%s km around %s %s)",
+                    config[CONF_MAX_KM],
+                    hass.config.latitude,
+                    hass.config.longitude,
+                )
+                await tool.init_stations_from_location(
+                    latitude=hass.config.latitude,
+                    longitude=hass.config.longitude,
+                    distance=config[CONF_MAX_KM],
+                )
+                _LOGGER.info("%s stations found", str(len(tool.stations)))
 
             # Add manual stations if any
             if config.get(CONF_MANUAL_STATIONS):

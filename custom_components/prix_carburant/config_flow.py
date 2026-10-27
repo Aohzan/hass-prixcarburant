@@ -54,7 +54,7 @@ def _build_schema(data: Mapping[str, Any], options: Mapping[str, Any]) -> vol.Sc
     schema = {
         vol.Required(
             CONF_MAX_KM, default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM)
-        ): vol.All(int, vol.Range(min=1))
+        ): vol.All(int, vol.Range(min=0))
     }
 
     for fuel in FUELS:
@@ -181,7 +181,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
                 vol.Required(
                     CONF_MAX_KM,
                     default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM),
-                ): vol.All(int, vol.Range(min=1)),
+                ): vol.All(int, vol.Range(min=0)),
             }
         )
 
