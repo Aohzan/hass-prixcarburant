@@ -30,7 +30,11 @@ from homeassistant.config_entries import ConfigEntryState
 from homeassistant.const import ATTR_ENTITY_ID, CONF_SCAN_INTERVAL, STATE_UNAVAILABLE
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-from homeassistant.helpers import entity_registry as er, issue_registry as ir
+from homeassistant.helpers import (
+    device_registry as dr,
+    entity_registry as er,
+    issue_registry as ir,
+)
 from homeassistant.setup import async_setup_component
 
 from .conftest import ENTRY_DATA, MANUAL_STATION_ID, STATIONS, FakeApi
@@ -396,7 +400,7 @@ async def test_migrate_yaml_entry(
     await hass.async_block_till_done()
 
     assert entry.state is ConfigEntryState.LOADED
-    assert entry.minor_version == 3
+    assert entry.minor_version == 4
     assert entry.data == {CONF_MAX_KM: 0}
     assert entry.options == {
         CONF_MANUAL_STATIONS: [MANUAL_STATION_ID, 99900002, 9999999]
@@ -500,10 +504,42 @@ async def test_migrate_button_unique_id(
     await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
 
-    assert entry.minor_version == 3
+    assert entry.minor_version == 4
     migrated = entity_registry.async_get(button.entity_id)
     assert migrated.unique_id == f"{entry.entry_id}_refresh"
     assert hass.states.get(button.entity_id) is not None
+
+
+async def test_migrate_device_identifiers(
+    hass: HomeAssistant,
+    device_registry: dr.DeviceRegistry,
+    mock_api: FakeApi,
+) -> None:
+    """Test the station devices registered with an integer identifier are kept."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        unique_id=DOMAIN,
+        data=ENTRY_DATA,
+        version=1,
+        minor_version=3,
+    )
+    entry.add_to_hass(hass)
+    # Identifier of the previous versions, the station ID as an integer
+    device = device_registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, 99900001)},
+    )
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert entry.minor_version == 4
+    assert [
+        migrated.id
+        for migrated in device_registry.async_get_devices(
+            identifiers={(DOMAIN, "99900001")}
+        )
+    ] == [device.id]
+    assert not device_registry.async_get_devices(identifiers={(DOMAIN, 99900001)})
 
 
 async def test_migrate_from_future_version(

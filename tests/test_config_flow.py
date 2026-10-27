@@ -279,7 +279,9 @@ async def test_options_delete_stations(
     await _setup(hass, entry)
     entity_id = "sensor.station_esso_mission_beach_sp95"
     assert entity_registry.async_get(entity_id) is not None
-    assert device_registry.async_get_devices(identifiers={(DOMAIN, MANUAL_STATION_ID)})
+    assert device_registry.async_get_devices(
+        identifiers={(DOMAIN, str(MANUAL_STATION_ID))}
+    )
 
     result = await _options_step(hass, entry, "delete_stations")
     assert result["type"] is FlowResultType.FORM
@@ -295,7 +297,7 @@ async def test_options_delete_stations(
     assert entry.options == OPTIONS | {CONF_MANUAL_STATIONS: [9999999]}
     assert entity_registry.async_get(entity_id) is None
     assert not device_registry.async_get_devices(
-        identifiers={(DOMAIN, MANUAL_STATION_ID)}
+        identifiers={(DOMAIN, str(MANUAL_STATION_ID))}
     )
 
     # Nothing selected: the options don't change

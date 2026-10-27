@@ -24,6 +24,12 @@ repos:
         entry: uv run ruff format
         language: system
         types_or: [python, pyi]
+      - id: ty
+        name: ty check
+        entry: uv run ty check
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
       - id: translations
         name: translations
         entry: uv run python scripts/check_translations.py

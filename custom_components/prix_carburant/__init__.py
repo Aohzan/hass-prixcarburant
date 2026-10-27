@@ -2,7 +2,7 @@
 
 import logging
 
-import voluptuous as vol
+import probatio
 
 from homeassistant.const import ATTR_ENTITY_ID, ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
 from homeassistant.core import (
@@ -13,7 +13,11 @@ from homeassistant.core import (
     callback,
 )
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
-from homeassistant.helpers import config_validation as cv, entity_registry as er
+from homeassistant.helpers import (
+    config_validation as cv,
+    device_registry as dr,
+    entity_registry as er,
+)
 from homeassistant.helpers.typing import ConfigType
 
 from .const import (
@@ -49,11 +53,13 @@ def _fuel_case(value: str) -> str:
     return _FUELS_BY_LOWER_NAME.get(value.lower(), value)
 
 
-SERVICE_FIND_NEAREST_STATIONS_SCHEMA = vol.Schema(
+SERVICE_FIND_NEAREST_STATIONS_SCHEMA = probatio.Schema(
     {
-        vol.Required(ATTR_ENTITY_ID): cv.entity_id,
-        vol.Required(ATTR_FUEL): vol.All(cv.string, _fuel_case, vol.In(FUELS)),
-        vol.Required(ATTR_DISTANCE): cv.positive_int,
+        probatio.Required(ATTR_ENTITY_ID): cv.entity_id,
+        probatio.Required(ATTR_FUEL): probatio.All(
+            cv.string, _fuel_case, probatio.In(FUELS)
+        ),
+        probatio.Required(ATTR_DISTANCE): cv.positive_int,
     }
 )
 
@@ -152,6 +158,23 @@ async def async_migrate_entry(
             )
         else:
             hass.config_entries.async_update_entry(entry, minor_version=3)
+
+    if entry.minor_version < 4:
+        # The station devices were registered with an integer identifier, the
+        # device registry expects strings
+        device_registry = dr.async_get(hass)
+        for device in dr.async_entries_for_config_entry(
+            device_registry, entry.entry_id
+        ):
+            identifiers = {
+                (domain, str(identifier)) if domain == DOMAIN else (domain, identifier)
+                for domain, identifier in device.identifiers
+            }
+            if identifiers != device.identifiers:
+                device_registry.async_update_device(
+                    device.id, new_identifiers=identifiers
+                )
+        hass.config_entries.async_update_entry(entry, minor_version=4)
 
     return True
 

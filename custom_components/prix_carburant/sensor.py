@@ -2,9 +2,8 @@
 
 from datetime import UTC, datetime
 import logging
-from typing import Any
 
-import voluptuous as vol
+import probatio
 
 from homeassistant.components.sensor import (
     PLATFORM_SCHEMA_BASE,
@@ -42,7 +41,7 @@ from .const import (
     FUELS,
 )
 from .coordinator import PrixCarburantConfigEntry, PrixCarburantCoordinator
-from .tools import get_entity_picture, normalize_string
+from .tools import StationData, get_entity_picture, normalize_string
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -51,7 +50,7 @@ PARALLEL_UPDATES = 0
 # Validation of the yaml configuration
 PLATFORM_SCHEMA = PLATFORM_SCHEMA_BASE.extend(
     {
-        vol.Optional(CONF_STATIONS, default=[]): cv.ensure_list,
+        probatio.Optional(CONF_STATIONS, default=[]): cv.ensure_list,
     }
 )
 
@@ -101,7 +100,7 @@ async def async_setup_entry(
     )
 
 
-def _station_name(station_id: int, station_info: dict[str, Any]) -> str:
+def _station_name(station_id: int, station_info: StationData) -> str:
     """Return the name of the station device."""
     if station_info[ATTR_NAME] != "undefined":
         station_name = station_info[ATTR_NAME]
@@ -144,7 +143,7 @@ class PrixCarburantSensor(CoordinatorEntity[PrixCarburantCoordinator], RestoreSe
             self._attr_entity_picture = get_entity_picture(station_info[ATTR_BRAND])
 
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, station_id)},
+            identifiers={(DOMAIN, str(station_id))},
             manufacturer=station_info.get(ATTR_BRAND, "Station"),
             model=str(station_id),
             name=_station_name(station_id, station_info),
@@ -200,11 +199,9 @@ class PrixCarburantSensor(CoordinatorEntity[PrixCarburantCoordinator], RestoreSe
             ATTR_UPDATED_DATE: fuel.get(ATTR_UPDATED_DATE),
             ATTR_SHORTAGE_SINCE: fuel.get(ATTR_SHORTAGE_SINCE),
         }
-        if fuel.get(ATTR_UPDATED_DATE) is not None:
+        if (updated_date := fuel[ATTR_UPDATED_DATE]) is not None:
             try:
-                updated_dt = datetime.strptime(
-                    fuel[ATTR_UPDATED_DATE], "%Y-%m-%dT%H:%M:%S%z"
-                )
+                updated_dt = datetime.strptime(updated_date, "%Y-%m-%dT%H:%M:%S%z")
             except ValueError as err:
                 _LOGGER.warning(
                     "Cannot calculate days for %s %s since last update: %s",
@@ -217,5 +214,5 @@ class PrixCarburantSensor(CoordinatorEntity[PrixCarburantCoordinator], RestoreSe
                 self._attr_extra_state_attributes[ATTR_DAYS_SINCE_LAST_UPDATE] = max(
                     0, (today - updated_dt.date()).days
                 )
-        if fuel.get(ATTR_PRICE) is not None:
-            self._attr_native_value = round(float(fuel[ATTR_PRICE]), 3)
+        if (price := fuel[ATTR_PRICE]) is not None:
+            self._attr_native_value = round(float(price), 3)

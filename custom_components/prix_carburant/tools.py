@@ -12,7 +12,7 @@ import logging
 from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 from socket import gaierror
-from typing import cast
+from typing import Any, NotRequired, TypedDict, cast
 
 from aiohttp import ClientError, ClientSession
 
@@ -50,6 +50,31 @@ _MAX_CONCURRENT_API_REQUESTS = 5
 _MIN_RETRY_AFTER = 60.0
 # Maximum number of records returned by one API request
 _API_MAX_LIMIT = 100
+
+
+class FuelPrice(TypedDict):
+    """Price of a fuel in a station, None when the fuel is in shortage."""
+
+    updated_date: str | None
+    price: float | None
+    shortage_since: str | None
+
+
+class StationData(TypedDict):
+    """Information and fuel prices of a station, keyed by the ATTR_* constants."""
+
+    latitude: float
+    longitude: float
+    # Kilometers from the location given to the API, None without location
+    distance: float | None
+    address: str | None
+    postal_code: str | None
+    city: str | None
+    name: str
+    brand: str | None
+    fuels: dict[str, FuelPrice]
+    # Price of the fuel searched by find_nearest_station
+    price: NotRequired[float | None]
 
 
 def _parse_stations_csv(content: str) -> dict[str, dict]:
@@ -108,13 +133,14 @@ class PrixCarburantTool:
         time_zone: str = "Europe/Paris",
         request_timeout: int = 30,
         api_ssl_check: bool = True,
-        session: ClientSession | None = None,
+        *,
+        session: ClientSession,
     ) -> None:
         """Init tool."""
         self._user_time_zone = time_zone
         self._api_ssl_check = api_ssl_check
         self._local_stations_data: dict[str, dict] = {}
-        self._stations_data: dict[str, dict] = {}
+        self._stations_data: dict[int, StationData] = {}
         self._request_timeout = request_timeout
         self._session = session
         self._semaphore = asyncio.Semaphore(_MAX_CONCURRENT_API_REQUESTS)
@@ -127,7 +153,7 @@ class PrixCarburantTool:
         _LOGGER.debug("Loading OSM stations CSV from: %s", STATIONS_NAME_OSM_URL)
         try:
             async with timeout(self._request_timeout):
-                response = await self._session.get(STATIONS_NAME_OSM_URL)  # type: ignore[union-attr]
+                response = await self._session.get(STATIONS_NAME_OSM_URL)
                 response.raise_for_status()
                 raw = await response.read()
             osm_stations_data = await asyncio.to_thread(_parse_stations_bz2_csv, raw)
@@ -145,7 +171,7 @@ class PrixCarburantTool:
         _LOGGER.debug("Loading custom stations from: %s", STATIONS_NAME_URL)
         try:
             async with timeout(self._request_timeout):
-                response = await self._session.get(STATIONS_NAME_URL)  # type: ignore[union-attr]
+                response = await self._session.get(STATIONS_NAME_URL)
                 response.raise_for_status()
                 raw = await response.read()
             custom_stations_data: dict[str, dict] = await asyncio.to_thread(
@@ -165,7 +191,7 @@ class PrixCarburantTool:
         self._local_stations_data = {**osm_stations_data, **custom_stations_data}
 
     @property
-    def stations(self) -> dict:
+    def stations(self) -> dict[int, StationData]:
         """Return stations information."""
         return self._stations_data
 
@@ -187,7 +213,7 @@ class PrixCarburantTool:
             try:
                 async with (
                     timeout(self._request_timeout),
-                    self._session.request(  # type: ignore[union-attr]
+                    self._session.request(
                         method="GET",
                         url=PRIX_CARBURANT_API_URL,
                         params=params,
@@ -279,7 +305,7 @@ class PrixCarburantTool:
 
     async def _fetch_stations_by_ids(
         self, station_ids: list, latitude: float, longitude: float
-    ) -> tuple[dict, list[str]]:
+    ) -> tuple[dict[int, StationData], list[str]]:
         """Fetch station data for the given IDs, returning (data, missing_ids)."""
         if not station_ids:
             return {}, []
@@ -294,7 +320,7 @@ class PrixCarburantTool:
             str(sid) for sid in station_ids if str(sid) not in api_station_ids
         ]
 
-        data: dict = {}
+        data: dict[int, StationData] = {}
         for result in results:
             data.update(
                 self._build_station_data(
@@ -323,7 +349,9 @@ class PrixCarburantTool:
         stations_count = response_count["total_count"]
         _LOGGER.debug("%s stations returned by the API", stations_count)
 
-        async def _fetch_page(query_offset: int, query_limit: int) -> dict:
+        async def _fetch_page(
+            query_offset: int, query_limit: int
+        ) -> dict[int, StationData]:
             _LOGGER.debug(
                 "Query stations from %s to %s/%s",
                 query_offset,
@@ -339,7 +367,7 @@ class PrixCarburantTool:
                         "limit": query_limit,
                     }
                 )
-            data: dict = {}
+            data: dict[int, StationData] = {}
             for station in response["results"]:
                 data.update(
                     self._build_station_data(
@@ -355,7 +383,7 @@ class PrixCarburantTool:
         results = await _gather_requests(
             *(_fetch_page(off, lim) for off, lim in offsets_limits)
         )
-        data: dict = {}
+        data: dict[int, StationData] = {}
         errors: list[Exception] = []
         for result in results:
             if isinstance(result, Exception):
@@ -436,17 +464,11 @@ class PrixCarburantTool:
                     result.get(f"{fuel_key}_prix")
                     or result.get(f"{fuel_key}_rupture_type") == "temporaire"
                 ):
-                    station_data[ATTR_FUELS].update(
-                        {
-                            fuel: {
-                                ATTR_UPDATED_DATE: result.get(f"{fuel_key}_maj"),
-                                ATTR_PRICE: result.get(f"{fuel_key}_prix"),
-                                ATTR_SHORTAGE_SINCE: result.get(
-                                    f"{fuel_key}_rupture_debut"
-                                ),
-                            }
-                        }
-                    )
+                    station_data[ATTR_FUELS][fuel] = {
+                        ATTR_UPDATED_DATE: result.get(f"{fuel_key}_maj"),
+                        ATTR_PRICE: result.get(f"{fuel_key}_prix"),
+                        ATTR_SHORTAGE_SINCE: result.get(f"{fuel_key}_rupture_debut"),
+                    }
                 else:
                     station_data[ATTR_FUELS].pop(fuel, None)
 
@@ -460,9 +482,9 @@ class PrixCarburantTool:
 
     async def find_nearest_station(
         self, longitude: float, latitude: float, fuel: str, distance: int = 10
-    ) -> dict:
+    ) -> dict[int, StationData]:
         """Return stations near the location where the fuel price is the lowest."""
-        data = {}
+        data: dict[int, StationData] = {}
         _LOGGER.debug(
             "Call %s API to retrieve nearest stations ordered by price",
             PRIX_CARBURANT_API_URL,
@@ -494,12 +516,12 @@ class PrixCarburantTool:
 
     def _build_station_data(
         self,
-        station: dict,
+        station: dict[str, Any],
         user_longitude: float | None = None,
         user_latitude: float | None = None,
         fuel_key: str | None = None,
-    ) -> dict:
-        data = {}
+    ) -> dict[int, StationData]:
+        data: dict[int, StationData] = {}
         try:
             latitude = float(station["latitude"]) / 100000
             longitude = float(station["longitude"]) / 100000
@@ -707,7 +729,7 @@ _BRAND_LOGOS: dict[str, str] = {
 }
 
 
-def get_entity_picture(brand: str) -> str:
+def get_entity_picture(brand: str | None) -> str:
     """Get entity picture based on brand."""
     return _BRAND_LOGOS.get(brand, "")
 
