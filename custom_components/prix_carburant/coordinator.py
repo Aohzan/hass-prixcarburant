@@ -82,8 +82,11 @@ class PrixCarburantCoordinator(DataUpdateCoordinator[dict[int, dict[str, Any]]])
             _LOGGER,
             config_entry=entry,
             name=DOMAIN,
+            # An interval of 0, saved by the previous versions, would poll continuously
             update_interval=timedelta(
-                hours=int(self.config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
+                hours=max(
+                    1, int(self.config.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL))
+                )
             ),
         )
         self.tool = PrixCarburantTool(

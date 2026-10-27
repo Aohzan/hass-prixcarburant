@@ -26,7 +26,7 @@ from custom_components.prix_carburant.tools import (
     STATIONS_NAME_URL,
 )
 from homeassistant.config_entries import ConfigEntryState
-from homeassistant.const import ATTR_ENTITY_ID, STATE_UNAVAILABLE
+from homeassistant.const import ATTR_ENTITY_ID, CONF_SCAN_INTERVAL, STATE_UNAVAILABLE
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import entity_registry as er, issue_registry as ir
@@ -81,6 +81,20 @@ async def test_setup_cannot_connect(
 
     assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
     assert len(mock_api.requests) == 3
+
+
+async def test_scan_interval_zero(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry, mock_api: FakeApi
+) -> None:
+    """Test an interval of 0 saved by a previous version updates every hour."""
+    mock_config_entry.add_to_hass(hass)
+    hass.config_entries.async_update_entry(
+        mock_config_entry, options={CONF_SCAN_INTERVAL: 0}
+    )
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert mock_config_entry.runtime_data.update_interval == timedelta(hours=1)
 
 
 async def test_local_station_names(
