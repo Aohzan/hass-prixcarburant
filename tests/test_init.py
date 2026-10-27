@@ -239,6 +239,45 @@ async def test_rate_limit(
     assert hass.states.get(GAZOLE_ENTITY_ID).state == "1.659"
 
 
+@pytest.mark.freeze_time("2026-10-27 12:00:00+00:00")
+@pytest.mark.parametrize(
+    "headers",
+    [
+        {"Retry-After": "0"},
+        # Quota reset in the past, the clocks aren't synchronized
+        {"X-RateLimit-Reset": "2026-10-27 16:00:00+00:00"},
+    ],
+)
+async def test_rate_limit_minimum_delay(
+    hass: HomeAssistant,
+    freezer: FrozenDateTimeFactory,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+    headers: dict[str, str],
+) -> None:
+    """Test the update waits at least a minute after a rate limit."""
+    await _setup(hass, mock_config_entry)
+
+    mock_api.status = HTTPStatus.TOO_MANY_REQUESTS
+    mock_api.headers = headers
+    freezer.tick(timedelta(hours=4, minutes=1))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+    requests = len(mock_api.requests)
+
+    freezer.tick(timedelta(seconds=30))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+    assert len(mock_api.requests) == requests
+    assert hass.states.get(GAZOLE_ENTITY_ID).state == STATE_UNAVAILABLE
+
+    mock_api.status = HTTPStatus.OK
+    freezer.tick(timedelta(seconds=31))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+    assert hass.states.get(GAZOLE_ENTITY_ID).state == "1.659"
+
+
 async def test_more_than_100_stations(
     hass: HomeAssistant, mock_config_entry: MockConfigEntry, mock_api: FakeApi
 ) -> None:

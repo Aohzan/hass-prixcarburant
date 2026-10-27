@@ -46,6 +46,8 @@ HTTP_TOO_MANY_REQUESTS = 429
 HTTP_INTERNAL_SERVER_ERROR = 500
 _DELETE_TAG = "DELETE TAG"
 _MAX_CONCURRENT_API_REQUESTS = 5
+# Minimum seconds to wait after a rate limit, the reset time can be in the past
+_MIN_RETRY_AFTER = 60.0
 # Maximum number of records returned by one API request
 _API_MAX_LIMIT = 100
 
@@ -605,12 +607,14 @@ def _retry_after(headers: Mapping[str, str]) -> float | None:
     """
     try:
         if (retry_after := headers.get("Retry-After")) is not None:
-            return float(retry_after)
+            return max(_MIN_RETRY_AFTER, float(retry_after))
         if (reset := headers.get("X-RateLimit-Reset")) is not None:
             reset_time = datetime.fromisoformat(reset)
             if reset_time.tzinfo is None:
                 reset_time = reset_time.replace(tzinfo=UTC)
-            return max(0.0, (reset_time - datetime.now(UTC)).total_seconds())
+            return max(
+                _MIN_RETRY_AFTER, (reset_time - datetime.now(UTC)).total_seconds()
+            )
     except ValueError:
         return None
     return None
