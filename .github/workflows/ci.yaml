@@ -37,7 +37,12 @@ jobs:
   # Dependabot updates are merged only once the checks passed
   dependabot:
     needs: [ci, validate]
-    if: github.event_name == 'pull_request' && github.event.pull_request.user.login == 'dependabot[bot]'
+    # Opened and last updated by Dependabot, from a branch of the repository
+    if: >-
+      github.event_name == 'pull_request'
+      && github.event.pull_request.user.login == 'dependabot[bot]'
+      && github.actor == 'dependabot[bot]'
+      && github.event.pull_request.head.repo.full_name == github.repository
     permissions:
       contents: write
       pull-requests: write
