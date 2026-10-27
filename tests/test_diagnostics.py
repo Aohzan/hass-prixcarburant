@@ -21,7 +21,7 @@ async def test_diagnostics(
     mock_config_entry: MockConfigEntry,
     mock_api: FakeApi,
 ) -> None:
-    """Test the diagnostics redact the distances to the stations."""
+    """Test the diagnostics redact the position of the stations."""
     mock_config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
