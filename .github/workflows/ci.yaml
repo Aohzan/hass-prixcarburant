@@ -1,7 +1,9 @@
 name: CI
 
 on:
+  # Pull request branches run through the pull_request event only
   push:
+    branches: [master]
   pull_request:
   schedule:
     - cron: "0 0 * * *"
