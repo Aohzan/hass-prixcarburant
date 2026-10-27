@@ -104,6 +104,8 @@ class FakeApi:
         self.exc: Exception | None = None
         # Statuses of the next responses, before answering normally
         self.next_statuses: list[HTTPStatus] = []
+        # Stations whose requests fail with a server error
+        self.failing_ids: set[int] = set()
 
     async def __call__(
         self, method: str, url: URL, data: Any
@@ -129,6 +131,10 @@ class FakeApi:
         all_stations = self.stations | self.manual_stations
         if match := re.fullmatch(r"id IN \((.*)\)", where):
             ids = [int(sid) for sid in match[1].split(",")]
+            if self.failing_ids.intersection(ids):
+                return AiohttpClientMockResponse(
+                    method, url, status=HTTPStatus.BAD_GATEWAY, json={}
+                )
             records = [
                 {"id": sid} | all_stations[sid] for sid in ids if sid in all_stations
             ]

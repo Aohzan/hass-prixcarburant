@@ -3,7 +3,7 @@
 import asyncio
 from asyncio import sleep, timeout
 import bz2
-from collections.abc import Mapping
+from collections.abc import Awaitable, Mapping
 import csv
 from datetime import UTC, datetime
 import io
@@ -12,6 +12,7 @@ import logging
 from math import atan2, cos, radians, sin, sqrt
 from pathlib import Path
 from socket import gaierror
+from typing import cast
 
 from aiohttp import ClientError, ClientSession
 
@@ -227,9 +228,14 @@ class PrixCarburantTool:
         return {}
 
     async def _request_stations_by_ids(
-        self, select: str, station_ids: list
-    ) -> list[dict]:
-        """Return the API records of the stations, requested by batches."""
+        self, select: str, station_ids: list, allow_partial: bool = False
+    ) -> tuple[list[dict], list]:
+        """Return the API records of the stations, requested by batches.
+
+        With allow_partial, a failed batch doesn't fail the others: their records
+        are returned with the IDs of the stations of the failed batches, unless
+        every batch failed.
+        """
 
         async def _fetch_batch(batch: list) -> list[dict]:
             async with self._semaphore:
@@ -242,13 +248,32 @@ class PrixCarburantTool:
                 )
             return response.get("results", [])
 
-        results = await asyncio.gather(
-            *[
-                _fetch_batch(station_ids[offset : offset + _API_MAX_LIMIT])
-                for offset in range(0, len(station_ids), _API_MAX_LIMIT)
-            ]
-        )
-        return [record for records in results for record in records]
+        batches = [
+            station_ids[offset : offset + _API_MAX_LIMIT]
+            for offset in range(0, len(station_ids), _API_MAX_LIMIT)
+        ]
+        results = await _gather_requests(*(_fetch_batch(batch) for batch in batches))
+
+        records: list[dict] = []
+        failed_ids: list = []
+        errors: list[Exception] = []
+        for batch, result in zip(batches, results, strict=True):
+            if isinstance(result, Exception):
+                errors.append(result)
+                failed_ids.extend(batch)
+            else:
+                records.extend(result)
+        if errors and (not allow_partial or len(errors) == len(batches)):
+            raise _error_to_raise(errors)
+        if errors:
+            _LOGGER.warning(
+                "%s/%s request(s) to the API failed, %s station(s) skipped: %s",
+                len(errors),
+                len(batches),
+                len(failed_ids),
+                errors[0],
+            )
+        return records, failed_ids
 
     async def _fetch_stations_by_ids(
         self, station_ids: list, latitude: float, longitude: float
@@ -257,7 +282,7 @@ class PrixCarburantTool:
         if not station_ids:
             return {}, []
 
-        results = await self._request_stations_by_ids(
+        results, _ = await self._request_stations_by_ids(
             "id,latitude,longitude,cp,adresse,ville",  # codespell:ignore-words-list=adresse
             station_ids,
         )
@@ -325,12 +350,18 @@ class PrixCarburantTool:
             (offset, min(100, stations_count - offset))
             for offset in range(0, stations_count, 100)
         ]
-        results = await asyncio.gather(
-            *[_fetch_page(off, lim) for off, lim in offsets_limits],
+        results = await _gather_requests(
+            *(_fetch_page(off, lim) for off, lim in offsets_limits)
         )
         data: dict = {}
+        errors: list[Exception] = []
         for result in results:
-            data.update(result)
+            if isinstance(result, Exception):
+                errors.append(result)
+            else:
+                data.update(result)
+        if errors:
+            raise _error_to_raise(errors)
         self._stations_data = data
 
     async def add_manual_stations(
@@ -364,8 +395,12 @@ class PrixCarburantTool:
             "Manual stations added. Total stations: %s", len(self._stations_data)
         )
 
-    async def update_stations_prices(self) -> None:
-        """Update prices of specified stations."""
+    async def update_stations_prices(self, allow_partial: bool = False) -> None:
+        """Update prices of specified stations.
+
+        With allow_partial, the stations of a failed request keep their last
+        prices, unless every request failed.
+        """
         _LOGGER.debug("Call %s API to retrieve fuel prices", PRIX_CARBURANT_API_URL)
         query_select = "id," + ",".join(
             f"{fuel.lower()}_{suffix}"
@@ -378,14 +413,17 @@ class PrixCarburantTool:
 
         station_ids = list(self._stations_data.keys())
 
-        results = {
-            result["id"]: result
-            for result in await self._request_stations_by_ids(query_select, station_ids)
-        }
+        records, skipped_ids = await self._request_stations_by_ids(
+            query_select, station_ids, allow_partial=allow_partial
+        )
+        skipped = set(skipped_ids)
+        results = {result["id"]: result for result in records}
 
         failed_stations: list[str] = []
 
         for station_id_ in station_ids:
+            if station_id_ in skipped:
+                continue
             if (result := results.get(station_id_)) is None:
                 failed_stations.append(str(station_id_))
                 continue
@@ -524,6 +562,29 @@ class PrixCarburantTool:
                 station.get("id", "no ID"),
             )
         return data
+
+
+async def _gather_requests[T](*requests: Awaitable[T]) -> list[T | Exception]:
+    """Wait for all the API requests, returning their errors instead of raising.
+
+    A failed request neither cancels the others nor leaves them running.
+    """
+    results = await asyncio.gather(*requests, return_exceptions=True)
+    for result in results:
+        if isinstance(result, BaseException) and not isinstance(
+            result,
+            (PrixCarburantToolCannotConnectError, PrixCarburantToolRequestError),
+        ):
+            raise result
+    return cast(list[T | Exception], results)
+
+
+def _error_to_raise(errors: list[Exception]) -> Exception:
+    """Return the error to raise for failed requests, a rate limit first."""
+    return next(
+        (err for err in errors if isinstance(err, PrixCarburantToolRateLimitError)),
+        errors[0],
+    )
 
 
 def _raise_api_request_error(status: int, body: object) -> None:

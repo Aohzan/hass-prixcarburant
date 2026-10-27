@@ -217,6 +217,52 @@ async def test_more_than_100_stations(
     ]
 
 
+async def test_partial_update(
+    hass: HomeAssistant,
+    freezer: FrozenDateTimeFactory,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+) -> None:
+    """Test the prices fetched are kept when a batch of stations fails."""
+    base = STATIONS[99900001]
+    mock_api.stations = {99800000 + index: dict(base) for index in range(250)}
+    await _setup(hass, mock_config_entry)
+    coordinator = mock_config_entry.runtime_data
+
+    for station in mock_api.stations.values():
+        station["gazole_prix"] = 1.7
+    # Station of the third batch
+    mock_api.failing_ids = {99800210}
+    requests = len(mock_api.requests)
+    freezer.tick(timedelta(hours=4, minutes=1))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+
+    assert coordinator.last_update_success
+    prices = {
+        station_id: station["fuels"]["Gazole"]["price"]
+        for station_id, station in coordinator.data.items()
+    }
+    assert all(prices[99800000 + index] == 1.7 for index in range(200))
+    # The stations of the failed batch keep their last price
+    assert all(prices[99800000 + index] == 1.659 for index in range(200, 250))
+    assert hass.states.get("sensor.station_99800210_gazole").state == "1.659"
+    # Every batch was requested, the failed one retried
+    assert len(mock_api.requests) == requests + 2 + 3
+
+
+async def test_first_update_partial_failure(
+    hass: HomeAssistant, mock_config_entry: MockConfigEntry, mock_api: FakeApi
+) -> None:
+    """Test the setup is retried when a batch fails at the first update."""
+    base = STATIONS[99900001]
+    mock_api.stations = {99800000 + index: dict(base) for index in range(250)}
+    mock_api.failing_ids = {99800210}
+    await _setup(hass, mock_config_entry)
+
+    assert mock_config_entry.state is ConfigEntryState.SETUP_RETRY
+
+
 async def test_manual_stations_only(hass: HomeAssistant, mock_api: FakeApi) -> None:
     """Test a maximum distance of 0 only uses the manual stations."""
     entry = MockConfigEntry(

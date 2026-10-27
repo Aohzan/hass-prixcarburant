@@ -136,7 +136,9 @@ class PrixCarburantCoordinator(DataUpdateCoordinator[dict[int, dict[str, Any]]])
         """Fetch the prices of the stations."""
         _LOGGER.info("Update stations prices")
         try:
-            await self.tool.update_stations_prices()
+            # A partial update would create no entity for the stations without
+            # price at the first update
+            await self.tool.update_stations_prices(allow_partial=self.data is not None)
         except PrixCarburantToolRateLimitError as err:
             raise UpdateFailed(
                 translation_domain=DOMAIN,
