@@ -15,6 +15,7 @@ from homeassistant.config_entries import (
     ConfigFlow,
     ConfigFlowResult,
     OptionsFlow,
+    OptionsFlowWithReload,
 )
 from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL
 from homeassistant.core import callback
@@ -113,7 +114,7 @@ class PrixCarburantConfigFlow(ConfigFlow, domain=DOMAIN):
         return PrixCarburantOptionsFlowHandler()
 
 
-class PrixCarburantOptionsFlowHandler(OptionsFlow):
+class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
     """Handle a PrixCarburant options flow."""
 
     def __init__(self) -> None:
@@ -122,11 +123,8 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
     def _get_manual_stations(self) -> list[int]:
         """Get manual stations list from config entry data/options."""
-        return list(
-            self.config_entry.data.get(CONF_MANUAL_STATIONS)
-            or self.config_entry.options.get(CONF_MANUAL_STATIONS)
-            or []
-        )
+        config = dict(self.config_entry.data) | dict(self.config_entry.options)
+        return list(config.get(CONF_MANUAL_STATIONS) or [])
 
     async def async_step_init(
         self,
@@ -155,13 +153,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
         if user_input is not None:
             # Merge with existing options
-            new_options = dict(self.config_entry.options)
-            new_options.update(user_input)
-
-            self.hass.async_create_task(
-                self.hass.config_entries.async_reload(self.config_entry.entry_id)
-            )
-            return self.async_create_entry(title="", data=new_options)
+            return self.async_create_entry(data=self.config_entry.options | user_input)
 
         config = dict(self.config_entry.data) | dict(self.config_entry.options)
 
@@ -200,13 +192,7 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
 
         if user_input is not None:
             # Merge with existing options
-            new_options = dict(self.config_entry.options)
-            new_options.update(user_input)
-
-            self.hass.async_create_task(
-                self.hass.config_entries.async_reload(self.config_entry.entry_id)
-            )
-            return self.async_create_entry(title="", data=new_options)
+            return self.async_create_entry(data=self.config_entry.options | user_input)
 
         config = dict(self.config_entry.data) | dict(self.config_entry.options)
 
@@ -265,23 +251,10 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                             # Add to manual stations
                             manual_stations.append(station_id)
 
-                            # Update both options and data to ensure persistence
-                            new_options = dict(self.config_entry.options)
-                            new_options[CONF_MANUAL_STATIONS] = manual_stations
-
-                            new_data = dict(self.config_entry.data)
-                            new_data[CONF_MANUAL_STATIONS] = manual_stations
-
-                            self.hass.config_entries.async_update_entry(
-                                self.config_entry, data=new_data, options=new_options
+                            return self.async_create_entry(
+                                data=self.config_entry.options
+                                | {CONF_MANUAL_STATIONS: manual_stations}
                             )
-                            self.hass.async_create_task(
-                                self.hass.config_entries.async_reload(
-                                    self.config_entry.entry_id
-                                )
-                            )
-
-                            return self.async_create_entry(title="", data={})
 
         schema = vol.Schema(
             {
@@ -345,21 +318,12 @@ class PrixCarburantOptionsFlowHandler(OptionsFlow):
                     if station_id_int in manual_stations:
                         manual_stations.remove(station_id_int)
 
-                # Update both options and data to ensure persistence
-                new_options = dict(self.config_entry.options)
-                new_options[CONF_MANUAL_STATIONS] = manual_stations
-
-                new_data = dict(self.config_entry.data)
-                new_data[CONF_MANUAL_STATIONS] = manual_stations
-
-                self.hass.config_entries.async_update_entry(
-                    self.config_entry, data=new_data, options=new_options
-                )
-                self.hass.async_create_task(
-                    self.hass.config_entries.async_reload(self.config_entry.entry_id)
+                return self.async_create_entry(
+                    data=self.config_entry.options
+                    | {CONF_MANUAL_STATIONS: manual_stations}
                 )
 
-            return self.async_create_entry(title="", data={})
+            return self.async_create_entry(data=dict(self.config_entry.options))
 
         manual_stations = self._get_manual_stations()
 
