@@ -15,5 +15,5 @@
   "issue_tracker": "https://github.com/Aohzan/hass-prixcarburant/issues",
   "requirements": [],
   "single_config_entry": true,
-  "version": "3.26.6"
+  "version": "3.27.0"
 }

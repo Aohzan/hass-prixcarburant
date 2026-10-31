@@ -1,5 +1,33 @@
 # Changelog
 
+## [3.27.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.6...3.27.0) (2026-10-27)
+
+### Features
+
+* modernize the integration for Home Assistant 2026.10 ([4b2c705](https://github.com/Aohzan/hass-prixcarburant/commit/4b2c70537bf3d7d9eccd3a540b7cd92e5b75a301))
+* ship the brand images with the integration ([5f4a27d](https://github.com/Aohzan/hass-prixcarburant/commit/5f4a27d9621856b72164459c9703f8c976827219))
+
+### Bug Fixes
+
+* accept the fuel of the service whatever its case ([bb6f17a](https://github.com/Aohzan/hass-prixcarburant/commit/bb6f17aaee689313b7be4d1889acdae8ef4629c6))
+* allow a maximum distance of 0 to only use manual stations ([3c5ca61](https://github.com/Aohzan/hass-prixcarburant/commit/3c5ca61e9280962d6ae61b1d5b6d86ff1f398396))
+* fetch the prices of every station beyond the 100th ([994dcbc](https://github.com/Aohzan/hass-prixcarburant/commit/994dcbc9714ca58ac53f030c54498982678a3974))
+* keep the options when adding or removing a station ([f288b16](https://github.com/Aohzan/hass-prixcarburant/commit/f288b16c37927e130cd6021a9df9701315af4bc9))
+* keep the prices fetched when a batch of stations fails ([73c249c](https://github.com/Aohzan/hass-prixcarburant/commit/73c249cd3ef51c16ee4a12462a55903b3d45c897))
+* load the station names without blocking the event loop ([9b7152b](https://github.com/Aohzan/hass-prixcarburant/commit/9b7152b0b8e7015a0c199629d84aa924ad99e434))
+* make the prices unavailable when the API can't be reached ([f8591a7](https://github.com/Aohzan/hass-prixcarburant/commit/f8591a76f52791cd3f56e6e6feb96517e409d30c))
+* manage the stations when the integration isn't loaded ([476fdaa](https://github.com/Aohzan/hass-prixcarburant/commit/476fdaa6fe504e8d7948e2fe1c71b3bba30a8a90))
+* move the YAML stations to the options instead of asking to recreate the entry ([ef2de5e](https://github.com/Aohzan/hass-prixcarburant/commit/ef2de5ee372b23216bb5e1ba54b257eb67c4cfb9))
+* redact the position of the stations in the diagnostics ([fae703b](https://github.com/Aohzan/hass-prixcarburant/commit/fae703b87eca441b2ff2d2e7853b8f3fdf10ad1b))
+* refuse a time of 0 between two updates ([d44044b](https://github.com/Aohzan/hass-prixcarburant/commit/d44044bc975ef3406212358b1caa8190e8fa1417))
+* register the station devices with string identifiers ([c73db4e](https://github.com/Aohzan/hass-prixcarburant/commit/c73db4e9592ed8cb753c7793ba533821ce5af2be))
+* retry a failed update after 15 minutes ([5cb3572](https://github.com/Aohzan/hass-prixcarburant/commit/5cb35724805c98538e31c12f3655f84b6e87e640))
+* retry the API requests failing with a server error ([b853cab](https://github.com/Aohzan/hass-prixcarburant/commit/b853cab3a7ef158b76ddcded7d733fa90f613bb3))
+* show a rate limit as such when adding a station ([cd32218](https://github.com/Aohzan/hass-prixcarburant/commit/cd32218fe9e8bd957279429c54bfa8f85aa242a9))
+* translate the aborts of the config flow ([41c990a](https://github.com/Aohzan/hass-prixcarburant/commit/41c990add7001a0f669f83cad6007c9d90b0f032))
+* update at most once an hour when an interval of 0 was saved ([949eddf](https://github.com/Aohzan/hass-prixcarburant/commit/949eddf283575829cb1e1f9940e18ae6b55fa049))
+* wait at least a minute after a rate limit ([0a4fa5e](https://github.com/Aohzan/hass-prixcarburant/commit/0a4fa5e8dce0af3bc924f049ae72b0e066c642f1))
+
 ## [3.26.6](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.5...3.26.6) (2026-10-27)
 
 ### Bug Fixes
