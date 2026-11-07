@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.28.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.27.0...3.28.0) (2026-11-07)
+
+### Features
+
+* handle the entity ID changes of Home Assistant 2026.11 ([df3aed6](https://github.com/Aohzan/hass-prixcarburant/commit/df3aed66afc0c855be2419ef63849c02daaca094))
+* require Home Assistant 2026.11 ([1376dfb](https://github.com/Aohzan/hass-prixcarburant/commit/1376dfb8c7410bc6c471477a1ac5442e6672dfb8))
+
 ## [3.27.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.26.6...3.27.0) (2026-10-27)
 
 ### Features
