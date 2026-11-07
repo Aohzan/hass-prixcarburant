@@ -1,6 +1,9 @@
 {
   "domain": "prix_carburant",
   "name": "Prix Carburant",
+  "categories": [
+    "local_services"
+  ],
   "codeowners": [
     "@Aohzan"
   ],
