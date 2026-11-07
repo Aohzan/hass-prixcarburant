@@ -26,9 +26,11 @@ Faire une PR en ajoutant/corrigeant l'image dans le fichier [tools.py](custom_co
 
 ## Installation
 
-### HACS
+### Marketplace
 
-HACS > Integrations > Explorer et télécharger des dépôts > Prix Carburant > Télécharger
+[![Ouvrir ce dépôt dans le Marketplace de votre Home Assistant.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=Aohzan&repository=hass-prixcarburant&category=integration)
+
+Paramètres > Marketplace > rechercher « Prix Carburant » > Installer.
 
 ### Manuelle
 
@@ -38,7 +40,9 @@ Copier le dossier `prix_carburant` dans le dossier `config/custom_components` de
 
 ### via l'interface
 
-Ajoutez une nouvelle intégration, recherchez `Prix Carburant` et remplissez les champs demandés.
+[![Ajouter cette intégration à votre Home Assistant.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=prix_carburant)
+
+Ou depuis Paramètres > Appareils et services > Ajouter une intégration, sélectionner Prix Carburant. Remplissez ensuite les champs demandés.
 
 ### via configuration.yml
 
