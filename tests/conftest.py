@@ -9,13 +9,11 @@ from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import pytest
-from pytest_homeassistant_custom_component.common import MockConfigEntry
-from pytest_homeassistant_custom_component.syrupy import HomeAssistantSnapshotExtension
-from pytest_homeassistant_custom_component.test_util.aiohttp import (
+from pytest_homeassistant.common import MockConfigEntry
+from pytest_homeassistant.test_util.aiohttp import (
     AiohttpClientMocker,
     AiohttpClientMockResponse,
 )
-from syrupy.assertion import SnapshotAssertion
 from yarl import URL
 
 from custom_components.prix_carburant.const import CONF_MAX_KM, DEFAULT_NAME, DOMAIN
@@ -155,17 +153,6 @@ class FakeApi:
         return AiohttpClientMockResponse(
             method, url, json={"total_count": total_count, "results": records}
         )
-
-
-@pytest.fixture
-def snapshot(snapshot: SnapshotAssertion) -> SnapshotAssertion:
-    """Return the snapshot assertion with the Home Assistant serializer."""
-    return snapshot.use_extension(HomeAssistantSnapshotExtension)
-
-
-@pytest.fixture(autouse=True)
-def auto_enable_custom_integrations(enable_custom_integrations: None) -> None:
-    """Enable the custom integrations in every test."""
 
 
 @pytest.fixture(autouse=True)

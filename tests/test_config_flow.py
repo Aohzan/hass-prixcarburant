@@ -5,7 +5,7 @@ from unittest.mock import patch
 
 from aiohttp import ClientError
 import pytest
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from pytest_homeassistant.common import MockConfigEntry
 
 from custom_components.prix_carburant.const import (
     CONF_API_SSL_CHECK,
