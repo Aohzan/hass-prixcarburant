@@ -457,7 +457,7 @@
   },
   "1390009": {
     "name": "A46 AIRE DE MIONNAY EST- SENS SUD NORD",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "1400001": {
     "name": "Carrefour Market",
@@ -472,8 +472,8 @@
     "brand": "Netto"
   },
   "1430003": {
-    "name": "AGIP CEIGNES A40 SENS ANNECY BOURG EN BRESSE",
-    "brand": "Agip"
+    "name": "ENI CEIGNES A40 SENS ANNECY BOURG EN BRESSE",
+    "brand": "Eni"
   },
   "1430004": {
     "name": "GARAGE MURET",
@@ -616,8 +616,8 @@
     "brand": "Carrefour Market"
   },
   "1960004": {
-    "name": "AGIP PERONNAS",
-    "brand": "Agip"
+    "name": "ENI PERONNAS",
+    "brand": "Eni"
   },
   "1960005": {
     "name": "Intermarché SAS INDARRA",
@@ -1028,8 +1028,8 @@
     "brand": "Avia"
   },
   "3120001": {
-    "name": "AGIP LAPALISSE - STATION CANTAT",
-    "brand": "Agip"
+    "name": "ENI LAPALISSE - STATION CANTAT",
+    "brand": "Eni"
   },
   "3120002": {
     "name": "Carrefour Market",
@@ -1165,7 +1165,7 @@
   },
   "3410004": {
     "name": "EURL BITEZ",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "3410007": {
     "name": "Esso EXPRESS DOMERAT TERRE NEUVE",
@@ -1377,7 +1377,7 @@
   },
   "4320001": {
     "name": "SARL ENERGY ENTREVAUX JAUME",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "4330004": {
     "name": "SARL DOMI et STEPH",
@@ -1712,16 +1712,16 @@
     "brand": "Total Access"
   },
   "6150009": {
-    "name": "AGIP CANNES",
-    "brand": "Agip"
+    "name": "ENI CANNES",
+    "brand": "Eni"
   },
   "6156001": {
     "name": "Carrefour Market",
     "brand": "Carrefour Market"
   },
   "6160007": {
-    "name": "AGIP ANTIBES JUAN LES PINS",
-    "brand": "Agip"
+    "name": "ENI ANTIBES JUAN LES PINS",
+    "brand": "Eni"
   },
   "6190004": {
     "name": "STATION SERVICE DU STADE",
@@ -1733,7 +1733,7 @@
   },
   "6190009": {
     "name": "STATION ENI ROQUEBRUNE-CAP-MARTIN",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "6200006": {
     "name": "BP NICE GRAND SOLEIL",
@@ -1744,8 +1744,8 @@
     "brand": "Esso Express"
   },
   "6200022": {
-    "name": "AGIP NICE MARGUERITE",
-    "brand": "Agip"
+    "name": "ENI NICE MARGUERITE",
+    "brand": "Eni"
   },
   "6200026": {
     "name": "RELAIS NICE PR.D.ANGLAIS",
@@ -2024,8 +2024,8 @@
     "brand": "ENI"
   },
   "6550001": {
-    "name": "AGIP LA ROQUETTE AV DE LA REPUBLIQUE",
-    "brand": "Agip"
+    "name": "ENI LA ROQUETTE AV DE LA REPUBLIQUE",
+    "brand": "Eni"
   },
   "6550002": {
     "name": "Intermarché LA ROQUETTE/SIAGNE",
@@ -2124,8 +2124,8 @@
     "brand": "Avia"
   },
   "6670009": {
-    "name": "AGIP COLOMARS",
-    "brand": "Agip"
+    "name": "ENI COLOMARS",
+    "brand": "Eni"
   },
   "6700002": {
     "name": "CHENEAU SARL",
@@ -2152,8 +2152,8 @@
     "brand": "Total Access"
   },
   "6800006": {
-    "name": "AGIP CROS DE CAGNES BD DE LA PLAGE",
-    "brand": "Agip"
+    "name": "ENI CROS DE CAGNES BD DE LA PLAGE",
+    "brand": "Eni"
   },
   "6800017": {
     "name": "RELAIS VAL FLEURI",
@@ -2176,8 +2176,8 @@
     "brand": "BP"
   },
   "6800024": {
-    "name": "AGIP CAGNES SUR MER",
-    "brand": "Agip"
+    "name": "ENI CAGNES SUR MER",
+    "brand": "Eni"
   },
   "6800025": {
     "name": "BP CAGNES PENETRANTE",
@@ -2188,8 +2188,8 @@
     "brand": "Intermarché"
   },
   "7000003": {
-    "name": "STATION AGIP Veyras",
-    "brand": "AGIP"
+    "name": "STATION ENI Veyras",
+    "brand": "Eni"
   },
   "7100002": {
     "name": "Super U",
@@ -2252,8 +2252,8 @@
     "brand": "Total"
   },
   "7170002": {
-    "name": "AGIP LAVILLEDIEU RN 102",
-    "brand": "Agip"
+    "name": "ENI LAVILLEDIEU RN 102",
+    "brand": "Eni"
   },
   "7170003": {
     "name": "Intermarché VILLENEUVE DE BERG",
@@ -3700,8 +3700,8 @@
     "brand": "Esso Express"
   },
   "13007007": {
-    "name": "AGIP MARSEILLE LES ROCHES",
-    "brand": "Agip"
+    "name": "ENI MARSEILLE LES ROCHES",
+    "brand": "Eni"
   },
   "13008001": {
     "name": "Intermarché Ste Anne",
@@ -3716,8 +3716,8 @@
     "brand": "Carrefour"
   },
   "13008013": {
-    "name": "AGIP MARSEILLE CLOT BEY",
-    "brand": "Agip"
+    "name": "ENI MARSEILLE CLOT BEY",
+    "brand": "Eni"
   },
   "13008014": {
     "name": "SARL CP - AVIA",
@@ -3768,8 +3768,8 @@
     "brand": "Avia"
   },
   "13011014": {
-    "name": "AGIP MARSEILLE SAINT LOUP",
-    "brand": "Agip"
+    "name": "ENI MARSEILLE SAINT LOUP",
+    "brand": "Eni"
   },
   "13011015": {
     "name": "Carrefour Contact GEGARYNE",
@@ -3832,8 +3832,8 @@
     "brand": "Indépendant sans enseigne"
   },
   "13013014": {
-    "name": "AGIP MARSEILLE ST JUST",
-    "brand": "Agip"
+    "name": "ENI MARSEILLE ST JUST",
+    "brand": "Eni"
   },
   "13013016": {
     "name": "RELAIS DES OLIVES",
@@ -3848,8 +3848,8 @@
     "brand": "Carrefour"
   },
   "13014008": {
-    "name": "AGIP MARSEILLE SAINTE MARTHE",
-    "brand": "Agip"
+    "name": "ENI MARSEILLE SAINTE MARTHE",
+    "brand": "Eni"
   },
   "13014010": {
     "name": "AVIA - B2M SARL",
@@ -3860,12 +3860,12 @@
     "brand": "Esso Express"
   },
   "13015013": {
-    "name": "AGIP MARSEILLE MADRAGUE",
-    "brand": "Agip"
+    "name": "ENI MARSEILLE MADRAGUE",
+    "brand": "Eni"
   },
   "13015016": {
-    "name": "AGIP MARSEILLE RN DE ST ANTOINE",
-    "brand": "Agip"
+    "name": "ENI MARSEILLE RN DE ST ANTOINE",
+    "brand": "Eni"
   },
   "13015019": {
     "name": "RELAIS ST.ANTOINE",
@@ -3888,8 +3888,8 @@
     "brand": "Total Access"
   },
   "13090019": {
-    "name": "AGIP AIX EN PROVENCE RN7",
-    "brand": "Agip"
+    "name": "ENI AIX EN PROVENCE RN7",
+    "brand": "Eni"
   },
   "13100005": {
     "name": "Esso TOURELLES",
@@ -3988,8 +3988,8 @@
     "brand": "ROMPETROL"
   },
   "13127005": {
-    "name": "AGIP VITROLLES EST A7 SENS MARSEILLE VERS LYON",
-    "brand": "Agip"
+    "name": "ENI VITROLLES EST A7 SENS MARSEILLE VERS LYON",
+    "brand": "Eni"
   },
   "13127006": {
     "name": "E.LECLERC VITROLLES",
@@ -4060,8 +4060,8 @@
     "brand": "Système U"
   },
   "13170003": {
-    "name": "AGIP LES PENNES MIRABEAU RN 113",
-    "brand": "Agip"
+    "name": "ENI LES PENNES MIRABEAU RN 113",
+    "brand": "Eni"
   },
   "13170007": {
     "name": "PACA Carburant",
@@ -4080,8 +4080,8 @@
     "brand": "Total Access"
   },
   "13180001": {
-    "name": "AGIP GIGNAC A55 SENS MARSEILLE VERS MARTIGUES",
-    "brand": "Agip"
+    "name": "ENI GIGNAC A55 SENS MARSEILLE VERS MARTIGUES",
+    "brand": "Eni"
   },
   "13180002": {
     "name": "Market Gignac-la-Nerthe",
@@ -4448,8 +4448,8 @@
     "brand": "Total Access"
   },
   "13600016": {
-    "name": "AGIP LE LIOUQUET A 50",
-    "brand": "Agip"
+    "name": "ENI LE LIOUQUET A 50",
+    "brand": "Eni"
   },
   "13610001": {
     "name": "SARL WILLY",
@@ -5820,8 +5820,8 @@
     "brand": "Système U"
   },
   "17350006": {
-    "name": "AGIP FENIOUX OUEST A10",
-    "brand": "Agip"
+    "name": "ENI FENIOUX OUEST A10",
+    "brand": "Eni"
   },
   "17360001": {
     "name": "U Express Coop Atlantique St Aigulin",
@@ -6172,8 +6172,8 @@
     "brand": "Intermarché"
   },
   "18500006": {
-    "name": "AGIP BOURGES MARMAGNE A 71",
-    "brand": "Agip"
+    "name": "ENI BOURGES MARMAGNE A 71",
+    "brand": "Eni"
   },
   "18500007": {
     "name": "Esso Bourges Ste Thorette",
@@ -6416,8 +6416,8 @@
     "brand": "Carrefour Contact"
   },
   "19600002": {
-    "name": "AGIP BRIVE A 89",
-    "brand": "Agip"
+    "name": "ENI BRIVE A 89",
+    "brand": "Eni"
   },
   "19600003": {
     "name": "Relais de la croix blanche",
@@ -7032,8 +7032,8 @@
     "brand": "Avia"
   },
   "21120002": {
-    "name": "AGIP TILCHATEL RN 74",
-    "brand": "Agip"
+    "name": "ENI TILCHATEL RN 74",
+    "brand": "Eni"
   },
   "21120003": {
     "name": "SARL RONDOT",
@@ -7157,7 +7157,7 @@
   },
   "21230004": {
     "name": "STATION DU PARC",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "21230006": {
     "name": "Bi1",
@@ -7232,8 +7232,8 @@
     "brand": "Avia"
   },
   "21320007": {
-    "name": "AGIP AIRE DES LOCHERES A6 SUD NORD",
-    "brand": "Agip"
+    "name": "ENI AIRE DES LOCHERES A6 SUD NORD",
+    "brand": "Eni"
   },
   "21330001": {
     "name": "RELAIS DES VIGNOTTES",
@@ -8580,8 +8580,8 @@
     "brand": "Avia"
   },
   "25720009": {
-    "name": "AGIP BEURE ROUTE DE LYON",
-    "brand": "Agip"
+    "name": "ENI BEURE ROUTE DE LYON",
+    "brand": "Eni"
   },
   "25800001": {
     "name": "SA ANACO",
@@ -8633,7 +8633,7 @@
   },
   "26000019": {
     "name": "STATION SERVICE RAUCH - ENI",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "26100001": {
     "name": "Super U",
@@ -8752,8 +8752,8 @@
     "brand": "Netto"
   },
   "26250001": {
-    "name": "AGIP LIVRON RN7",
-    "brand": "AGIP"
+    "name": "ENI LIVRON RN7",
+    "brand": "Eni"
   },
   "26260001": {
     "name": "Super U",
@@ -8772,8 +8772,8 @@
     "brand": "Intermarché"
   },
   "26270005": {
-    "name": "AGIP A 7 AIRE DE SAULCE EST",
-    "brand": "Agip"
+    "name": "ENI A 7 AIRE DE SAULCE EST",
+    "brand": "Eni"
   },
   "26270006": {
     "name": "LECLERC SAULCE SUR RHONE",
@@ -8832,8 +8832,8 @@
     "brand": "Indépendant sans enseigne"
   },
   "26380001": {
-    "name": "AGIP PEYRINS LES ESCOFFERS",
-    "brand": "Agip"
+    "name": "ENI PEYRINS LES ESCOFFERS",
+    "brand": "Eni"
   },
   "26390001": {
     "name": "SAS BLAISANI",
@@ -8920,8 +8920,8 @@
     "brand": "Avia"
   },
   "26740002": {
-    "name": "AGIP MONTBOUCHER",
-    "brand": "Agip"
+    "name": "ENI MONTBOUCHER",
+    "brand": "Eni"
   },
   "26740003": {
     "name": "RELAIS TOURRETTES",
@@ -10165,7 +10165,7 @@
   },
   "30100011": {
     "name": "STATION SERVICE DE CLAVIERES",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "30100012": {
     "name": "intermarche les allemandes",
@@ -10413,7 +10413,7 @@
   },
   "30400004": {
     "name": "LE RELAIS DE L'OLIVIER SARL",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "30400005": {
     "name": "RELAIS VILLENEUVE LES AVIGNON",
@@ -11620,8 +11620,8 @@
     "brand": "Avia"
   },
   "33170004": {
-    "name": "AGIP GRADIGNAN A63 SENS BAYONNE VERS BORDEAUX",
-    "brand": "Agip"
+    "name": "ENI GRADIGNAN A63 SENS BAYONNE VERS BORDEAUX",
+    "brand": "Eni"
   },
   "33170005": {
     "name": "Intermarché GRADIGNAN",
@@ -12312,8 +12312,8 @@
     "brand": "Système U"
   },
   "33840003": {
-    "name": "AGIP / SIG'REST CAPTIEUX",
-    "brand": "Agip"
+    "name": "ENI / SIG'REST CAPTIEUX",
+    "brand": "Eni"
   },
   "33850001": {
     "name": "BLENAN SAS - E. LECLERC",
@@ -12380,8 +12380,8 @@
     "brand": "Esso Express"
   },
   "34000010": {
-    "name": "AGIP MONTPELLIER TOURNEZY",
-    "brand": "Agip"
+    "name": "ENI MONTPELLIER TOURNEZY",
+    "brand": "Eni"
   },
   "34000011": {
     "name": "Intermarché La Lyre (Montpellier)",
@@ -12436,8 +12436,8 @@
     "brand": "Total Access"
   },
   "34070020": {
-    "name": "AGIP MONTPELLIER PALAVAS",
-    "brand": "Agip"
+    "name": "ENI MONTPELLIER PALAVAS",
+    "brand": "Eni"
   },
   "34080001": {
     "name": "Esso CELLENEUVE",
@@ -12448,8 +12448,8 @@
     "brand": "Total Access"
   },
   "34100001": {
-    "name": "AGIP MONTPELLIER RIMBAUD",
-    "brand": "Agip"
+    "name": "ENI MONTPELLIER RIMBAUD",
+    "brand": "Eni"
   },
   "34110002": {
     "name": "Carbur",
@@ -12500,8 +12500,8 @@
     "brand": "Carrefour Market"
   },
   "34140003": {
-    "name": "AGIP MEZE RN 113",
-    "brand": "Agip"
+    "name": "ENI MEZE RN 113",
+    "brand": "Eni"
   },
   "34140004": {
     "name": "Intermarché MEZE",
@@ -12732,8 +12732,8 @@
     "brand": "Intermarché"
   },
   "34500006": {
-    "name": "AGIP BEZIERS PEZENAS",
-    "brand": "Agip"
+    "name": "ENI BEZIERS PEZENAS",
+    "brand": "Eni"
   },
   "34500008": {
     "name": "AUCHAN",
@@ -13868,8 +13868,8 @@
     "brand": "Intermarché"
   },
   "37270006": {
-    "name": "AGIP AIRE ATHEE A85",
-    "brand": "Agip"
+    "name": "ENI AIRE ATHEE A85",
+    "brand": "Eni"
   },
   "37290001": {
     "name": "Intermarché YZEURES S/CREUSE",
@@ -14065,7 +14065,7 @@
   },
   "38000016": {
     "name": "ENI AVENUE RHIN ET DANUBE",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "38000018": {
     "name": "Station Service Eni",
@@ -14092,8 +14092,8 @@
     "brand": "BP"
   },
   "38100008": {
-    "name": "AGIP GRENOBLE PERROT",
-    "brand": "Agip"
+    "name": "ENI GRENOBLE PERROT",
+    "brand": "Eni"
   },
   "38100012": {
     "name": "RELAIS FOCH",
@@ -14260,8 +14260,8 @@
     "brand": "Carrefour"
   },
   "38240004": {
-    "name": "AGIP MEYLAN 7 LAUX",
-    "brand": "Agip"
+    "name": "ENI MEYLAN 7 LAUX",
+    "brand": "Eni"
   },
   "38250002": {
     "name": "Intermarché VILLARD-DE-LANS",
@@ -14340,8 +14340,8 @@
     "brand": "Indépendant sans enseigne"
   },
   "38300017": {
-    "name": "AGIP BOURGOIN route de Lyon",
-    "brand": "Agip"
+    "name": "ENI BOURGOIN route de Lyon",
+    "brand": "Eni"
   },
   "38300018": {
     "name": "RELAIS LES BERJALLIENS",
@@ -14364,8 +14364,8 @@
     "brand": "Esso Express"
   },
   "38320003": {
-    "name": "AGIP EYBENS JAURES SUD",
-    "brand": "Agip"
+    "name": "ENI EYBENS JAURES SUD",
+    "brand": "Eni"
   },
   "38320005": {
     "name": "Intermarché Bresson",
@@ -14392,8 +14392,8 @@
     "brand": "Système U"
   },
   "38340010": {
-    "name": "AGIP A48 VOREPPE ISLE ROSE",
-    "brand": "Agip"
+    "name": "ENI A48 VOREPPE ISLE ROSE",
+    "brand": "Eni"
   },
   "38340011": {
     "name": "RELAIS VOREPPE",
@@ -14656,8 +14656,8 @@
     "brand": "Système U"
   },
   "38690004": {
-    "name": "AGIP A48 RIVES",
-    "brand": "Agip"
+    "name": "ENI A48 RIVES",
+    "brand": "Eni"
   },
   "38700001": {
     "name": "LES SABLONS",
@@ -14677,7 +14677,7 @@
   },
   "38760003": {
     "name": "SARL MAXIME",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "38780001": {
     "name": "Carrefour Market",
@@ -14804,8 +14804,8 @@
     "brand": "Système U"
   },
   "39140006": {
-    "name": "AGIP AIRE DU JURA A39",
-    "brand": "Agip"
+    "name": "ENI AIRE DU JURA A39",
+    "brand": "Eni"
   },
   "39150001": {
     "name": "SAS ROCHADIS",
@@ -14932,8 +14932,8 @@
     "brand": "Système U"
   },
   "39500003": {
-    "name": "AGIP TAVAUX LES CHARMES",
-    "brand": "Agip"
+    "name": "ENI TAVAUX LES CHARMES",
+    "brand": "Eni"
   },
   "39500004": {
     "name": "RELAIS DES BASSES TERRES",
@@ -15664,12 +15664,12 @@
     "brand": "Dyneff"
   },
   "42000018": {
-    "name": "AGIP ST ETIENNE NECKER",
-    "brand": "Agip"
+    "name": "ENI ST ETIENNE NECKER",
+    "brand": "Eni"
   },
   "42000019": {
-    "name": "AGIP ST ETIENNE RUE ACIERIES",
-    "brand": "Agip"
+    "name": "ENI ST ETIENNE RUE ACIERIES",
+    "brand": "Eni"
   },
   "42100004": {
     "name": "STATION Total SARL RIOUX",
@@ -15760,8 +15760,8 @@
     "brand": "Intermarché"
   },
   "42152005": {
-    "name": "AGIP L'HORME AV BERTHELOT",
-    "brand": "Agip"
+    "name": "ENI L'HORME AV BERTHELOT",
+    "brand": "Eni"
   },
   "42153001": {
     "name": "Carrefour Market",
@@ -16076,8 +16076,8 @@
     "brand": "Leclerc"
   },
   "42700005": {
-    "name": "AGIP FIRMINY SARL FB",
-    "brand": "Agip"
+    "name": "ENI FIRMINY SARL FB",
+    "brand": "Eni"
   },
   "42720001": {
     "name": "GARAGE LACROIX",
@@ -17072,12 +17072,12 @@
     "brand": "Leclerc"
   },
   "45190010": {
-    "name": "AGIP A10 AIRE DE BEAUGENCY",
-    "brand": "Agip"
+    "name": "ENI A10 AIRE DE BEAUGENCY",
+    "brand": "Eni"
   },
   "45190011": {
-    "name": "AGIP A10 AIRE MEUNG SUR LOIRE",
-    "brand": "Agip"
+    "name": "ENI A10 AIRE MEUNG SUR LOIRE",
+    "brand": "Eni"
   },
   "45200001": {
     "name": "Carrefour Amilly",
@@ -17212,8 +17212,8 @@
     "brand": "Système U"
   },
   "45340004": {
-    "name": "AGIP AIRE DU LOIRET A 19",
-    "brand": "Agip"
+    "name": "ENI AIRE DU LOIRET A 19",
+    "brand": "Eni"
   },
   "45360005": {
     "name": "SUPERMARCHE G20",
@@ -17268,8 +17268,8 @@
     "brand": "Shell"
   },
   "45430003": {
-    "name": "AGIP CHECY AV D'ORLEANS",
-    "brand": "Agip"
+    "name": "ENI CHECY AV D'ORLEANS",
+    "brand": "Eni"
   },
   "45430004": {
     "name": "LECLERC CHECY",
@@ -17600,8 +17600,8 @@
     "brand": "Indépendant sans enseigne"
   },
   "46600004": {
-    "name": "AGIP A 20 AIRE DE PECH MONTAT",
-    "brand": "Agip"
+    "name": "ENI A 20 AIRE DE PECH MONTAT",
+    "brand": "Eni"
   },
   "46700001": {
     "name": "Intermarché",
@@ -18236,8 +18236,8 @@
     "brand": "Système U"
   },
   "49340001": {
-    "name": "AGIP TREMENTINES A87",
-    "brand": "Agip"
+    "name": "ENI TREMENTINES A87",
+    "brand": "Eni"
   },
   "49350001": {
     "name": "Super U GENNES",
@@ -19084,8 +19084,8 @@
     "brand": "Shell"
   },
   "51390002": {
-    "name": "AGIP GUEUX",
-    "brand": "Agip"
+    "name": "ENI GUEUX",
+    "brand": "Eni"
   },
   "51400003": {
     "name": "STATION CLEMENCEAU",
@@ -19932,8 +19932,8 @@
     "brand": "Intermarché"
   },
   "54700008": {
-    "name": "AGIP LOISY",
-    "brand": "Agip"
+    "name": "ENI LOISY",
+    "brand": "Eni"
   },
   "54700009": {
     "name": "SUPERMARCHE MATCH",
@@ -20652,8 +20652,8 @@
     "brand": "Intermarché"
   },
   "57000017": {
-    "name": "Agip Metz pontiffroy sarl M&D",
-    "brand": "Agip"
+    "name": "Eni Metz pontiffroy sarl M&D",
+    "brand": "Eni"
   },
   "57000021": {
     "name": "RELAIS ST PRIVAT",
@@ -20960,8 +20960,8 @@
     "brand": "Total"
   },
   "57450001": {
-    "name": "AGIP FAREBERSVILLER",
-    "brand": "Agip"
+    "name": "ENI FAREBERSVILLER",
+    "brand": "Eni"
   },
   "57450003": {
     "name": "Auchan FAREBERSVILLER",
@@ -21240,8 +21240,8 @@
     "brand": "Atac"
   },
   "58300003": {
-    "name": "AGIP ST LEGER DES VIGNES RN",
-    "brand": "Agip"
+    "name": "ENI ST LEGER DES VIGNES RN",
+    "brand": "Eni"
   },
   "58300004": {
     "name": "DECIZE DISTRIBUTION",
@@ -22576,8 +22576,8 @@
     "brand": "Carrefour Contact"
   },
   "60490005": {
-    "name": "Agip Ressons A1",
-    "brand": "Agip"
+    "name": "Eni Ressons A1",
+    "brand": "Eni"
   },
   "60490007": {
     "name": "Relais Ressons sur Matz",
@@ -22736,8 +22736,8 @@
     "brand": "Indépendant sans enseigne"
   },
   "61000011": {
-    "name": "AGIP NICE GORBELLA",
-    "brand": "Agip"
+    "name": "ENI NICE GORBELLA",
+    "brand": "Eni"
   },
   "61003001": {
     "name": "Carrefour ALENCON",
@@ -23840,8 +23840,8 @@
     "address": "175 boulevard Gustave Flaubert"
   },
   "63000019": {
-    "name": "Agip Marx Dormoy",
-    "brand": "Agip"
+    "name": "Eni Marx Dormoy",
+    "brand": "Eni"
   },
   "63000022": {
     "name": "Relais pont Saint-Jean",
@@ -23939,8 +23939,8 @@
     "address": "12 avenue du Roussillon"
   },
   "63170007": {
-    "name": "Agip Aubière",
-    "brand": "Agip"
+    "name": "Eni Aubière",
+    "brand": "Eni"
   },
   "63170008": {
     "name": "Relais de Gergovie",
@@ -24107,7 +24107,7 @@
   },
   "63410001": {
     "name": "AIRE DE MANZAT",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "63430002": {
     "name": "ERIC COTTIER",
@@ -24404,12 +24404,12 @@
     "brand": "Leclerc"
   },
   "64170010": {
-    "name": "AGIP LACQ SUD-AUTOROUTE A 64",
-    "brand": "Agip"
+    "name": "ENI LACQ SUD-AUTOROUTE A 64",
+    "brand": "Eni"
   },
   "64170011": {
-    "name": "AGIP LACQ NORD AUTOROUTE A 64",
-    "brand": "Agip"
+    "name": "ENI LACQ NORD AUTOROUTE A 64",
+    "brand": "Eni"
   },
   "64190002": {
     "name": "Intermarché SUSMIOU",
@@ -25140,12 +25140,12 @@
     "brand": "Avia"
   },
   "67000011": {
-    "name": "AGIP STRASBOURG ALSACE",
-    "brand": "Agip"
+    "name": "ENI STRASBOURG ALSACE",
+    "brand": "Eni"
   },
   "67000012": {
-    "name": "AGIP STRASBOURG BOECKLIN",
-    "brand": "Agip"
+    "name": "ENI STRASBOURG BOECKLIN",
+    "brand": "Eni"
   },
   "67000025": {
     "name": "RELAIS ESPLANADE",
@@ -25168,8 +25168,8 @@
     "brand": "Esso Express"
   },
   "67100003": {
-    "name": "AGIP STRASBOURG ALTENHEIM",
-    "brand": "Agip"
+    "name": "ENI STRASBOURG ALTENHEIM",
+    "brand": "Eni"
   },
   "67100007": {
     "name": "AVIA STRASBOURG NEUDORF",
@@ -25564,8 +25564,8 @@
     "brand": "Total"
   },
   "67570001": {
-    "name": "AGIP ROTHAU",
-    "brand": "Agip"
+    "name": "ENI ROTHAU",
+    "brand": "Eni"
   },
   "67580001": {
     "name": "GARAGE SUSS",
@@ -25688,8 +25688,8 @@
     "brand": "Total"
   },
   "67800013": {
-    "name": "AGIP BISCHEIMM",
-    "brand": "Agip"
+    "name": "ENI BISCHEIMM",
+    "brand": "Eni"
   },
   "67810001": {
     "name": "E. Leclerc Express",
@@ -25756,8 +25756,8 @@
     "brand": "Total Access"
   },
   "68000020": {
-    "name": "AGIP COLMAR ROUTE D'INGERSHEIM",
-    "brand": "Agip"
+    "name": "ENI COLMAR ROUTE D'INGERSHEIM",
+    "brand": "Eni"
   },
   "68019001": {
     "name": "Carrefour Colmar-Houssen",
@@ -25788,8 +25788,8 @@
     "brand": "Total"
   },
   "68110007": {
-    "name": "AGIP ILLZACH",
-    "brand": "Agip"
+    "name": "ENI ILLZACH",
+    "brand": "Eni"
   },
   "68120002": {
     "name": "SUPER U PFASTATT",
@@ -25880,8 +25880,8 @@
     "brand": "Carrefour"
   },
   "68200015": {
-    "name": "AGIP MULHOUSE AV DE COLMAR",
-    "brand": "Agip"
+    "name": "ENI MULHOUSE AV DE COLMAR",
+    "brand": "Eni"
   },
   "68200018": {
     "name": "RELAIS MUSEE DE L'AUTOMOBILE",
@@ -25896,8 +25896,8 @@
     "brand": "Total Access"
   },
   "68200021": {
-    "name": "AGIP MULHOUSE ROUTE BELFORT",
-    "brand": "Agip"
+    "name": "ENI MULHOUSE ROUTE BELFORT",
+    "brand": "Eni"
   },
   "68210001": {
     "name": "SERVICES AUTOS 68",
@@ -26072,8 +26072,8 @@
     "brand": "Total"
   },
   "68520009": {
-    "name": "AGIP PORTE D'ALSACE A36",
-    "brand": "Agip"
+    "name": "ENI PORTE D'ALSACE A36",
+    "brand": "Eni"
   },
   "68540001": {
     "name": "super u",
@@ -26172,12 +26172,12 @@
     "brand": "Esso Express"
   },
   "69004008": {
-    "name": "AGIP LYON QUAI GILLET",
-    "brand": "Agip"
+    "name": "ENI LYON QUAI GILLET",
+    "brand": "Eni"
   },
   "69004014": {
-    "name": "AGIP LYON BLD CANUTS",
-    "brand": "Agip"
+    "name": "ENI LYON BLD CANUTS",
+    "brand": "Eni"
   },
   "69004015": {
     "name": "BP LYON CROIX ROUSSE 8 à Huit",
@@ -26188,8 +26188,8 @@
     "brand": "Avia"
   },
   "69005002": {
-    "name": "AGIP LYON RUE J CURIE",
-    "brand": "Agip"
+    "name": "ENI LYON RUE J CURIE",
+    "brand": "Eni"
   },
   "69007002": {
     "name": "cluster troyen",
@@ -26260,8 +26260,8 @@
     "brand": "BP"
   },
   "69100032": {
-    "name": "AGIP VILLEURBANNE BLUM",
-    "brand": "Agip"
+    "name": "ENI VILLEURBANNE BLUM",
+    "brand": "Eni"
   },
   "69110001": {
     "name": "FLB AUTOMOBILES Total",
@@ -26280,8 +26280,8 @@
     "brand": "Indépendant sans enseigne"
   },
   "69120010": {
-    "name": "AGIP VAULX EN VELIN PERI",
-    "brand": "Agip"
+    "name": "ENI VAULX EN VELIN PERI",
+    "brand": "Eni"
   },
   "69126001": {
     "name": "ETS BROSSARD",
@@ -26350,7 +26350,7 @@
   },
   "69190009": {
     "name": "MS Station",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "69190010": {
     "name": "Bp Saint Fons 24/24",
@@ -26445,20 +26445,20 @@
     "brand": "Intermarché"
   },
   "69250008": {
-    "name": "AGIP FLEURIEU",
-    "brand": "Agip"
+    "name": "ENI FLEURIEU",
+    "brand": "Eni"
   },
   "69260007": {
     "name": "Carrefour Contact",
     "brand": "Carrefour Contact"
   },
   "69260008": {
-    "name": "AGIP CHARBONNIERES 51 ROUTE PARIS",
-    "brand": "Agip"
+    "name": "ENI CHARBONNIERES 51 ROUTE PARIS",
+    "brand": "Eni"
   },
   "69260010": {
-    "name": "AGIP CHARBONNIERES DIR LYON",
-    "brand": "Agip"
+    "name": "ENI CHARBONNIERES DIR LYON",
+    "brand": "Eni"
   },
   "69270002": {
     "name": "Intermarché ROCHETAILLEE SUR SAONE",
@@ -26597,16 +26597,16 @@
     "brand": "Total"
   },
   "69390003": {
-    "name": "AGIP VOURLES RN86",
-    "brand": "Agip"
+    "name": "ENI VOURLES RN86",
+    "brand": "Eni"
   },
   "69390005": {
     "name": "Vernaison",
     "brand": "Système U"
   },
   "69390007": {
-    "name": "AGIP VOURLES RN86",
-    "brand": "Agip"
+    "name": "ENI VOURLES RN86",
+    "brand": "Eni"
   },
   "69400001": {
     "name": "Garage de la collonge",
@@ -26629,8 +26629,8 @@
     "brand": "Esso Express"
   },
   "69400007": {
-    "name": "AGIP LIERGUES ROUTE DE TARARE",
-    "brand": "Agip"
+    "name": "ENI LIERGUES ROUTE DE TARARE",
+    "brand": "Eni"
   },
   "69400008": {
     "name": "LECLERC HYPERMARCHE",
@@ -26649,8 +26649,8 @@
     "brand": "Total Access"
   },
   "69410006": {
-    "name": "AGIP CHAMPAGNE AV DE GAULLE",
-    "brand": "Agip"
+    "name": "ENI CHAMPAGNE AV DE GAULLE",
+    "brand": "Eni"
   },
   "69410007": {
     "name": "RELAIS MONT D'OR",
@@ -26697,8 +26697,8 @@
     "brand": "Carrefour Market"
   },
   "69480006": {
-    "name": "AGIP ANSE ROUTE VILLEFRANCHE",
-    "brand": "Agip"
+    "name": "ENI ANSE ROUTE VILLEFRANCHE",
+    "brand": "Eni"
   },
   "69490001": {
     "name": "SAINT LOUP DISTRIBUTION",
@@ -27073,8 +27073,8 @@
     "brand": "Total"
   },
   "70300011": {
-    "name": "AGIP SAINT SAUVEUR",
-    "brand": "Agip"
+    "name": "ENI SAINT SAUVEUR",
+    "brand": "Eni"
   },
   "70400001": {
     "name": "SARL PENOT-LUCAS",
@@ -27177,8 +27177,8 @@
     "brand": "Leclerc"
   },
   "71100025": {
-    "name": "AGIP CHALON AVENUE MONOT",
-    "brand": "Agip"
+    "name": "ENI CHALON AVENUE MONOT",
+    "brand": "Eni"
   },
   "71100026": {
     "name": "RELAIS CHALON S.SAONE ARNAL",
@@ -27225,8 +27225,8 @@
     "brand": "Atac"
   },
   "71140002": {
-    "name": "AGIP BOURBON LANCY",
-    "brand": "Agip"
+    "name": "ENI BOURBON LANCY",
+    "brand": "Eni"
   },
   "71140003": {
     "name": "Intermarché BOURBON LANCY",
@@ -27238,7 +27238,7 @@
   },
   "71150003": {
     "name": "SARL CLOCHEAU",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "71160001": {
     "name": "Relais Lagarde Digoin",
@@ -27269,8 +27269,8 @@
     "brand": "Carrefour Market"
   },
   "71200012": {
-    "name": "AGIP LE CREUSOT ROUTE DE MONTCENIS",
-    "brand": "Agip"
+    "name": "ENI LE CREUSOT ROUTE DE MONTCENIS",
+    "brand": "Eni"
   },
   "71210006": {
     "name": "Intermarché MONTCHANIN",
@@ -27433,8 +27433,8 @@
     "brand": "Total Access"
   },
   "71410001": {
-    "name": "AGIP SANVIGNES rue MITTERRAND",
-    "brand": "Agip"
+    "name": "ENI SANVIGNES rue MITTERRAND",
+    "brand": "Eni"
   },
   "71420002": {
     "name": "SCHIEVER CARBURANT GENELARD",
@@ -27569,8 +27569,8 @@
     "brand": "Carrefour Market"
   },
   "71700005": {
-    "name": "AGIP TOURNUS RN6",
-    "brand": "Agip"
+    "name": "ENI TOURNUS RN6",
+    "brand": "Eni"
   },
   "71700006": {
     "name": "RELAIS PARIS SAVOIE",
@@ -27861,12 +27861,12 @@
     "brand": "Leclerc"
   },
   "72400014": {
-    "name": "AGIP A11 LA FERTE BERNARD",
-    "brand": "Agip"
+    "name": "ENI A11 LA FERTE BERNARD",
+    "brand": "Eni"
   },
   "72400016": {
-    "name": "AGIP A11 VILLAINES LA GONAIS",
-    "brand": "Agip"
+    "name": "ENI A11 VILLAINES LA GONAIS",
+    "brand": "Eni"
   },
   "72430002": {
     "name": "Carrefour Contact",
@@ -28053,8 +28053,8 @@
     "brand": "Elan"
   },
   "73140007": {
-    "name": "AGIP A43 SENS ALBERTILLIE TURIN AIRE ST MICHEL DE MAURIENNE",
-    "brand": "Agip"
+    "name": "ENI A43 SENS ALBERTILLIE TURIN AIRE ST MICHEL DE MAURIENNE",
+    "brand": "Eni"
   },
   "73150002": {
     "name": "Hypervalimmo",
@@ -28069,8 +28069,8 @@
     "brand": "Leclerc"
   },
   "73182002": {
-    "name": "AGIP MOUXY A41 SENS CHAMBERY ANNECY",
-    "brand": "Agip"
+    "name": "ENI MOUXY A41 SENS CHAMBERY ANNECY",
+    "brand": "Eni"
   },
   "73190001": {
     "name": "Carrefour Market",
@@ -28133,7 +28133,7 @@
     "brand": "Système U"
   },
   "73290004": {
-    "name": "AGIP LA MOTTE SERVOLEX",
+    "name": "ENI LA MOTTE SERVOLEX",
     "brand": "Eni France"
   },
   "73300001": {
@@ -28141,8 +28141,8 @@
     "brand": "Carrefour Market"
   },
   "73300002": {
-    "name": "AGIP ST JEAN DE MAURIENNE ZC LES PLANS",
-    "brand": "Agip"
+    "name": "ENI ST JEAN DE MAURIENNE ZC LES PLANS",
+    "brand": "Eni"
   },
   "73300005": {
     "name": "ELAN - Le Corbier",
@@ -28169,12 +28169,12 @@
     "brand": "Indépendant sans enseigne"
   },
   "73390007": {
-    "name": "AGIP AIRE ARCLUSAZ A43 SENS TUNNEL FREJUS-CHAMBERY",
-    "brand": "Agip"
+    "name": "ENI AIRE ARCLUSAZ A43 SENS TUNNEL FREJUS-CHAMBERY",
+    "brand": "Eni"
   },
   "73390008": {
-    "name": "AGIP VAL GELON A43 SENS CHAMBERY TURIN",
-    "brand": "Agip"
+    "name": "ENI VAL GELON A43 SENS CHAMBERY TURIN",
+    "brand": "Eni"
   },
   "73400001": {
     "name": "RELAIS LA SAVOYARDE",
@@ -28249,8 +28249,8 @@
     "brand": "Total Access"
   },
   "73600007": {
-    "name": "AGIP SALINS AV DES THERMES",
-    "brand": "Agip"
+    "name": "ENI SALINS AV DES THERMES",
+    "brand": "Eni"
   },
   "73610002": {
     "name": "BPC GARAGE",
@@ -28269,8 +28269,8 @@
     "brand": "Intermarché"
   },
   "73730006": {
-    "name": "AGIP CEVINS RN90",
-    "brand": "Agip"
+    "name": "ENI CEVINS RN90",
+    "brand": "Eni"
   },
   "73800001": {
     "name": "BP A41 AIRE DU GRANIER",
@@ -28301,16 +28301,16 @@
     "brand": "Intermarché"
   },
   "74000010": {
-    "name": "AGIP annecy avenue de chambery",
-    "brand": "Agip"
+    "name": "ENI annecy avenue de chambery",
+    "brand": "Eni"
   },
   "74000014": {
     "name": "RELAIS DES ALLUEGES",
     "brand": "Total Access"
   },
   "74000017": {
-    "name": "AGIP ANNECY ALLUEGES",
-    "brand": "Agip"
+    "name": "ENI ANNECY ALLUEGES",
+    "brand": "Eni"
   },
   "74100005": {
     "name": "Esso DES VALLEES",
@@ -28433,8 +28433,8 @@
     "brand": "Intermarché"
   },
   "74200015": {
-    "name": "AGIP THONON LES BAINS",
-    "brand": "Agip"
+    "name": "ENI THONON LES BAINS",
+    "brand": "Eni"
   },
   "74200016": {
     "name": "SAS LEMAN DAITOMI",
@@ -28601,8 +28601,8 @@
     "brand": "Intermarché"
   },
   "74500009": {
-    "name": "AGIP EVIAN AVENUE DE NOUAILLES",
-    "brand": "Agip"
+    "name": "ENI EVIAN AVENUE DE NOUAILLES",
+    "brand": "Eni"
   },
   "74500010": {
     "name": "Carrefour market EVIAN",
@@ -28654,7 +28654,7 @@
   },
   "74600008": {
     "name": "Sarl Ets ALLEGRET",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "74600010": {
     "name": "AVIA FONTANELLES",
@@ -28741,8 +28741,8 @@
     "brand": "Leclerc"
   },
   "74960012": {
-    "name": "AGIP CRAN GEVRIER ROUTE DES CREUSES",
-    "brand": "Agip"
+    "name": "ENI CRAN GEVRIER ROUTE DES CREUSES",
+    "brand": "Eni"
   },
   "74970001": {
     "name": "SUPER U - SARL LES CLUS",
@@ -28913,12 +28913,12 @@
     "brand": "Total"
   },
   "75016019": {
-    "name": "AGIP PARIS MALAKOFF",
-    "brand": "Agip"
+    "name": "ENI PARIS MALAKOFF",
+    "brand": "Eni"
   },
   "75016020": {
-    "name": "AGIP PARIS AV FOCH-ETOILE",
-    "brand": "Agip"
+    "name": "ENI PARIS AV FOCH-ETOILE",
+    "brand": "Eni"
   },
   "75017017": {
     "name": "RELAIS PARIS CLICHY",
@@ -29768,8 +29768,8 @@
     "brand": "Total Access"
   },
   "77160001": {
-    "name": "AGIP PROVINS AV DE GAULLE",
-    "brand": "Agip"
+    "name": "ENI PROVINS AV DE GAULLE",
+    "brand": "Eni"
   },
   "77160002": {
     "name": "PROVINS DISTRIBUTION",
@@ -29929,7 +29929,7 @@
   },
   "77260007": {
     "name": "ENI LEO RESTO USSY",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "77260008": {
     "name": "BP A4 AIRE DE CHANGIS",
@@ -31697,8 +31697,8 @@
     "brand": "Elan"
   },
   "81500001": {
-    "name": "AGIP LAVAUR LA TOUR DES TONDES",
-    "brand": "Agip"
+    "name": "ENI LAVAUR LA TOUR DES TONDES",
+    "brand": "Eni"
   },
   "81500003": {
     "name": "Intermarché LAVAUR",
@@ -32017,8 +32017,8 @@
     "brand": "Total Access"
   },
   "83100005": {
-    "name": "AGIP TOULON GASQUET",
-    "brand": "Agip"
+    "name": "ENI TOULON GASQUET",
+    "brand": "Eni"
   },
   "83100006": {
     "name": "RELAIS TOULON FOCH",
@@ -32133,8 +32133,8 @@
     "brand": "Intermarché"
   },
   "83170011": {
-    "name": "AGIP CAMBARETTE A8 Sens Italie Aix",
-    "brand": "Agip"
+    "name": "ENI CAMBARETTE A8 Sens Italie Aix",
+    "brand": "Eni"
   },
   "83170012": {
     "name": "RELAIS TERRASSES CENTRE VL",
@@ -32157,8 +32157,8 @@
     "brand": "Total Access"
   },
   "83200002": {
-    "name": "AGIP TOULON DAVID",
-    "brand": "Agip"
+    "name": "ENI TOULON DAVID",
+    "brand": "Eni"
   },
   "83200004": {
     "name": "SARL SIGESS",
@@ -32358,7 +32358,7 @@
   },
   "83440006": {
     "name": "STATION SERVICE LA PLAINE",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "83460002": {
     "name": "Hyper U",
@@ -32385,8 +32385,8 @@
     "brand": "Carrefour"
   },
   "83480003": {
-    "name": "AGIP PUGET SUR ARGENS",
-    "brand": "Agip"
+    "name": "ENI PUGET SUR ARGENS",
+    "brand": "Eni"
   },
   "83480005": {
     "name": "Station automatique CB 24/24",
@@ -33225,8 +33225,8 @@
     "brand": "R SERVICES"
   },
   "85260006": {
-    "name": "AGIP LES BROUZILS A83 SENS NANTES-NIORT",
-    "brand": "Agip"
+    "name": "ENI LES BROUZILS A83 SENS NANTES-NIORT",
+    "brand": "Eni"
   },
   "85270001": {
     "name": "Hyper U ST HILAIRE DE RIEZ",
@@ -33569,8 +33569,8 @@
     "brand": "Système U"
   },
   "86130008": {
-    "name": "AGIP A10 AIRE POITIERS CHINCE NORD",
-    "brand": "Agip"
+    "name": "ENI A10 AIRE POITIERS CHINCE NORD",
+    "brand": "Eni"
   },
   "86130009": {
     "name": "AVIA Jaunay Clan",
@@ -34065,8 +34065,8 @@
     "brand": "Total"
   },
   "88000011": {
-    "name": "AGIP EPINAL ROUTE REMIREMONT",
-    "brand": "Agip"
+    "name": "ENI EPINAL ROUTE REMIREMONT",
+    "brand": "Eni"
   },
   "88025001": {
     "name": "Carrefour EPINAL",
@@ -34090,7 +34090,7 @@
   },
   "88100008": {
     "name": "ENI SAINT DIE",
-    "brand": "Agip"
+    "brand": "Eni"
   },
   "88110002": {
     "name": "RAON DISTRIBUTION",
@@ -34149,8 +34149,8 @@
     "brand": "Système U"
   },
   "88170004": {
-    "name": "AGIP LORRAINE SANDAUCOURT A31 SENS NORD SUD",
-    "brand": "Agip"
+    "name": "ENI LORRAINE SANDAUCOURT A31 SENS NORD SUD",
+    "brand": "Eni"
   },
   "88170005": {
     "name": "SARL GILBERT PATRICK",
@@ -34185,8 +34185,8 @@
     "brand": "Total Access"
   },
   "88200016": {
-    "name": "AGIP AIRE DE PEUXY RN57",
-    "brand": "Agip"
+    "name": "ENI AIRE DE PEUXY RN57",
+    "brand": "Eni"
   },
   "88230001": {
     "name": "STE GGE FRAXINIEN BALLAND",
@@ -36146,8 +36146,8 @@
     "brand": "Leclerc"
   },
   "94290003": {
-    "name": "AGIP VILLENEUVE LE ROI",
-    "brand": "Agip"
+    "name": "ENI VILLENEUVE LE ROI",
+    "brand": "Eni"
   },
   "94300001": {
     "name": "SIAV SA",
