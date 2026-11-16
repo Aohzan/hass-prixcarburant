@@ -32306,7 +32306,7 @@
   },
   "83390002": {
     "name": "U Express Cuers",
-    "brand": "Système U,"
+    "brand": "Système U"
   },
   "83390003": {
     "name": "Intermarché CUERS",
@@ -36826,9 +36826,33 @@
     "name": "NICE GRAND SOLEIL",
     "brand": "Total"
   },
+  "8140003": {
+    "name": "Intermarché BAZEILLES",
+    "brand": "Intermarché"
+  },
   "13011026": {
     "name": "MARSEILLE LA VALENTINE",
     "brand": "Auchan"
+  },
+  "13013018": {
+    "name": "Intermarché DELPRAT",
+    "brand": "Intermarché"
+  },
+  "25500007": {
+    "name": "NETTO MORTEAU",
+    "brand": "Netto"
+  },
+  "29000016": {
+    "name": "Intermarché QUIMPER TY DOUAR",
+    "brand": "Intermarché"
+  },
+  "34170006": {
+    "name": "OMI",
+    "brand": "Indépendant sans enseigne"
+  },
+  "56200004": {
+    "name": "Intermarché LA GACILLY",
+    "brand": "Intermarché"
   },
   "83130007": {
     "name": "Carrefour Contact La Garde",
@@ -36853,5 +36877,17 @@
   "63119001": {
     "name": "Garage Renault Chateaugay Autos",
     "brand": "Total"
+  },
+  "73500007": {
+    "name": "Auchan Supermarché MODANE",
+    "brand": "Auchan"
+  },
+  "73600010": {
+    "name": "AVIA XPRESS MOUTIERS",
+    "brand": "Avia"
+  },
+  "86000025": {
+    "name": "Intermarché BEAULIEU",
+    "brand": "Intermarché"
   }
 }
