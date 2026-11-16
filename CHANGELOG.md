@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.28.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.28.0...3.28.1) (2026-11-16)
+
+### Bug Fixes
+
+* improve the brand logos for dark themes ([3c62602](https://github.com/Aohzan/hass-prixcarburant/commit/3c62602170615da772687a898875a7547e4d249b))
+* update the Eni, Migrol and Rompetrol logos ([c7dfb49](https://github.com/Aohzan/hass-prixcarburant/commit/c7dfb49ddf90aecef84f861aaafc2dd85e1bf8ee))
+
 ## [3.28.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.27.0...3.28.0) (2026-11-07)
 
 ### Features
