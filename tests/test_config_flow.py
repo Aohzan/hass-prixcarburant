@@ -12,6 +12,7 @@ from custom_components.prix_carburant.const import (
     CONF_DISPLAY_ENTITY_PICTURES,
     CONF_MANUAL_STATIONS,
     CONF_MAX_KM,
+    CONF_STATION_PREFIX,
     CONF_STATIONS,
     DEFAULT_NAME,
     DOMAIN,
@@ -121,13 +122,14 @@ async def test_options_general(
     result = await _options_step(hass, mock_config_entry, "general_options")
     assert result["type"] is FlowResultType.FORM
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], OPTIONS
+        result["flow_id"], OPTIONS | {CONF_STATION_PREFIX: False}
     )
     await hass.async_block_till_done()
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert mock_config_entry.options == OPTIONS | {
-        CONF_MANUAL_STATIONS: [MANUAL_STATION_ID]
+        CONF_STATION_PREFIX: False,
+        CONF_MANUAL_STATIONS: [MANUAL_STATION_ID],
     }
     # Reloaded with the new options
     assert mock_config_entry.runtime_data.config[CONF_SCAN_INTERVAL] == 6

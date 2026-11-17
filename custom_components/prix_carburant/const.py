@@ -13,6 +13,7 @@ CONF_STATIONS: Final = "stations"
 CONF_MANUAL_STATIONS: Final = "manual_stations"
 CONF_DISPLAY_ENTITY_PICTURES: Final = "display_entity_pictures"
 CONF_API_SSL_CHECK: Final = "api_ssl_check"
+CONF_STATION_PREFIX: Final = "station_prefix"
 
 DEFAULT_NAME: Final = "Prix Carburant"
 DEFAULT_MAX_KM: Final = 15
