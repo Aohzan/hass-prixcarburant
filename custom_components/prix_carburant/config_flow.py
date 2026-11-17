@@ -27,6 +27,7 @@ from .const import (
     CONF_FUELS,
     CONF_MANUAL_STATIONS,
     CONF_MAX_KM,
+    CONF_STATION_PREFIX,
     DEFAULT_MAX_KM,
     DEFAULT_NAME,
     DEFAULT_SCAN_INTERVAL,
@@ -175,6 +176,10 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
                     CONF_MAX_KM,
                     default=config.get(CONF_MAX_KM, DEFAULT_MAX_KM),
                 ): probatio.All(int, probatio.Range(min=0)),
+                probatio.Required(
+                    CONF_STATION_PREFIX,
+                    default=config.get(CONF_STATION_PREFIX, True),
+                ): bool,
             }
         )
 

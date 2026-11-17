@@ -36,6 +36,7 @@ from .const import (
     ATTR_UPDATED_DATE,
     CONF_DISPLAY_ENTITY_PICTURES,
     CONF_FUELS,
+    CONF_STATION_PREFIX,
     CONF_STATIONS,
     DOMAIN,
     FUELS,
@@ -100,7 +101,9 @@ async def async_setup_entry(
     )
 
 
-def _station_name(station_id: int, station_info: StationData) -> str:
+def _station_name(
+    station_id: int, station_info: StationData, prefix: bool = True
+) -> str:
     """Return the name of the station device."""
     if station_info[ATTR_NAME] != "undefined":
         station_name = station_info[ATTR_NAME]
@@ -112,7 +115,7 @@ def _station_name(station_id: int, station_info: StationData) -> str:
         station_name = str(station_id)
 
     # Add 'Station' prefix if needed
-    if not station_name.lower().startswith(("station", "relais")):
+    if prefix and not station_name.lower().startswith(("station", "relais")):
         station_name = f"Station {station_name}"
     return station_name
 
@@ -146,7 +149,11 @@ class PrixCarburantSensor(CoordinatorEntity[PrixCarburantCoordinator], RestoreSe
             identifiers={(DOMAIN, str(station_id))},
             manufacturer=station_info.get(ATTR_BRAND, "Station"),
             model=str(station_id),
-            name=_station_name(station_id, station_info),
+            name=_station_name(
+                station_id,
+                station_info,
+                coordinator.config.get(CONF_STATION_PREFIX, True) is True,
+            ),
             configuration_url=f"https://www.prix-carburants.gouv.fr/station/{station_id}",
         )
         self._attr_extra_state_attributes = {

@@ -12,6 +12,7 @@ from pytest_homeassistant.common import (
 )
 from syrupy.assertion import SnapshotAssertion
 
+from custom_components.prix_carburant.const import CONF_STATION_PREFIX
 from homeassistant.components.button import DOMAIN as BUTTON_DOMAIN, SERVICE_PRESS
 from homeassistant.const import ATTR_ENTITY_ID, STATE_UNKNOWN, Platform
 from homeassistant.core import HomeAssistant, State
@@ -122,3 +123,25 @@ async def test_refresh_button(
         BUTTON_DOMAIN, SERVICE_PRESS, {ATTR_ENTITY_ID: BUTTON_ENTITY_ID}, blocking=True
     )
     assert hass.states.get(GAZOLE_ENTITY_ID).state == "1.659"
+
+
+async def test_station_prefix_option(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+) -> None:
+    """Test the 'Station' prefix can be turned off in the options."""
+    mock_config_entry.add_to_hass(hass)
+    hass.config_entries.async_update_entry(
+        mock_config_entry, options={CONF_STATION_PREFIX: False}
+    )
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+
+    # Without the prefix, the name is the station name as it is
+    state = hass.states.get("sensor.carrefour_la_jolla_e85")
+    assert state is not None
+    assert state.attributes["friendly_name"] == "Carrefour La Jolla E85"
+    assert hass.states.get(E85_ENTITY_ID) is None
+    # Names starting with "Relais" never get the prefix
+    assert hass.states.get(GAZOLE_ENTITY_ID) is not None
