@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 from http import HTTPStatus
+from typing import Any
 
 from aiohttp import ClientError
 from freezegun.api import FrozenDateTimeFactory
@@ -40,6 +41,31 @@ from homeassistant.setup import async_setup_component
 from .conftest import ENTRY_DATA, MANUAL_STATION_ID, STATIONS, FakeApi
 
 GAZOLE_ENTITY_ID = "sensor.relais_de_la_gare_gazole"
+
+# Gazole stations returned by find_nearest_stations around the test location
+NEAREST_STATION_1 = {
+    "station_id": 99900001,
+    "name": "Relais de la Gare",
+    "brand": "Total Access",
+    "price": 1.659,
+    "updated_date": "2026-10-26T08:00:00+02:00",
+    "distance": 0.79,
+    "address": "1 RUE DE LA GARE, 92037 LA JOLLA",
+    "latitude": 32.874,
+    "longitude": -117.227,
+}
+NEAREST_STATION_2 = {
+    "station_id": 99900002,
+    # Station without name in the OSM data
+    "name": "undefined",
+    "brand": "Carrefour",
+    "price": 1.649,
+    "updated_date": "2026-10-27T07:00:00+02:00",
+    "distance": 1.45,
+    "address": "Avenue du Port, 92037 La Jolla",
+    "latitude": 32.88,
+    "longitude": -117.23,
+}
 
 
 async def _setup(hass: HomeAssistant, entry: MockConfigEntry) -> None:
@@ -574,25 +600,42 @@ async def test_find_nearest_stations(
         return_response=True,
     )
 
-    assert response == {
-        "stations": [
-            {
-                # Station without name in the OSM data
-                "name": "undefined",
-                "price": 1.649,
-                "address": "Avenue du Port, 92037 La Jolla",
-                "latitude": 32.88,
-                "longitude": -117.23,
-            },
-            {
-                "name": "Relais de la Gare",
-                "price": 1.659,
-                "address": "1 RUE DE LA GARE, 92037 LA JOLLA",
-                "latitude": 32.874,
-                "longitude": -117.227,
-            },
-        ]
-    }
+    assert response == {"stations": [NEAREST_STATION_2, NEAREST_STATION_1]}
+    assert mock_api.requests[-1]["limit"] == "10"
+
+
+@pytest.mark.parametrize(
+    ("service_data", "limit", "expected"),
+    [
+        ({"limit": 1}, "1", [NEAREST_STATION_2]),
+        ({"sort": "distance"}, "10", [NEAREST_STATION_1, NEAREST_STATION_2]),
+        ({"sort": "distance", "limit": 1}, "1", [NEAREST_STATION_1]),
+    ],
+)
+async def test_find_nearest_stations_limit_and_sort(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+    service_data: dict[str, Any],
+    limit: str,
+    expected: list[dict[str, Any]],
+) -> None:
+    """Test the number and the order of the stations returned."""
+    await _setup(hass, mock_config_entry)
+    hass.states.async_set(
+        "person.me", "home", {"latitude": 32.87, "longitude": -117.22}
+    )
+
+    response = await hass.services.async_call(
+        DOMAIN,
+        "find_nearest_stations",
+        {ATTR_ENTITY_ID: "person.me", "fuel": "Gazole", "distance": 10} | service_data,
+        blocking=True,
+        return_response=True,
+    )
+
+    assert response == {"stations": expected}
+    assert mock_api.requests[-1]["limit"] == limit
 
 
 async def test_find_nearest_stations_errors(
@@ -633,11 +676,12 @@ async def test_find_nearest_stations_errors(
         await call("person.me")
     assert err.value.translation_key == "cannot_connect"
 
-    with pytest.raises(vol.Invalid):
-        await hass.services.async_call(
-            DOMAIN,
-            "find_nearest_stations",
-            service_data | {ATTR_ENTITY_ID: "person.me", "fuel": "Kerosene"},
-            blocking=True,
-            return_response=True,
-        )
+    for invalid_data in ({"fuel": "Kerosene"}, {"limit": 101}, {"sort": "name"}):
+        with pytest.raises(vol.Invalid):
+            await hass.services.async_call(
+                DOMAIN,
+                "find_nearest_stations",
+                service_data | {ATTR_ENTITY_ID: "person.me"} | invalid_data,
+                blocking=True,
+                return_response=True,
+            )

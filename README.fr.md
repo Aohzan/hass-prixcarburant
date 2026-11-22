@@ -368,6 +368,13 @@ template:
             stations: "{{ stations_feed.stations }}"
 ```
 
+L'action renvoie par défaut les 10 stations les moins chères. Champs facultatifs :
+
+- `limit` : nombre maximum de stations renvoyées, de 1 à 100 (10 par défaut)
+- `sort` : `price` (par défaut) pour trier par prix, `distance` pour trier par distance
+
+Chaque station contient `station_id`, `name`, `brand`, `price`, `updated_date` (date de mise à jour du prix), `distance` (en km), `address`, `latitude` et `longitude`.
+
 Ça donne
 ![image](https://github.com/user-attachments/assets/fc174513-9a06-4d19-a752-f4e91b16b81e)
 

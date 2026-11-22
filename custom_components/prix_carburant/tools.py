@@ -29,6 +29,8 @@ from .const import (
     ATTR_SHORTAGE_SINCE,
     ATTR_UPDATED_DATE,
     FUELS,
+    SORT_DISTANCE,
+    SORT_PRICE,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -73,8 +75,9 @@ class StationData(TypedDict):
     name: str
     brand: str | None
     fuels: dict[str, FuelPrice]
-    # Price of the fuel searched by find_nearest_station
+    # Price of the fuel searched by find_nearest_station and its update date
     price: NotRequired[float | None]
+    updated_date: NotRequired[str | None]
 
 
 def _parse_stations_csv(content: str) -> dict[str, dict]:
@@ -481,23 +484,40 @@ class PrixCarburantTool:
             )
 
     async def find_nearest_station(
-        self, longitude: float, latitude: float, fuel: str, distance: int = 10
+        self,
+        longitude: float,
+        latitude: float,
+        fuel: str,
+        distance: int = 10,
+        limit: int = 10,
+        sort: str = SORT_PRICE,
     ) -> dict[int, StationData]:
-        """Return stations near the location where the fuel price is the lowest."""
+        """Return the stations selling the fuel near the location.
+
+        The stations are ordered by price, or by distance with SORT_DISTANCE.
+        """
         data: dict[int, StationData] = {}
         _LOGGER.debug(
-            "Call %s API to retrieve nearest stations ordered by price",
+            "Call %s API to retrieve nearest stations ordered by %s",
             PRIX_CARBURANT_API_URL,
+            sort,
         )
+        fuel_key = fuel.lower()
+        point = f"geom'POINT({longitude} {latitude})'"
         response = await self.request_api(
             {
                 "select": "id,latitude,longitude,cp,adresse,ville,"  # codespell:ignore-words-list=adresse
-                f"{fuel.lower()}_prix,{fuel.lower()}_maj",
+                f"{fuel_key}_prix,{fuel_key}_maj",
                 "where": (
-                    f"distance(geom, geom'POINT({longitude} {latitude})', {distance}km)"
+                    f"distance(geom, {point}, {distance}km)"
+                    f" AND {fuel_key}_prix IS NOT NULL"
                 ),
-                "order_by": f"{fuel.lower()}_prix",
-                "limit": 10,
+                "order_by": (
+                    f"distance(geom, {point})"
+                    if sort == SORT_DISTANCE
+                    else f"{fuel_key}_prix"
+                ),
+                "limit": limit,
             }
         )
         stations_count = response["total_count"]
@@ -509,7 +529,7 @@ class PrixCarburantTool:
                     station,
                     user_longitude=longitude,
                     user_latitude=latitude,
-                    fuel_key=f"{fuel.lower()}_prix",
+                    fuel_key=fuel_key,
                 )
             )
         return data
@@ -547,9 +567,10 @@ class PrixCarburantTool:
                     }
                 }
             )
-            # add fuel price if fuel key specified
+            # add the price of the fuel and its update date if fuel key specified
             if fuel_key:
-                data[station["id"]][ATTR_PRICE] = station[fuel_key]
+                data[station["id"]][ATTR_PRICE] = station[f"{fuel_key}_prix"]
+                data[station["id"]][ATTR_UPDATED_DATE] = station.get(f"{fuel_key}_maj")
             # update station data with local data if existing in it
             if local_station_data := self._local_stations_data.get(str(station["id"])):
                 for attr_key in (

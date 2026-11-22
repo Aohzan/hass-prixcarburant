@@ -25,3 +25,19 @@ find_nearest_stations:
         number:
           min: 1
           max: 30
+    limit:
+      required: false
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 100
+    sort:
+      required: false
+      default: price
+      selector:
+        select:
+          translation_key: sort
+          options:
+            - "price"
+            - "distance"
