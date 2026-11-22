@@ -41,8 +41,8 @@ include = ["custom_components", "scripts"]
 [tool.ty.rules]
 # Home Assistant entities override the cached properties of their base classes
 # with properties, and narrow the type of entity_description
-invalid-mutable-override = "ignore"
-invalid-property-type-override = "ignore"
+incompatible-mutable-override = "ignore"
+incompatible-property-override = "ignore"
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
