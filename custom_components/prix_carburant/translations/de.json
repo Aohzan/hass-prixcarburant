@@ -47,10 +47,12 @@
           "api_ssl_check": "SSL-Zertifikat des API-Servers prüfen",
           "display_entity_pictures": "Markenlogo als Entitätsbild nutzen",
           "max_km": "Maximale Entfernung um den Standort",
-          "station_prefix": "„Station“ vor den Stationsnamen setzen"
+          "station_prefix": "„Station“ vor den Stationsnamen setzen",
+          "show_on_map": "Tankstellen auf der Karte anzeigen"
         },
         "data_description": {
-          "station_prefix": "Namen, die schon mit „Station“ oder „Relais“ beginnen, bleiben unverändert. Eine Änderung benennt Geräte und Entitäten in der Oberfläche um; die Entitäts-IDs bleiben gleich."
+          "station_prefix": "Namen, die schon mit „Station“ oder „Relais“ beginnen, bleiben unverändert. Eine Änderung benennt Geräte und Entitäten in der Oberfläche um; die Entitäts-IDs bleiben gleich.",
+          "show_on_map": "Fügt den Sensoren Breiten- und Längengrad hinzu, damit das Karten-Dashboard sie anzeigt."
         }
       },
       "fuels_select": {

@@ -11,7 +11,12 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import SOURCE_IMPORT
-from homeassistant.const import ATTR_LATITUDE, ATTR_LONGITUDE, ATTR_NAME
+from homeassistant.const import (
+    ATTR_LATITUDE,
+    ATTR_LONGITUDE,
+    ATTR_NAME,
+    CONF_SHOW_ON_MAP,
+)
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import config_validation as cv, issue_registry as ir
 from homeassistant.helpers.device_registry import DeviceInfo
@@ -164,8 +169,6 @@ class PrixCarburantSensor(CoordinatorEntity[PrixCarburantCoordinator], RestoreSe
             ATTR_ADDRESS: normalize_string(station_info[ATTR_ADDRESS]),
             ATTR_POSTAL_CODE: station_info[ATTR_POSTAL_CODE],
             ATTR_CITY: normalize_string(station_info[ATTR_CITY]),
-            ATTR_LATITUDE: station_info[ATTR_LATITUDE],
-            ATTR_LONGITUDE: station_info[ATTR_LONGITUDE],
             ATTR_DISTANCE: station_info[ATTR_DISTANCE],
             ATTR_UPDATED_DATE: None,
             ATTR_DAYS_SINCE_LAST_UPDATE: None,
@@ -174,6 +177,12 @@ class PrixCarburantSensor(CoordinatorEntity[PrixCarburantCoordinator], RestoreSe
                 ATTR_SHORTAGE_SINCE
             ),
         }
+        # Home Assistant maps show the entities with coordinates
+        if coordinator.config.get(CONF_SHOW_ON_MAP, True) is True:
+            self._attr_extra_state_attributes |= {
+                ATTR_LATITUDE: station_info[ATTR_LATITUDE],
+                ATTR_LONGITUDE: station_info[ATTR_LONGITUDE],
+            }
         self._update_from_data()
 
     async def async_added_to_hass(self) -> None:

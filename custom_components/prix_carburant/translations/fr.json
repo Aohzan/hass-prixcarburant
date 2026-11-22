@@ -37,10 +37,12 @@
           "api_ssl_check": "Vérifier le certificat SSL du serveur d'API",
           "display_entity_pictures": "Ajoute le logo de la marque en image d'entité",
           "max_km": "Distance maximum",
-          "station_prefix": "Ajouter « Station » devant le nom de la station"
+          "station_prefix": "Ajouter « Station » devant le nom de la station",
+          "show_on_map": "Afficher les stations sur la carte"
         },
         "data_description": {
-          "station_prefix": "Les noms qui commencent déjà par « Station » ou « Relais » restent inchangés. Ce réglage renomme les appareils et entités dans l'interface ; les identifiants d'entité ne changent pas."
+          "station_prefix": "Les noms qui commencent déjà par « Station » ou « Relais » restent inchangés. Ce réglage renomme les appareils et entités dans l'interface ; les identifiants d'entité ne changent pas.",
+          "show_on_map": "Ajoute la latitude et la longitude aux capteurs, pour que le tableau de bord Carte les affiche."
         }
       },
       "fuels_select": {

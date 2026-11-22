@@ -12,7 +12,7 @@ from homeassistant.config_entries import (
     ConfigFlowResult,
     OptionsFlowWithReload,
 )
-from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL
+from homeassistant.const import ATTR_NAME, CONF_SCAN_INTERVAL, CONF_SHOW_ON_MAP
 from homeassistant.core import callback
 from homeassistant.helpers import (
     config_validation as cv,
@@ -179,6 +179,10 @@ class PrixCarburantOptionsFlowHandler(OptionsFlowWithReload):
                 probatio.Required(
                     CONF_STATION_PREFIX,
                     default=config.get(CONF_STATION_PREFIX, True),
+                ): bool,
+                probatio.Required(
+                    CONF_SHOW_ON_MAP,
+                    default=config.get(CONF_SHOW_ON_MAP, True),
                 ): bool,
             }
         )
