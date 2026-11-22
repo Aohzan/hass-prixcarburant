@@ -10,7 +10,6 @@ from homeassistant.core import (
     ServiceCall,
     ServiceResponse,
     SupportsResponse,
-    callback,
 )
 from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers import (
@@ -141,14 +140,24 @@ async def async_migrate_entry(
     if entry.minor_version < 2:
         # Entries of the versions before 2026.10
 
-        # The unique ID of the refresh button wasn't scoped to the entry
-        @callback
-        def migrate_unique_id(entity_entry: er.RegistryEntry) -> dict | None:
-            if entity_entry.unique_id == f"{DOMAIN}_refresh_button":
-                return {"new_unique_id": f"{entry.entry_id}_refresh"}
-            return None
-
-        await er.async_migrate_entries(hass, entry.entry_id, migrate_unique_id)
+        # The unique ID of the refresh button wasn't scoped to the entry. A
+        # failed migration may have kept the migrated button, then a downgrade
+        # registered a new button with the old unique ID: it is a duplicate.
+        entity_registry = er.async_get(hass)
+        refresh_unique_id = f"{entry.entry_id}_refresh"
+        for entity_entry in er.async_entries_for_config_entry(
+            entity_registry, entry.entry_id
+        ):
+            if entity_entry.unique_id != f"{DOMAIN}_refresh_button":
+                continue
+            if entity_registry.async_get_entity_id(
+                entity_entry.domain, DOMAIN, refresh_unique_id
+            ):
+                entity_registry.async_remove(entity_entry.entity_id)
+            else:
+                entity_registry.async_update_entity(
+                    entity_entry.entity_id, new_unique_id=refresh_unique_id
+                )
 
         # The station devices were registered with an integer identifier, the
         # device registry expects strings
@@ -160,10 +169,22 @@ async def async_migrate_entry(
                 (domain, str(identifier)) if domain == DOMAIN else (domain, identifier)
                 for domain, identifier in device.identifiers
             }
-            if identifiers != device.identifiers:
-                device_registry.async_update_device(
-                    device.id, new_identifiers=identifiers
-                )
+            if identifiers == device.identifiers:
+                continue
+            # A device of an older version may already have the string
+            # identifier: its entities move to this device before its removal
+            for duplicate in device_registry.async_get_devices(
+                identifiers=identifiers - device.identifiers,
+                config_entry_id=entry.entry_id,
+            ):
+                for entity_entry in er.async_entries_for_device(
+                    entity_registry, duplicate.id, include_disabled_entities=True
+                ):
+                    entity_registry.async_update_entity(
+                        entity_entry.entity_id, device_id=device.id
+                    )
+                device_registry.async_remove_device(duplicate.id)
+            device_registry.async_update_device(device.id, new_identifiers=identifiers)
 
         # The stations of an entry imported from YAML become manual stations
         data, options = entry.data, entry.options
