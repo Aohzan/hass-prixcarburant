@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.29.0](https://github.com/Aohzan/hass-prixcarburant/compare/3.28.1...3.29.0) (2026-11-22)
+
+### Features
+
+* add an option to hide the stations from the map ([#313](https://github.com/Aohzan/hass-prixcarburant/issues/313)) ([432ca35](https://github.com/Aohzan/hass-prixcarburant/commit/432ca3537dcb2bc2ad7b6d096b20aec3cd88b06e))
+* add an option to turn off the "Station" prefix ([#308](https://github.com/Aohzan/hass-prixcarburant/issues/308)) ([7eb2be9](https://github.com/Aohzan/hass-prixcarburant/commit/7eb2be9e372748e88fabb2927b5b9072f4ca4ed2))
+* add limit and sort options to find_nearest_stations ([#312](https://github.com/Aohzan/hass-prixcarburant/issues/312)) ([f4bea89](https://github.com/Aohzan/hass-prixcarburant/commit/f4bea89bc36b0586f8cbd9d63721543525c18d9e))
+
+### Bug Fixes
+
+* retry the migration of the entries after a failed upgrade ([#311](https://github.com/Aohzan/hass-prixcarburant/issues/311)) ([f700bc5](https://github.com/Aohzan/hass-prixcarburant/commit/f700bc570cf158a033ca5b2ecf5e37d7c0124d37)), closes [#297](https://github.com/Aohzan/hass-prixcarburant/issues/297)
+
 ## [3.28.1](https://github.com/Aohzan/hass-prixcarburant/compare/3.28.0...3.28.1) (2026-11-16)
 
 ### Bug Fixes
