@@ -19,7 +19,7 @@ from custom_components.prix_carburant.const import (
 )
 from custom_components.prix_carburant.tools import PrixCarburantTool
 from homeassistant.config_entries import SOURCE_IMPORT, SOURCE_USER
-from homeassistant.const import CONF_SCAN_INTERVAL
+from homeassistant.const import CONF_SCAN_INTERVAL, CONF_SHOW_ON_MAP
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType, InvalidData
 from homeassistant.helpers import device_registry as dr, entity_registry as er
@@ -122,13 +122,15 @@ async def test_options_general(
     result = await _options_step(hass, mock_config_entry, "general_options")
     assert result["type"] is FlowResultType.FORM
     result = await hass.config_entries.options.async_configure(
-        result["flow_id"], OPTIONS | {CONF_STATION_PREFIX: False}
+        result["flow_id"],
+        OPTIONS | {CONF_STATION_PREFIX: False, CONF_SHOW_ON_MAP: False},
     )
     await hass.async_block_till_done()
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
     assert mock_config_entry.options == OPTIONS | {
         CONF_STATION_PREFIX: False,
+        CONF_SHOW_ON_MAP: False,
         CONF_MANUAL_STATIONS: [MANUAL_STATION_ID],
     }
     # Reloaded with the new options

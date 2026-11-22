@@ -18,7 +18,14 @@ from custom_components.prix_carburant.const import (
     DOMAIN,
 )
 from homeassistant.components.button import DOMAIN as BUTTON_DOMAIN, SERVICE_PRESS
-from homeassistant.const import ATTR_ENTITY_ID, STATE_UNKNOWN, Platform
+from homeassistant.const import (
+    ATTR_ENTITY_ID,
+    ATTR_LATITUDE,
+    ATTR_LONGITUDE,
+    CONF_SHOW_ON_MAP,
+    STATE_UNKNOWN,
+    Platform,
+)
 from homeassistant.core import HomeAssistant, State
 from homeassistant.helpers import device_registry as dr, entity_registry as er
 
@@ -162,3 +169,35 @@ async def test_station_prefix_option(
     # A bare id keeps the prefix
     state = hass.states.get("sensor.station_99900003_gplc")
     assert state.attributes["friendly_name"] == "Station 99900003 GPLc"
+
+
+async def test_show_on_map_option(
+    hass: HomeAssistant,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+) -> None:
+    """Test the coordinates are renamed when the stations are not shown on the map."""
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+    state = hass.states.get(E85_ENTITY_ID)
+    latitude = state.attributes[ATTR_LATITUDE]
+    longitude = state.attributes[ATTR_LONGITUDE]
+
+    result = await hass.config_entries.options.async_init(mock_config_entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {"next_step_id": "general_options"}
+    )
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {CONF_MAX_KM: 15, CONF_SHOW_ON_MAP: False}
+    )
+    await hass.async_block_till_done()
+
+    state = hass.states.get(E85_ENTITY_ID)
+    assert ATTR_LATITUDE not in state.attributes
+    assert ATTR_LONGITUDE not in state.attributes
+    # The coordinates are kept under other names
+    assert state.attributes["station_latitude"] == latitude
+    assert state.attributes["station_longitude"] == longitude
+    # The other attributes are kept
+    assert state.attributes["city"] == "La Jolla"
