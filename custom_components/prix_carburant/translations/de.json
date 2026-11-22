@@ -46,7 +46,11 @@
           "scan_interval": "Zeit zwischen zwei Datenabfragen in Stunden",
           "api_ssl_check": "SSL-Zertifikat des API-Servers prüfen",
           "display_entity_pictures": "Markenlogo als Entitätsbild nutzen",
-          "max_km": "Maximale Entfernung um den Standort"
+          "max_km": "Maximale Entfernung um den Standort",
+          "station_prefix": "„Station“ vor den Stationsnamen setzen"
+        },
+        "data_description": {
+          "station_prefix": "Namen, die schon mit „Station“ oder „Relais“ beginnen, bleiben unverändert. Eine Änderung benennt Geräte und Entitäten in der Oberfläche um; die Entitäts-IDs bleiben gleich."
         }
       },
       "fuels_select": {

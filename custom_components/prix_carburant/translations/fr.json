@@ -36,7 +36,11 @@
           "scan_interval": "Temps en heures entre deux mise à jour de données",
           "api_ssl_check": "Vérifier le certificat SSL du serveur d'API",
           "display_entity_pictures": "Ajoute le logo de la marque en image d'entité",
-          "max_km": "Distance maximum"
+          "max_km": "Distance maximum",
+          "station_prefix": "Ajouter « Station » devant le nom de la station"
+        },
+        "data_description": {
+          "station_prefix": "Les noms qui commencent déjà par « Station » ou « Relais » restent inchangés. Ce réglage renomme les appareils et entités dans l'interface ; les identifiants d'entité ne changent pas."
         }
       },
       "fuels_select": {

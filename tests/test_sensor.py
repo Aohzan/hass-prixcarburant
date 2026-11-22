@@ -12,10 +12,15 @@ from pytest_homeassistant.common import (
 )
 from syrupy.assertion import SnapshotAssertion
 
+from custom_components.prix_carburant.const import (
+    CONF_MAX_KM,
+    CONF_STATION_PREFIX,
+    DOMAIN,
+)
 from homeassistant.components.button import DOMAIN as BUTTON_DOMAIN, SERVICE_PRESS
 from homeassistant.const import ATTR_ENTITY_ID, STATE_UNKNOWN, Platform
 from homeassistant.core import HomeAssistant, State
-from homeassistant.helpers import entity_registry as er
+from homeassistant.helpers import device_registry as dr, entity_registry as er
 
 from .conftest import FakeApi
 
@@ -122,3 +127,38 @@ async def test_refresh_button(
         BUTTON_DOMAIN, SERVICE_PRESS, {ATTR_ENTITY_ID: BUTTON_ENTITY_ID}, blocking=True
     )
     assert hass.states.get(GAZOLE_ENTITY_ID).state == "1.659"
+
+
+async def test_station_prefix_option(
+    hass: HomeAssistant,
+    device_registry: dr.DeviceRegistry,
+    mock_config_entry: MockConfigEntry,
+    mock_api: FakeApi,
+) -> None:
+    """Test turning off the 'Station' prefix renames the existing devices."""
+    mock_config_entry.add_to_hass(hass)
+    await hass.config_entries.async_setup(mock_config_entry.entry_id)
+    await hass.async_block_till_done()
+    (device,) = device_registry.async_get_devices(identifiers={(DOMAIN, "99900002")})
+    assert device.name == "Station Carrefour La Jolla"
+
+    result = await hass.config_entries.options.async_init(mock_config_entry.entry_id)
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {"next_step_id": "general_options"}
+    )
+    result = await hass.config_entries.options.async_configure(
+        result["flow_id"], {CONF_MAX_KM: 15, CONF_STATION_PREFIX: False}
+    )
+    await hass.async_block_till_done()
+
+    (device,) = device_registry.async_get_devices(identifiers={(DOMAIN, "99900002")})
+    assert device.name == "Carrefour La Jolla"
+    # The entity IDs are kept
+    state = hass.states.get(E85_ENTITY_ID)
+    assert state.attributes["friendly_name"] == "Carrefour La Jolla E85"
+    # Names starting with "Relais" never get the prefix
+    state = hass.states.get(GAZOLE_ENTITY_ID)
+    assert state.attributes["friendly_name"] == "Relais de la Gare Gazole"
+    # A bare id keeps the prefix
+    state = hass.states.get("sensor.station_99900003_gplc")
+    assert state.attributes["friendly_name"] == "Station 99900003 GPLc"
