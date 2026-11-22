@@ -42,7 +42,7 @@
         },
         "data_description": {
           "station_prefix": "Les noms qui commencent déjà par « Station » ou « Relais » restent inchangés. Ce réglage renomme les appareils et entités dans l'interface ; les identifiants d'entité ne changent pas.",
-          "show_on_map": "Ajoute la latitude et la longitude aux capteurs, pour que le tableau de bord Carte les affiche."
+          "show_on_map": "Si désactivé, les coordonnées restent dans les attributs station_latitude et station_longitude, que le tableau de bord Carte ignore."
         }
       },
       "fuels_select": {

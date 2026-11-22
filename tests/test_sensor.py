@@ -176,13 +176,13 @@ async def test_show_on_map_option(
     mock_config_entry: MockConfigEntry,
     mock_api: FakeApi,
 ) -> None:
-    """Test the coordinates are removed when the stations are not shown on the map."""
+    """Test the coordinates are renamed when the stations are not shown on the map."""
     mock_config_entry.add_to_hass(hass)
     await hass.config_entries.async_setup(mock_config_entry.entry_id)
     await hass.async_block_till_done()
     state = hass.states.get(E85_ENTITY_ID)
-    assert ATTR_LATITUDE in state.attributes
-    assert ATTR_LONGITUDE in state.attributes
+    latitude = state.attributes[ATTR_LATITUDE]
+    longitude = state.attributes[ATTR_LONGITUDE]
 
     result = await hass.config_entries.options.async_init(mock_config_entry.entry_id)
     result = await hass.config_entries.options.async_configure(
@@ -196,5 +196,8 @@ async def test_show_on_map_option(
     state = hass.states.get(E85_ENTITY_ID)
     assert ATTR_LATITUDE not in state.attributes
     assert ATTR_LONGITUDE not in state.attributes
+    # The coordinates are kept under other names
+    assert state.attributes["station_latitude"] == latitude
+    assert state.attributes["station_longitude"] == longitude
     # The other attributes are kept
     assert state.attributes["city"] == "La Jolla"

@@ -177,12 +177,14 @@ class PrixCarburantSensor(CoordinatorEntity[PrixCarburantCoordinator], RestoreSe
                 ATTR_SHORTAGE_SINCE
             ),
         }
-        # Home Assistant maps show the entities with coordinates
-        if coordinator.config.get(CONF_SHOW_ON_MAP, True) is True:
-            self._attr_extra_state_attributes |= {
-                ATTR_LATITUDE: station_info[ATTR_LATITUDE],
-                ATTR_LONGITUDE: station_info[ATTR_LONGITUDE],
-            }
+        # Home Assistant maps show the entities with these coordinate attributes
+        prefix = (
+            "" if coordinator.config.get(CONF_SHOW_ON_MAP, True) is True else "station_"
+        )
+        self._attr_extra_state_attributes |= {
+            f"{prefix}{ATTR_LATITUDE}": station_info[ATTR_LATITUDE],
+            f"{prefix}{ATTR_LONGITUDE}": station_info[ATTR_LONGITUDE],
+        }
         self._update_from_data()
 
     async def async_added_to_hass(self) -> None:

@@ -42,7 +42,7 @@
         },
         "data_description": {
           "station_prefix": "Station names that start with \"Station\" or \"Relais\" are left as they are. Changing this renames the devices and entities shown in the UI; entity IDs stay the same.",
-          "show_on_map": "Adds the latitude and longitude to the sensors, so the Map dashboard shows them."
+          "show_on_map": "When turned off, the coordinates are kept in the station_latitude and station_longitude attributes, which the Map dashboard ignores."
         }
       },
       "fuels_select": {

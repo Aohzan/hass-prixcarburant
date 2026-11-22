@@ -52,7 +52,7 @@
         },
         "data_description": {
           "station_prefix": "Namen, die schon mit „Station“ oder „Relais“ beginnen, bleiben unverändert. Eine Änderung benennt Geräte und Entitäten in der Oberfläche um; die Entitäts-IDs bleiben gleich.",
-          "show_on_map": "Fügt den Sensoren Breiten- und Längengrad hinzu, damit das Karten-Dashboard sie anzeigt."
+          "show_on_map": "Wenn deaktiviert, bleiben die Koordinaten in den Attributen station_latitude und station_longitude, die das Karten-Dashboard ignoriert."
         }
       },
       "fuels_select": {
