@@ -112,7 +112,8 @@ def _station_name(
     elif station_info[ATTR_BRAND]:
         station_name = f"{station_info[ATTR_BRAND]} {station_id}"
     else:
-        station_name = str(station_id)
+        # Always prefixed: a bare id doesn't tell what it is
+        return f"Station {station_id}"
 
     # Add 'Station' prefix if needed
     if prefix and not station_name.lower().startswith(("station", "relais")):
