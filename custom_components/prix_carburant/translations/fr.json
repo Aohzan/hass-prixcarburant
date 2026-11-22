@@ -93,6 +93,14 @@
         "distance": {
           "name": "Distance maximum",
           "description": "Distance maximum entre les stations et l'entité"
+        },
+        "limit": {
+          "name": "Nombre maximum de stations",
+          "description": "Nombre maximum de stations renvoyées"
+        },
+        "sort": {
+          "name": "Tri",
+          "description": "Ordre des stations renvoyées"
         }
       }
     }
@@ -133,6 +141,14 @@
     "deprecated_yaml": {
       "title": "La configuration YAML de Prix Carburant est obsolète",
       "description": "La configuration de Prix Carburant avec la plateforme de capteurs `prix_carburant` dans configuration.yaml est obsolète et sera supprimée dans une prochaine version. Vos stations ont été déplacées dans les options de l'intégration, comme stations ajoutées manuellement, et la découverte automatique a été désactivée (distance maximum à 0) : vos entités et leurs réglages sont conservés.\n\nLes modifications faites dans configuration.yaml ne sont plus prises en compte. Supprimez la plateforme `prix_carburant` de configuration.yaml et redémarrez Home Assistant, puis gérez vos stations depuis les options de l'intégration."
+    }
+  },
+  "selector": {
+    "sort": {
+      "options": {
+        "price": "Prix",
+        "distance": "Distance"
+      }
     }
   }
 }

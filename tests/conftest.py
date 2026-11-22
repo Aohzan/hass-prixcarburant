@@ -1,7 +1,7 @@
 """Fixtures of the Prix Carburant tests."""
 
 import bz2
-from collections.abc import Generator
+from collections.abc import Callable, Generator
 from copy import deepcopy
 from http import HTTPStatus
 import re
@@ -89,6 +89,18 @@ OSM_CSV = (
 CUSTOM_STATIONS = {"99900001": {"name": "Relais de la Gare", "brand": "Total Access"}}
 
 
+def _sort_key(order_by: str) -> Callable[[dict[str, Any]], float]:
+    """Return the sort key of the records for the order_by parameter."""
+    if match := re.fullmatch(r"distance\(geom, geom'POINT\((\S+) (\S+)\)'\)", order_by):
+        longitude, latitude = float(match[1]), float(match[2])
+        # Enough to order close stations, the API sorts by the real distance
+        return lambda record: (
+            (float(record["longitude"]) / 100000 - longitude) ** 2
+            + (float(record["latitude"]) / 100000 - latitude) ** 2
+        )
+    return lambda record: record[order_by]
+
+
 class FakeApi:
     """Answer the requests to the Prix Carburant API from the stations above."""
 
@@ -141,11 +153,12 @@ class FakeApi:
             records = [{"id": sid} | all_stations[sid]] if sid in all_stations else []
         else:
             records = [{"id": sid} | station for sid, station in self.stations.items()]
+            if match := re.search(r" AND (\w+) IS NOT NULL", where):
+                records = [
+                    record for record in records if record.get(match[1]) is not None
+                ]
             if order_by := params.get("order_by"):
-                records = sorted(
-                    (record for record in records if record.get(order_by)),
-                    key=lambda record: record[order_by],
-                )
+                records = sorted(records, key=_sort_key(order_by))
 
         total_count = len(records)
         offset = int(params.get("offset", 0))

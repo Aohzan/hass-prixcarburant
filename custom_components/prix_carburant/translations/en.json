@@ -93,6 +93,14 @@
         "distance": {
           "name": "Maximum distance",
           "description": "Maximum distance between the stations and the entity"
+        },
+        "limit": {
+          "name": "Maximum number of stations",
+          "description": "Maximum number of stations returned"
+        },
+        "sort": {
+          "name": "Sort",
+          "description": "Order of the stations returned"
         }
       }
     }
@@ -133,6 +141,14 @@
     "deprecated_yaml": {
       "title": "The Prix Carburant YAML configuration is deprecated",
       "description": "Configuring Prix Carburant with the `prix_carburant` sensor platform in configuration.yaml is deprecated and will be removed in a future version. Your stations were moved to the options of the integration as manually added stations, and the automatic discovery was disabled (maximum distance of 0): your entities and their settings are kept.\n\nThe changes made in configuration.yaml are no longer applied. Remove the `prix_carburant` platform from configuration.yaml and restart Home Assistant, then manage your stations from the options of the integration."
+    }
+  },
+  "selector": {
+    "sort": {
+      "options": {
+        "price": "Price",
+        "distance": "Distance"
+      }
     }
   }
 }

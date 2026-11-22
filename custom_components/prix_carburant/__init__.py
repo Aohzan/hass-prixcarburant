@@ -21,14 +21,18 @@ from homeassistant.helpers.typing import ConfigType
 
 from .const import (
     ATTR_ADDRESS,
+    ATTR_BRAND,
     ATTR_CITY,
     ATTR_DISTANCE,
     ATTR_POSTAL_CODE,
     ATTR_PRICE,
+    ATTR_UPDATED_DATE,
     CONF_STATIONS,
     DOMAIN,
     FUELS,
     PLATFORMS,
+    SORT_PRICE,
+    SORTS,
 )
 from .coordinator import (
     PrixCarburantConfigEntry,
@@ -44,6 +48,10 @@ CONFIG_SCHEMA = cv.platform_only_config_schema(DOMAIN)
 
 SERVICE_FIND_NEAREST_STATIONS = "find_nearest_stations"
 ATTR_FUEL = "fuel"
+ATTR_LIMIT = "limit"
+ATTR_SORT = "sort"
+# Maximum number of records of a request to the API
+MAX_LIMIT = 100
 _FUELS_BY_LOWER_NAME = {fuel.lower(): fuel for fuel in FUELS}
 
 
@@ -59,6 +67,10 @@ SERVICE_FIND_NEAREST_STATIONS_SCHEMA = probatio.Schema(
             cv.string, _fuel_case, probatio.In(FUELS)
         ),
         probatio.Required(ATTR_DISTANCE): cv.positive_int,
+        probatio.Optional(ATTR_LIMIT, default=10): probatio.All(
+            probatio.Coerce(int), probatio.Range(min=1, max=MAX_LIMIT)
+        ),
+        probatio.Optional(ATTR_SORT, default=SORT_PRICE): probatio.In(SORTS),
     }
 )
 
@@ -96,6 +108,8 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
                 latitude=float(state.attributes[ATTR_LATITUDE]),
                 fuel=call.data[ATTR_FUEL],
                 distance=call.data[ATTR_DISTANCE],
+                limit=call.data[ATTR_LIMIT],
+                sort=call.data[ATTR_SORT],
             )
         except (
             PrixCarburantToolCannotConnectError,
@@ -109,13 +123,17 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         return {
             "stations": [
                 {
+                    "station_id": station_id,
                     "name": station_data[ATTR_NAME],
+                    "brand": station_data[ATTR_BRAND],
                     "price": station_data.get(ATTR_PRICE),
+                    "updated_date": station_data.get(ATTR_UPDATED_DATE),
+                    "distance": station_data[ATTR_DISTANCE],
                     "address": f"{station_data[ATTR_ADDRESS]}, {station_data[ATTR_POSTAL_CODE]} {station_data[ATTR_CITY]}",
                     "latitude": station_data[ATTR_LATITUDE],
                     "longitude": station_data[ATTR_LONGITUDE],
                 }
-                for station_data in stations.values()
+                for station_id, station_data in stations.items()
             ],
         }
 

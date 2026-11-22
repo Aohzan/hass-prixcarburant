@@ -37,3 +37,8 @@ ATTR_E10: Final = "E10"
 ATTR_E85: Final = "E85"
 ATTR_GPL: Final = "GPLc"
 FUELS = [ATTR_E10, ATTR_E85, ATTR_SP95, ATTR_SP98, ATTR_GAZOLE, ATTR_GPL]
+
+# Orders of the stations returned by the find_nearest_stations action
+SORT_PRICE: Final = "price"
+SORT_DISTANCE: Final = "distance"
+SORTS = [SORT_PRICE, SORT_DISTANCE]

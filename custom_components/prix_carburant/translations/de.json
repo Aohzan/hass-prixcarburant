@@ -93,6 +93,14 @@
         "distance": {
           "name": "Maximale Entfernung",
           "description": "Maximale Entfernung der Tankstelle zur Entität"
+        },
+        "limit": {
+          "name": "Maximale Anzahl an Tankstellen",
+          "description": "Maximale Anzahl der zurückgegebenen Tankstellen"
+        },
+        "sort": {
+          "name": "Sortierung",
+          "description": "Reihenfolge der zurückgegebenen Tankstellen"
         }
       }
     }
@@ -133,6 +141,14 @@
     "deprecated_yaml": {
       "title": "Die YAML-Konfiguration von Prix Carburant ist veraltet",
       "description": "Die Konfiguration von Prix Carburant über die Sensor-Plattform `prix_carburant` in configuration.yaml ist veraltet und wird in einer zukünftigen Version entfernt. Deine Tankstellen wurden als manuell hinzugefügte Tankstellen in die Optionen der Integration übernommen und die automatische Tankstellensuche wurde deaktiviert (maximale Entfernung 0): deine Entitäten und ihre Einstellungen bleiben erhalten.\n\nÄnderungen in configuration.yaml werden nicht mehr übernommen. Entferne die Plattform `prix_carburant` aus configuration.yaml, starte Home Assistant neu und verwalte deine Tankstellen dann in den Optionen der Integration."
+    }
+  },
+  "selector": {
+    "sort": {
+      "options": {
+        "price": "Preis",
+        "distance": "Entfernung"
+      }
     }
   }
 }
