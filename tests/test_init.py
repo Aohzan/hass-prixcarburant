@@ -510,6 +510,50 @@ async def test_migrate_button_unique_id(
     assert hass.states.get(button.entity_id) is not None
 
 
+async def test_migrate_button_already_migrated(
+    hass: HomeAssistant,
+    entity_registry: er.EntityRegistry,
+    mock_api: FakeApi,
+) -> None:
+    """Test the migration of the button is retried after a downgrade.
+
+    A failed migration kept the migrated button, then the previous version
+    registered a new button with the old unique ID.
+    """
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        unique_id=DOMAIN,
+        data=ENTRY_DATA,
+        version=1,
+        minor_version=1,
+    )
+    entry.add_to_hass(hass)
+    migrated = entity_registry.async_get_or_create(
+        "button",
+        DOMAIN,
+        f"{entry.entry_id}_refresh",
+        config_entry=entry,
+        suggested_object_id="prix_carburant_refresh_prices",
+    )
+    duplicate = entity_registry.async_get_or_create(
+        "button",
+        DOMAIN,
+        f"{DOMAIN}_refresh_button",
+        config_entry=entry,
+        suggested_object_id="prix_carburant_refresh_prices",
+    )
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert entry.state is ConfigEntryState.LOADED
+    assert entry.minor_version == 2
+    assert entity_registry.async_get(duplicate.entity_id) is None
+    assert entity_registry.async_get(migrated.entity_id).unique_id == (
+        f"{entry.entry_id}_refresh"
+    )
+    assert hass.states.get(migrated.entity_id) is not None
+
+
 async def test_migrate_device_identifiers(
     hass: HomeAssistant,
     device_registry: dr.DeviceRegistry,
@@ -540,6 +584,64 @@ async def test_migrate_device_identifiers(
         )
     ] == [device.id]
     assert not device_registry.async_get_devices(identifiers={(DOMAIN, 99900001)})
+
+
+async def test_migrate_device_identifiers_duplicate(
+    hass: HomeAssistant,
+    device_registry: dr.DeviceRegistry,
+    entity_registry: er.EntityRegistry,
+    mock_api: FakeApi,
+) -> None:
+    """Test a station device registered with a string and an integer is merged."""
+    entry = MockConfigEntry(
+        domain=DOMAIN,
+        unique_id=DOMAIN,
+        data=ENTRY_DATA,
+        version=1,
+        minor_version=1,
+    )
+    entry.add_to_hass(hass)
+    # Device of an older version, with a string identifier
+    stale = device_registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, "99900001")},
+    )
+    stale_entity = entity_registry.async_get_or_create(
+        "sensor",
+        DOMAIN,
+        f"{DOMAIN}_99900001_E10",
+        config_entry=entry,
+        device_id=stale.id,
+    )
+    # Device of the previous version, with an integer identifier
+    device = device_registry.async_get_or_create(
+        config_entry_id=entry.entry_id,
+        identifiers={(DOMAIN, 99900001)},
+    )
+    entity = entity_registry.async_get_or_create(
+        "sensor",
+        DOMAIN,
+        f"{DOMAIN}_99900001_Gazole",
+        config_entry=entry,
+        device_id=device.id,
+        suggested_object_id="my_gazole",
+    )
+    await hass.config_entries.async_setup(entry.entry_id)
+    await hass.async_block_till_done()
+
+    assert entry.state is ConfigEntryState.LOADED
+    assert entry.minor_version == 2
+    assert [
+        migrated.id
+        for migrated in device_registry.async_get_devices(
+            identifiers={(DOMAIN, "99900001")}
+        )
+    ] == [device.id]
+    assert device_registry.async_get(stale.id) is None
+    # The entities of both devices are kept
+    assert entity_registry.async_get(entity.entity_id).device_id == device.id
+    assert entity_registry.async_get(stale_entity.entity_id).device_id == device.id
+    assert hass.states.get("sensor.my_gazole").state == "1.659"
 
 
 async def test_migrate_from_future_version(
