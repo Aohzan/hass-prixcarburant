@@ -955,10 +955,6 @@
     "name": "Relais Lagarde Cusset",
     "brand": "Total"
   },
-  "3300003": {
-    "name": "Système U",
-    "brand": "Système U"
-  },
   "3310002": {
     "name": "SARL ADOL NERIS LES BAINS",
     "brand": "Intermarché"
@@ -3835,10 +3831,6 @@
     "name": "Esso Les Remparts",
     "brand": "Esso"
   },
-  "13990002": {
-    "name": "Le Lutin des Alpilles",
-    "brand": "Avia"
-  },
   "14000003": {
     "name": "SARL GARAGE CRAPART ET FILS",
     "brand": "Total"
@@ -4058,10 +4050,6 @@
   "14400004": {
     "name": "Esso MONTGOMERY",
     "brand": "Esso Express"
-  },
-  "14400009": {
-    "name": "Carrefour",
-    "brand": "Carrefour"
   },
   "14400010": {
     "name": "RELAIS DE VAUCELLES",
@@ -8850,10 +8838,6 @@
   "31140005": {
     "name": "Sarl val fleuri st alban",
     "brand": "Aire C"
-  },
-  "31140006": {
-    "name": "Auchan",
-    "brand": "Auchan"
   },
   "31140008": {
     "name": "SUPER U FONBEAUZARD",
@@ -14515,10 +14499,6 @@
     "name": "Carrefour Lalbenque",
     "brand": "Carrefour Contact"
   },
-  "46240001": {
-    "name": "Système U",
-    "brand": "Système U"
-  },
   "46240003": {
     "name": "Station Avia",
     "brand": "Avia"
@@ -17046,10 +17026,6 @@
   "56640002": {
     "name": "Intermarché ARZON",
     "brand": "Intermarché"
-  },
-  "56650001": {
-    "name": "Carrefour Contact",
-    "brand": "Carrefour Contact"
   },
   "56660001": {
     "name": "Intermarché ST JEAN BREVELAY",
@@ -21220,10 +21196,6 @@
   "67520002": {
     "name": "Intermarché Marlenheim",
     "brand": "Intermarché"
-  },
-  "67540001": {
-    "name": "Auchan",
-    "brand": "Auchan"
   },
   "67540003": {
     "name": "Shell Aire des Chaumes Est (E25/A35)",
